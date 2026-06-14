@@ -1,4 +1,4 @@
-# Edukie Acadêmico
+# Educ Acadêmico
 
 Sistema simples para organizar parcerias, cursos, precos e vendas.
 
