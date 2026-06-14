@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edukie Acadêmico</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="loading-screen" id="loadingScreen" aria-live="polite">
+      <div class="loading-panel">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <strong>Carregando seus dados...</strong>
+        <span>Conectando ao banco online</span>
+      </div>
+    </section>
+
+    <section class="login-screen" id="loginScreen">
+      <form class="login-panel" id="loginForm">
+        <p class="eyebrow">Edukie Acadêmico</p>
+        <h1>Acessar sistema</h1>
+        <label>E-mail<input id="loginEmail" type="email" required /></label>
+        <label>Senha<input id="loginPassword" type="password" required /></label>
+        <label class="remember-login">
+          <input id="rememberLogin" type="checkbox" checked />
+          <span>Manter conectado</span>
+        </label>
+        <p class="login-message" id="loginMessage"></p>
+        <button class="primary-action" type="submit">Entrar</button>
+      </form>
+    </section>
+
+    <header class="topbar">
+      <div class="brand-block">
+        <img class="brand-logo" src="assets/brand/perfil-e-logo.png" alt="Logo Edukie Acadêmico" />
+        <div>
+          <p class="eyebrow">Edukie Acadêmico</p>
+          <h1>Painel administrativo</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="sync-status" id="syncStatus">Aguardando login</span>
+        <button class="secondary-action" id="logoutBtn" type="button">Sair</button>
+        <button class="primary-action" id="addPartnerBtn" type="button">Nova parceria</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="month-panel" aria-label="Periodo do resumo">
+        <button class="month-nav" id="prevSummaryMonth" type="button" aria-label="Mes anterior">‹</button>
+        <label>
+          <span>Resumo do mes</span>
+          <input id="summaryMonthPicker" type="month" />
+        </label>
+        <button class="month-nav" id="nextSummaryMonth" type="button" aria-label="Proximo mes">›</button>
+        <strong id="summaryMonthLabel">Mes atual</strong>
+      </section>
+
+      <section class="summary-grid" aria-label="Resumo">
+        <article>
+          <span>Parcerias totais</span>
+          <strong id="partnerCount">0</strong>
+        </article>
+        <article>
+          <span>Cursos totais</span>
+          <strong id="courseCount">0</strong>
+        </article>
+        <article>
+          <span>Vendas do mes</span>
+          <strong id="salesCount">0</strong>
+        </article>
+        <article>
+          <span>Lucro liquido do mes</span>
+          <strong id="totalProfit">R$ 0,00</strong>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <section class="content-panel">
+          <div class="tabs main-tabs" role="tablist" aria-label="Areas do sistema">
+            <button class="tab active" data-main-view="courses" type="button">Cursos</button>
+            <button class="tab" data-main-view="sales" type="button">Vendas</button>
+            <button class="tab" data-main-view="costs" type="button">Custos</button>
+            <button class="tab" data-main-view="contracts" type="button">Contratos</button>
+            <button class="tab" data-main-view="exams" type="button">Provas</button>
+            <button class="tab" data-main-view="marketing" type="button">Marketing</button>
+          </div>
+
+          <section id="coursesView">
+            <aside class="sidebar" id="partnerSidebar" aria-label="Lista de parcerias">
+              <div class="section-head">
+                <div>
+                  <h2>Parcerias</h2>
+                  <p>Escolas, faculdades e polos.</p>
+                </div>
+              </div>
+              <label class="search-field">
+                <span>Buscar parceria</span>
+                <input id="partnerSearch" type="search" placeholder="Nome, cidade ou tipo" />
+              </label>
+              <div class="partner-list" id="partnerList"></div>
+            </aside>
+
+            <div class="tabs sub-tabs" role="tablist" aria-label="Visualizacoes de cursos">
+              <button class="tab active" data-course-view="general" type="button">Plano geral</button>
+              <button class="tab" data-course-view="partner" type="button">Por parceria</button>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Pesquisar cursos</span>
+                <input id="courseSearch" type="search" placeholder="Curso, escola, modalidade, prazo, responsavel ou diploma" />
+              </label>
+              <select id="modalityFilter" aria-label="Filtrar modalidade">
+                <option value="">Todas modalidades</option>
+                <option value="Graduacao">Graduacao</option>
+                <option value="Bacharel">Bacharel</option>
+                <option value="Tecnologo">Tecnologo</option>
+                <option value="Licenciatura">Licenciatura</option>
+                <option value="Segunda Licenciatura">Segunda Licenciatura</option>
+                <option value="Formacao Pedagogica">Formacao Pedagogica</option>
+                <option value="Pos-graduacao">Pos-graduacao</option>
+                <option value="Tecnico">Tecnico</option>
+                <option value="Sequencial Superior">Sequencial Superior</option>
+                <option value="EJA">EJA</option>
+                <option value="Livre">Livre</option>
+              </select>
+              <select id="courseSort" aria-label="Ordenar cursos">
+                <option value="name-asc">Curso A-Z</option>
+                <option value="name-desc">Curso Z-A</option>
+                <option value="partner-asc">Instituicao A-Z</option>
+                <option value="partner-desc">Instituicao Z-A</option>
+                <option value="cost-asc">Menor custo</option>
+                <option value="cost-desc">Maior custo</option>
+                <option value="sale-asc">Menor venda</option>
+                <option value="sale-desc">Maior venda</option>
+              </select>
+              <button class="secondary-action" id="addCourseBtn" type="button">Novo curso</button>
+            </div>
+
+            <div class="selected-partner" id="selectedPartner"></div>
+            <div class="course-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Curso</th>
+                    <th>Parceria</th>
+                    <th>Modalidade</th>
+                    <th>Custo</th>
+                    <th>Venda</th>
+                    <th>Margem</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody id="courseRows"></tbody>
+              </table>
+              <div class="empty-state" id="emptyState">Nenhum curso encontrado.</div>
+            </div>
+          </section>
+
+          <section id="salesView" hidden>
+            <div class="sales-head">
+              <div>
+                <h2>Relatorio de vendas</h2>
+                <p>Adicione uma venda pelo botao + na lista de cursos ou cadastre aqui manualmente.</p>
+              </div>
+              <div class="sales-totals" aria-label="Totais de vendas">
+                <div>
+                  <small>Total de venda</small>
+                  <span id="salesRevenueTotal">R$ 0,00</span>
+                </div>
+                <div>
+                  <small>Total de custo</small>
+                  <span id="salesCostTotal">R$ 0,00</span>
+                </div>
+                <div>
+                  <small>Total de lucro</small>
+                  <span id="salesProfitTotal">R$ 0,00</span>
+                </div>
+                <div>
+                  <small>Total de comissao</small>
+                  <span id="salesCommissionTotal">R$ 0,00</span>
+                </div>
+                <div>
+                  <small>Total de lucro final</small>
+                  <span id="salesFinalProfitTotal">R$ 0,00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Pesquisar vendas</span>
+                <input id="salesSearch" type="search" placeholder="Aluno, curso, faculdade, vendedor ou pagamento" />
+              </label>
+              <select id="salesStatusFilter" aria-label="Filtrar situacao">
+                <option value="">Todas situacoes</option>
+                <option value="Fechado">Fechado</option>
+                <option value="Pendente">Pendente</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+              <button class="primary-action" id="addSaleBtn" type="button">Nova venda</button>
+            </div>
+
+            <div class="report-filters" aria-label="Filtros do relatorio de vendas">
+              <label>
+                <span>Data inicial</span>
+                <input id="salesDateFrom" type="date" />
+              </label>
+              <label>
+                <span>Data final</span>
+                <input id="salesDateTo" type="date" />
+              </label>
+              <label>
+                <span>Mes especifico</span>
+                <input id="salesMonth" type="month" />
+              </label>
+              <label>
+                <span>Vendedor</span>
+                <select id="salesSellerFilter"></select>
+              </label>
+              <label>
+                <span>Forma de pag.</span>
+                <select id="salesPaymentFilter"></select>
+              </label>
+              <label>
+                <span>Instituicao</span>
+                <select id="salesPartnerFilter"></select>
+              </label>
+              <label>
+                <span>Curso</span>
+                <select id="salesCourseFilter"></select>
+              </label>
+              <button class="secondary-action" id="clearSalesFiltersBtn" type="button">Limpar filtros</button>
+            </div>
+
+            <div class="sales-table-wrap">
+              <table class="sales-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Nome</th>
+                    <th>Grau</th>
+                    <th>Curso</th>
+                    <th>Faculdade</th>
+                    <th>Situacao</th>
+                    <th>Venda</th>
+                    <th>Custo</th>
+                    <th>Lucro</th>
+                    <th>Comissao</th>
+                    <th>Lucro final</th>
+                    <th>Vendedor</th>
+                    <th>Forma de pag.</th>
+                    <th>Quant.</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody id="salesRows"></tbody>
+              </table>
+              <div class="empty-state" id="salesEmptyState">Nenhuma venda encontrada.</div>
+            </div>
+          </section>
+
+          <section id="costsView" hidden>
+            <div class="sales-head">
+              <div>
+                <h2>Custos da operacao</h2>
+                <p>Cadastre gastos como marketing semanal, marketing mensal, ChatGPT e outros custos fixos ou variaveis.</p>
+              </div>
+              <div class="cost-summary">
+                <article>
+                  <span>Total de custos</span>
+                  <strong id="expensesTotal">R$ 0,00</strong>
+                </article>
+                <article>
+                  <span>Comissoes</span>
+                  <strong id="commissionsTotal">R$ 0,00</strong>
+                </article>
+                <article>
+                  <span>Lucro liquido</span>
+                  <strong id="netProfitTotal">R$ 0,00</strong>
+                </article>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Pesquisar custos</span>
+                <input id="expenseSearch" type="search" placeholder="Marketing, ChatGPT, fornecedor ou observacao" />
+              </label>
+              <select id="expenseTypeFilter" aria-label="Filtrar tipo de custo">
+                <option value="">Todos os tipos</option>
+                <option value="Marketing semanal">Marketing semanal</option>
+                <option value="Marketing mensal">Marketing mensal</option>
+                <option value="ChatGPT">ChatGPT</option>
+                <option value="Outro">Outro</option>
+              </select>
+              <button class="secondary-action" id="addExpenseBtn" type="button">Novo custo</button>
+            </div>
+
+            <div class="sales-table-wrap">
+              <table class="expense-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Descricao</th>
+                    <th>Valor</th>
+                    <th>Observacoes</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody id="expenseRows"></tbody>
+              </table>
+              <div class="empty-state" id="expensesEmptyState">Nenhum custo encontrado.</div>
+            </div>
+          </section>
+
+          <section id="contractsView" hidden>
+            <div class="document-workspace">
+              <div class="document-toolbar">
+                <label>
+                  <span>Faculdade/parceria</span>
+                  <select id="contractPartnerSelect"></select>
+                </label>
+                <div class="document-actions">
+                  <button class="secondary-action" id="openContractPdfBtn" type="button">Abrir PDF anexado</button>
+                  <button class="primary-action" id="saveContractTextBtn" type="button">Salvar texto</button>
+                  <button class="secondary-action" id="printContractBtn" type="button">Imprimir / salvar PDF</button>
+                </div>
+              </div>
+              <label class="contract-editor-label">
+                <span>Editor do contrato</span>
+                <textarea id="contractTextEditor" class="contract-editor" rows="24"></textarea>
+              </label>
+              <div class="attachments-panel">
+                <h2>Catalogos de precos</h2>
+                <div id="partnerCatalogsList" class="document-list"></div>
+              </div>
+              <div class="attachments-panel">
+                <h2>Outros documentos da faculdade</h2>
+                <div id="partnerDocumentsList" class="document-list"></div>
+              </div>
+              <div class="data-backup">
+                <div>
+                  <h2>Levar dados para o site online</h2>
+                  <p>Exporte os dados editados neste computador e importe no navegador onde o site estiver publicado.</p>
+                </div>
+                <div class="document-actions">
+                  <button class="secondary-action" id="exportDataBtn" type="button">Exportar dados</button>
+                  <label class="secondary-action file-action">Importar dados<input id="importDataInput" type="file" accept="application/json" /></label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="examsView" hidden>
+            <div class="sales-head">
+              <div>
+                <h2>Provas por curso</h2>
+                <p>Anexe e abra a prova em PDF de cada curso.</p>
+              </div>
+            </div>
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Pesquisar curso ou faculdade</span>
+                <input id="examSearch" type="search" placeholder="Curso, modalidade ou faculdade" />
+              </label>
+            </div>
+            <div id="examCourseList" class="exam-course-list"></div>
+          </section>
+
+          <section id="marketingView" hidden>
+            <div class="sales-head">
+              <div>
+                <h2>Materiais de marketing</h2>
+                <p>Organize arquivos de venda, indicacao, templates para clientes, redes sociais e outros materiais.</p>
+              </div>
+              <button class="primary-action" id="addMarketingBtn" type="button">Adicionar materiais</button>
+            </div>
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Pesquisar materiais</span>
+                <input id="marketingSearch" type="search" placeholder="Nome, categoria ou descricao" />
+              </label>
+              <select id="marketingCategoryFilter" aria-label="Filtrar categoria de marketing">
+                <option value="">Todas categorias</option>
+                <option value="Venda">Venda</option>
+                <option value="Indicacao">Indicacao</option>
+                <option value="Templates para clientes">Templates para clientes</option>
+                <option value="Redes sociais">Redes sociais</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div id="marketingList" class="marketing-list"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="partnerDialog">
+      <form method="dialog" id="partnerForm">
+        <header>
+          <h2 id="partnerDialogTitle">Nova parceria</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <input type="hidden" id="partnerId" />
+        <label>Nome da instituicao<input id="partnerName" required /></label>
+        <label>Tipo<input id="partnerType" placeholder="Faculdade, escola, polo..." /></label>
+        <label>Cidade/UF<input id="partnerCity" placeholder="Sao Paulo/SP" /></label>
+        <label>Contato<input id="partnerContact" placeholder="Telefone, e-mail ou responsavel" /></label>
+        <label>Observacoes da instituicao<textarea id="partnerNotes" rows="6" placeholder="Dados de pagamento, condicoes, contatos adicionais e outras informacoes..."></textarea></label>
+        <label>Link do site<input id="partnerSite" type="text" placeholder="https://site-da-faculdade.com.br" /></label>
+        <label>Link do MEC<input id="partnerMecUrl" type="text" placeholder="https://emec.mec.gov.br/..." /></label>
+        <label>Contrato de parceria em PDF<input id="partnerContract" type="file" accept="application/pdf" /></label>
+        <div class="saved-file-line">
+          <p class="file-note" id="partnerContractStatus">Nenhum contrato salvo.</p>
+          <button class="remove-file-action" id="removePartnerContract" type="button" aria-label="Remover contrato">x</button>
+        </div>
+        <label>Catalogos de precos em PDF<input id="partnerCatalog" type="file" accept="application/pdf" multiple /></label>
+        <p class="file-note" id="partnerCatalogStatus">Nenhum catalogo salvo.</p>
+        <label>Outros documentos da faculdade<input id="partnerDocuments" type="file" multiple /></label>
+        <div class="edit-attachments">
+          <h3>Arquivos salvos</h3>
+          <div id="partnerEditCatalogsList" class="document-list"></div>
+          <div id="partnerEditDocumentsList" class="document-list"></div>
+        </div>
+        <p class="form-message" id="partnerFormMessage"></p>
+        <menu>
+          <button class="danger-action" id="deletePartner" value="delete" type="submit" formnovalidate>Excluir parceria</button>
+          <span></span>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="savePartner" value="default" type="submit">Salvar</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="courseDialog">
+      <form method="dialog" id="courseForm">
+        <header>
+          <h2 id="courseDialogTitle">Novo curso</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <input type="hidden" id="courseId" />
+        <label>Parceria<select id="coursePartner" required></select></label>
+        <label>Nome do curso<input id="courseName" required /></label>
+        <div class="form-grid">
+          <label>Modalidade
+            <select id="courseModality">
+              <option>Graduacao</option>
+              <option>Bacharel</option>
+              <option>Tecnologo</option>
+              <option>Licenciatura</option>
+              <option>Segunda Licenciatura</option>
+              <option>Formacao Pedagogica</option>
+              <option>Pos-graduacao</option>
+              <option>Tecnico</option>
+              <option>Sequencial Superior</option>
+              <option>EJA</option>
+              <option>Livre</option>
+            </select>
+          </label>
+          <label>Area<input id="courseArea" placeholder="Educacao, saude..." /></label>
+        </div>
+        <div class="form-grid">
+          <label>Custo para voces<input id="courseCost" type="number" min="0" step="0.01" required /></label>
+          <label>Preco de venda<input id="courseSale" type="number" min="0" step="0.01" required /></label>
+        </div>
+        <div class="form-grid">
+          <label>Repasse<input id="courseTransfer" placeholder="Valor, percentual ou regra" /></label>
+          <label>Prazo de entrega<input id="courseDeadline" placeholder="35 dias" /></label>
+        </div>
+        <div class="form-grid">
+          <label>Responsavel/Diretor<input id="courseResponsible" placeholder="Nome do responsavel" /></label>
+          <label>Diplomas<input id="courseDiplomas" placeholder="Digital, fisico, prazo..." /></label>
+        </div>
+        <label>Prova do curso em PDF<input id="courseExamFile" type="file" accept="application/pdf" /></label>
+        <p class="file-note" id="courseExamStatus">Nenhuma prova salva.</p>
+        <label>Observacoes<textarea id="courseNotes" rows="3" placeholder="Condicoes, parcelas, campanha..."></textarea></label>
+        <menu>
+          <button class="danger-action" id="deleteCourse" value="delete" type="submit" formnovalidate>Excluir</button>
+          <span></span>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="saveCourse" value="default" type="submit">Salvar</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="saleDialog">
+      <form method="dialog" id="saleForm">
+        <header>
+          <h2 id="saleDialogTitle">Nova venda</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <input type="hidden" id="saleId" />
+        <label>Pesquisar curso<input id="saleCourseSearch" type="search" placeholder="Digite o nome do curso, modalidade ou instituicao" /></label>
+        <label>Curso<select id="saleCourse" required></select></label>
+        <div class="form-grid">
+          <label>Data<input id="saleDate" type="date" required /></label>
+          <label>Nome do aluno<input id="saleStudent" required /></label>
+        </div>
+        <div class="form-grid">
+          <label>Situacao
+            <select id="saleStatus">
+              <option>Fechado</option>
+              <option>Pendente</option>
+              <option>Cancelado</option>
+            </select>
+          </label>
+          <label>Vendedor<input id="saleSeller" placeholder="Nome do vendedor" /></label>
+        </div>
+        <div class="form-grid">
+          <label>Forma de pagamento<input id="salePayment" placeholder="Cartao, pix, boleto..." /></label>
+          <label>Quantidade<input id="saleQuantity" placeholder="4x, 1x, 12x..." /></label>
+        </div>
+        <div class="form-grid">
+          <label>Custo<input id="saleCost" type="number" min="0" step="0.01" required /></label>
+          <label>Venda<input id="salePrice" type="number" min="0" step="0.01" required /></label>
+        </div>
+        <div class="form-grid">
+          <label>Comissao % do lucro
+            <input id="saleCommissionPercent" type="number" min="0" step="0.01" placeholder="0,00" />
+          </label>
+          <label>Comissao R$
+            <input id="saleCommission" type="number" min="0" step="0.01" placeholder="0,00" />
+          </label>
+        </div>
+        <p class="form-message" id="saleFormMessage"></p>
+        <menu>
+          <button class="danger-action" id="deleteSale" value="delete" type="submit" formnovalidate>Excluir</button>
+          <span></span>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="saveSale" value="default" type="submit">Salvar venda</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="expenseDialog">
+      <form method="dialog" id="expenseForm">
+        <header>
+          <h2 id="expenseDialogTitle">Novo custo</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <input type="hidden" id="expenseId" />
+        <div class="form-grid">
+          <label>Data<input id="expenseDate" type="date" required /></label>
+          <label>Tipo
+            <select id="expenseType">
+              <option>Marketing semanal</option>
+              <option>Marketing mensal</option>
+              <option>ChatGPT</option>
+              <option>Outro</option>
+            </select>
+          </label>
+        </div>
+        <label>Descricao<input id="expenseDescription" required placeholder="Ex: campanha Instagram, assinatura ChatGPT..." /></label>
+        <label>Valor<input id="expenseAmount" type="number" min="0" step="0.01" required /></label>
+        <label>Observacoes<textarea id="expenseNotes" rows="3" placeholder="Periodo, fornecedor, detalhes..."></textarea></label>
+        <menu>
+          <button class="danger-action" id="deleteExpense" value="delete" type="submit" formnovalidate>Excluir</button>
+          <span></span>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="saveExpense" value="default" type="submit">Salvar custo</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="marketingDialog">
+      <form method="dialog" id="marketingForm">
+        <header>
+          <h2>Adicionar materiais de marketing</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <label>Categoria
+          <select id="marketingCategory">
+            <option>Venda</option>
+            <option>Indicacao</option>
+            <option>Templates para clientes</option>
+            <option>Redes sociais</option>
+            <option>Outros</option>
+          </select>
+        </label>
+        <label>Descricao<input id="marketingDescription" placeholder="Ex: mensagem para novos clientes, arte promocional..." /></label>
+        <label>Arquivos<input id="marketingFiles" type="file" multiple required /></label>
+        <menu>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" value="default" type="submit">Adicionar arquivos</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="educamais-catalog-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
