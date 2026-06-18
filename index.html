@@ -9,6 +9,7 @@
   <body>
     <section class="loading-screen" id="loadingScreen" aria-live="polite">
       <div class="loading-panel">
+        <img src="assets/brand/perfil-e-logo.png" alt="Logo Educ Acadêmico" class="loading-logo" />
         <span class="loading-spinner" aria-hidden="true"></span>
         <strong>Carregando seus dados...</strong>
         <span>Conectando ao banco online</span>
@@ -17,6 +18,7 @@
 
     <section class="login-screen" id="loginScreen">
       <form class="login-panel" id="loginForm">
+        <img src="assets/brand/perfil-e-logo.png" alt="Logo Educ Acadêmico" class="login-logo" />
         <p class="eyebrow">Educ Acadêmico</p>
         <h1>Acessar sistema</h1>
         <label>E-mail<input id="loginEmail" type="email" required /></label>
@@ -30,54 +32,169 @@
       </form>
     </section>
 
-    <header class="topbar">
-      <div class="brand-block">
-        <img class="brand-logo" src="assets/brand/perfil-e-logo.png" alt="Logo Educ Acadêmico" />
-        <div>
-          <p class="eyebrow">Educ Acadêmico</p>
-          <h1>Painel administrativo</h1>
-        </div>
-      </div>
-      <div class="top-actions">
-        <span class="sync-status" id="syncStatus">Aguardando login</span>
-        <button class="secondary-action" id="logoutBtn" type="button">Sair</button>
-        <button class="primary-action" id="addPartnerBtn" type="button">Nova parceria</button>
-      </div>
-    </header>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <main class="app-shell">
-      <section class="month-panel" aria-label="Periodo do resumo">
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-logo">
+        <img src="assets/brand/perfil-e-logo.png" alt="Logo Educ Acadêmico" />
+      </div>
+      <nav class="sidebar-menu">
+        <a class="sidebar-item active" data-sidebar-view="courses" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Visão geral</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="courses" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Cursos</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="sales" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span>Vendas</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="contracts" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Contratos</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="partners" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Parceiros</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="costs" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Financeiro</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="marketing" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Marketing</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="exams" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Provas</span>
+        </a>
+        <a class="sidebar-item" data-sidebar-view="settings" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Configurações</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">JF</div>
+          <div>
+            <strong>João Ferreira</strong>
+            <span>Administrador</span>
+          </div>
+        </div>
+        <p class="sidebar-copyright">© 2026 Educ Acadêmico<br/>Todos os direitos reservados.</p>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div>
+            <p class="eyebrow">EDUC ACADÊMICO</p>
+            <h1>Painel administrativo</h1>
+            <p class="topbar-subtitle">Bem-vindo de volta!</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="sync-status" id="syncStatus">Dados online carregados</span>
+          <button class="icon-btn-circle" id="notifBtn" type="button" aria-label="Notificações">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="btn-sair" id="logoutBtn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair
+          </button>
+          <button class="btn-nova-parceria" id="addPartnerBtn" type="button">Nova parceria</button>
+        </div>
+      </header>
+
+      <section class="quick-actions" aria-label="Ações rápidas">
+        <button class="quick-action-item" id="addSaleBtnQuick" type="button">
+          <div class="quick-action-icon dark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <span>Nova venda</span>
+        </button>
+        <button class="quick-action-item" type="button" onclick="document.querySelector('[data-main-view=contracts]').click()">
+          <div class="quick-action-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span>Novo contrato</span>
+        </button>
+        <button class="quick-action-item" id="addPartnerBtnQuick" type="button">
+          <div class="quick-action-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span>Novo parceiro</span>
+        </button>
+        <button class="quick-action-item" id="addCourseBtn" type="button">
+          <div class="quick-action-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <span>Novo curso</span>
+        </button>
+      </section>
+
+      <section class="summary-grid" aria-label="Resumo">
+        <article class="summary-card">
+          <div class="summary-icon purple">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div>
+            <span>Cursos cadastrados</span>
+            <strong id="courseCount">0</strong>
+            <small>Total de cursos</small>
+          </div>
+        </article>
+        <article class="summary-card">
+          <div class="summary-icon green">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <span>Parceiros ativos</span>
+            <strong id="partnerCount">0</strong>
+            <small>Total de parcerias</small>
+          </div>
+        </article>
+        <article class="summary-card">
+          <div class="summary-icon orange">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <div>
+            <span>Vendas do mês</span>
+            <strong id="salesCount">0</strong>
+            <small>Total de vendas</small>
+          </div>
+        </article>
+        <article class="summary-card">
+          <div class="summary-icon blue">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div>
+            <span>Lucro líquido do mês</span>
+            <strong id="totalProfit">R$ 0,00</strong>
+            <small>Total líquido</small>
+          </div>
+        </article>
+      </section>
+
+      <div class="month-panel-mini" aria-label="Periodo do resumo">
         <button class="month-nav" id="prevSummaryMonth" type="button" aria-label="Mes anterior">‹</button>
         <label>
-          <span>Resumo do mes</span>
           <input id="summaryMonthPicker" type="month" />
         </label>
         <button class="month-nav" id="nextSummaryMonth" type="button" aria-label="Proximo mes">›</button>
         <strong id="summaryMonthLabel">Mes atual</strong>
-      </section>
-
-      <section class="summary-grid" aria-label="Resumo">
-        <article>
-          <span>Parcerias totais</span>
-          <strong id="partnerCount">0</strong>
-        </article>
-        <article>
-          <span>Cursos totais</span>
-          <strong id="courseCount">0</strong>
-        </article>
-        <article>
-          <span>Vendas do mes</span>
-          <strong id="salesCount">0</strong>
-        </article>
-        <article>
-          <span>Lucro liquido do mes</span>
-          <strong id="totalProfit">R$ 0,00</strong>
-        </article>
-      </section>
+      </div>
 
       <section class="workspace">
         <section class="content-panel">
-          <div class="tabs main-tabs" role="tablist" aria-label="Areas do sistema">
+          <div class="tabs main-tabs" role="tablist" aria-label="Areas do sistema" style="display:none;">
             <button class="tab active" data-main-view="courses" type="button">Cursos</button>
             <button class="tab" data-main-view="sales" type="button">Vendas</button>
             <button class="tab" data-main-view="costs" type="button">Custos</button>
@@ -101,60 +218,128 @@
               <div class="partner-list" id="partnerList"></div>
             </aside>
 
-            <div class="tabs sub-tabs" role="tablist" aria-label="Visualizacoes de cursos">
-              <button class="tab active" data-course-view="general" type="button">Plano geral</button>
-              <button class="tab" data-course-view="partner" type="button">Por parceria</button>
-            </div>
+            <div class="courses-card">
+              <div class="courses-card-header">
+                <div>
+                  <h2>Cursos</h2>
+                  <p>Encontre rapidamente o curso que deseja vender.</p>
+                </div>
+                <button class="btn-ver-todos" onclick="document.querySelector('[data-main-view=courses]').click()">
+                  Ver todos os cursos
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
 
-            <div class="toolbar">
-              <label class="search-field wide">
-                <span>Pesquisar cursos</span>
-                <input id="courseSearch" type="search" placeholder="Curso, escola, modalidade, prazo, responsavel ou diploma" />
-              </label>
-              <select id="modalityFilter" aria-label="Filtrar modalidade">
-                <option value="">Todas modalidades</option>
-                <option value="Graduacao">Graduacao</option>
-                <option value="Bacharel">Bacharel</option>
-                <option value="Tecnologo">Tecnologo</option>
-                <option value="Licenciatura">Licenciatura</option>
-                <option value="Segunda Licenciatura">Segunda Licenciatura</option>
-                <option value="Formacao Pedagogica">Formacao Pedagogica</option>
-                <option value="Pos-graduacao">Pos-graduacao</option>
-                <option value="Tecnico">Tecnico</option>
-                <option value="Sequencial Superior">Sequencial Superior</option>
-                <option value="EJA">EJA</option>
-                <option value="Livre">Livre</option>
-              </select>
-              <select id="courseSort" aria-label="Ordenar cursos">
-                <option value="name-asc">Curso A-Z</option>
-                <option value="name-desc">Curso Z-A</option>
-                <option value="partner-asc">Instituicao A-Z</option>
-                <option value="partner-desc">Instituicao Z-A</option>
-                <option value="cost-asc">Menor custo</option>
-                <option value="cost-desc">Maior custo</option>
-                <option value="sale-asc">Menor venda</option>
-                <option value="sale-desc">Maior venda</option>
-              </select>
-              <button class="secondary-action" id="addCourseBtn" type="button">Novo curso</button>
-            </div>
+              <div class="courses-search-bar">
+                <div class="search-input-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input id="courseSearch" type="search" placeholder="Buscar curso por nome, instituição ou área" />
+                </div>
+                <select id="modalityFilter" aria-label="Filtrar modalidade">
+                  <option value="">Todas as modalidades</option>
+                  <option value="Graduacao">Graduação</option>
+                  <option value="Bacharel">Bacharel</option>
+                  <option value="Tecnologo">Tecnólogo</option>
+                  <option value="Licenciatura">Licenciatura</option>
+                  <option value="Segunda Licenciatura">Segunda Licenciatura</option>
+                  <option value="Formacao Pedagogica">Formação Pedagógica</option>
+                  <option value="Pos-graduacao">Pós-graduação</option>
+                  <option value="Tecnico">Técnico</option>
+                  <option value="Sequencial Superior">Sequencial Superior</option>
+                  <option value="EJA">EJA</option>
+                  <option value="Livre">Livre</option>
+                </select>
+                <select id="courseSort" aria-label="Ordenar cursos">
+                  <option value="name-asc">Ordenar: Nome (A-Z)</option>
+                  <option value="name-desc">Ordenar: Nome (Z-A)</option>
+                  <option value="partner-asc">Instituição A-Z</option>
+                  <option value="partner-desc">Instituição Z-A</option>
+                  <option value="cost-asc">Menor custo</option>
+                  <option value="cost-desc">Maior custo</option>
+                  <option value="sale-asc">Menor venda</option>
+                  <option value="sale-desc">Maior venda</option>
+                </select>
+              </div>
 
-            <div class="selected-partner" id="selectedPartner"></div>
-            <div class="course-table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Curso</th>
-                    <th>Parceria</th>
-                    <th>Modalidade</th>
-                    <th>Custo</th>
-                    <th>Venda</th>
-                    <th>Margem</th>
-                    <th>Acoes</th>
-                  </tr>
-                </thead>
-                <tbody id="courseRows"></tbody>
-              </table>
-              <div class="empty-state" id="emptyState">Nenhum curso encontrado.</div>
+              <div class="tabs sub-tabs" role="tablist" aria-label="Visualizacoes de cursos">
+                <button class="tab active" data-course-view="general" type="button">Plano geral</button>
+                <button class="tab" data-course-view="partner" type="button">Por parceria</button>
+              </div>
+
+              <div class="modality-cards">
+                <button class="modality-card active" data-modality="" type="button">
+                  <div class="modality-card-icon purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  </div>
+                  <div>
+                    <strong>Todos</strong>
+                    <span>Todos os cursos</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-modality="Graduacao" type="button">
+                  <div class="modality-card-icon green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                  </div>
+                  <div>
+                    <strong>Graduação</strong>
+                    <span>Cursos de graduação</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-modality="Pos-graduacao" type="button">
+                  <div class="modality-card-icon orange">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                  </div>
+                  <div>
+                    <strong>Pós-graduação</strong>
+                    <span>Especializações e MBAs</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-modality="Tecnologo" type="button">
+                  <div class="modality-card-icon yellow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  </div>
+                  <div>
+                    <strong>Tecnólogo</strong>
+                    <span>Cursos tecnológicos</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-modality="Sequencial Superior" type="button">
+                  <div class="modality-card-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  </div>
+                  <div>
+                    <strong>Sequencial</strong>
+                    <span>Cursos sequenciais</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-modality="Tecnico" type="button">
+                  <div class="modality-card-icon red">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  </div>
+                  <div>
+                    <strong>Ensino Médio</strong>
+                    <span>Ensino médio</span>
+                  </div>
+                </button>
+              </div>
+
+              <div class="selected-partner" id="selectedPartner"></div>
+              <div class="course-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>CURSO</th>
+                      <th>MODALIDADE</th>
+                      <th>PARCEIRA</th>
+                      <th>DURAÇÃO</th>
+                      <th>VALOR</th>
+                      <th>AÇÕES</th>
+                    </tr>
+                  </thead>
+                  <tbody id="courseRows"></tbody>
+                </table>
+                <div class="empty-state" id="emptyState">Nenhum curso encontrado.</div>
+              </div>
             </div>
           </section>
 
@@ -396,7 +581,11 @@
           </section>
         </section>
       </section>
-    </main>
+    </div>
+
+    <button class="fab-add" id="fabAdd" type="button" aria-label="Adicionar novo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
 
     <dialog id="partnerDialog">
       <form method="dialog" id="partnerForm">

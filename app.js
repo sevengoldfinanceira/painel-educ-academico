@@ -1094,6 +1094,10 @@ function renderMainView() {
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
   });
+
+  document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => {
+    item.classList.toggle("active", item.dataset.sidebarView === state.mainView);
+  });
 }
 
 function renderPartners() {
@@ -1192,42 +1196,25 @@ function renderCourses() {
 
   courses.forEach((course) => {
     const partner = getPartner(course.partnerId);
-    const margin = Number(course.sale) - Number(course.cost);
-    const detailItems = [
-      ["Area", course.area || "Sem area"],
-      ["Repasse", course.transfer || "Nao informado"],
-      ["Prazo", course.deadline || "Nao informado"],
-      ["Responsavel/Diretor", course.responsible || "Nao informado"],
-      ["Diplomas", course.diplomas || "Nao informado"],
-    ];
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="course-detail-cell">
         <strong>${escapeHtml(course.name)}</strong>
-        <div class="course-meta">
-          ${detailItems
-            .map(([label, value]) => `<span><b>${escapeHtml(label)}:</b> ${escapeHtml(value)}</span>`)
-            .join("")}
-        </div>
-        ${course.notes ? `<small>${escapeHtml(course.notes)}</small>` : ""}
+        <small>${escapeHtml(course.area || course.modality || "")}</small>
       </td>
+      <td><span class="margin-pill">${escapeHtml(course.modality)}</span></td>
       <td>
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
-        <div class="inline-actions">
-          <button class="link-action" type="button" data-course-site="${escapeHtml(partner?.id || "")}" ${partner?.siteUrl ? "" : "disabled"}>Site</button>
-          <button class="link-action" type="button" data-course-mec="${escapeHtml(partner?.id || "")}" ${partner?.mecUrl ? "" : "disabled"}>MEC</button>
-          <button class="link-action" type="button" data-course-contract="${escapeHtml(partner?.id || "")}" ${partner?.contractDataUrl ? "" : "disabled"}>Contrato</button>
-          <button class="link-action" type="button" data-course-catalog="${escapeHtml(partner?.id || "")}" ${partner?.catalogs.length ? "" : "disabled"}>Catalogos</button>
-          <button class="link-action" type="button" data-course-documents="${escapeHtml(partner?.id || "")}" ${partner?.documents.length ? "" : "disabled"}>Documentos</button>
-        </div>
       </td>
-      <td>${escapeHtml(course.modality)}</td>
-      <td>${formatMoney(course.cost)}</td>
+      <td>${escapeHtml(course.deadline || "Nao informado")}</td>
       <td>${formatMoney(course.sale)}</td>
-      <td><span class="margin-pill">${formatMoney(margin)}</span></td>
       <td class="action-cell">
-        <button class="add-sale-action" title="Adicionar venda" type="button" data-sale-course-id="${escapeHtml(course.id)}">+</button>
-        <button class="row-action" type="button" data-course-id="${escapeHtml(course.id)}">Editar</button>
+        <button class="row-action" type="button" data-course-id="${escapeHtml(course.id)}" title="Ver detalhes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="row-action" type="button" data-sale-course-id="${escapeHtml(course.id)}" title="Adicionar venda">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        </button>
       </td>
     `;
     els.courseRows.appendChild(row);
@@ -2007,6 +1994,14 @@ els.addPartnerBtn.addEventListener("click", () => openPartnerDialog());
 els.addCourseBtn.addEventListener("click", () => openCourseDialog());
 els.addSaleBtn.addEventListener("click", () => openSaleDialog());
 els.addExpenseBtn.addEventListener("click", () => openExpenseDialog());
+
+const addPartnerBtnQuick = document.querySelector("#addPartnerBtnQuick");
+const addSaleBtnQuick = document.querySelector("#addSaleBtnQuick");
+const fabAdd = document.querySelector("#fabAdd");
+if (addPartnerBtnQuick) addPartnerBtnQuick.addEventListener("click", () => openPartnerDialog());
+if (addSaleBtnQuick) addSaleBtnQuick.addEventListener("click", () => openSaleDialog());
+if (fabAdd) fabAdd.addEventListener("click", () => openSaleDialog());
+
 els.addMarketingBtn.addEventListener("click", () => {
   els.marketingCategory.value = "Venda";
   els.marketingDescription.value = "";
@@ -2055,6 +2050,17 @@ els.courseSearch.addEventListener("input", (event) => {
 els.modalityFilter.addEventListener("change", (event) => {
   state.modality = event.target.value;
   renderCourses();
+});
+
+document.querySelectorAll(".modality-card").forEach((card) => {
+  card.addEventListener("click", () => {
+    const modality = card.dataset.modality || "";
+    state.modality = modality;
+    els.modalityFilter.value = modality;
+    document.querySelectorAll(".modality-card").forEach(c => c.classList.remove("active"));
+    card.classList.add("active");
+    renderCourses();
+  });
 });
 
 els.courseSort.addEventListener("change", (event) => {
@@ -2240,6 +2246,19 @@ els.mainTabs.forEach((tab) => {
   });
 });
 
+document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault();
+    const view = item.dataset.sidebarView;
+    if (view && view !== "partners" && view !== "settings") {
+      state.mainView = view;
+      render();
+    }
+    document.querySelectorAll(".sidebar-item").forEach(s => s.classList.remove("active"));
+    item.classList.add("active");
+  });
+});
+
 els.courseTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     state.courseView = tab.dataset.courseView;
@@ -2379,3 +2398,19 @@ els.marketingForm.addEventListener("submit", async (event) => {
 
 render();
 initializeCloud();
+
+const hamburgerBtn = document.querySelector("#hamburgerBtn");
+const appSidebar = document.querySelector("#appSidebar");
+const sidebarOverlay = document.querySelector("#sidebarOverlay");
+if (hamburgerBtn && appSidebar) {
+  hamburgerBtn.addEventListener("click", () => {
+    appSidebar.classList.toggle("open");
+    sidebarOverlay.classList.toggle("visible");
+  });
+}
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener("click", () => {
+    appSidebar.classList.remove("open");
+    sidebarOverlay.classList.remove("visible");
+  });
+}
