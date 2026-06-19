@@ -1164,8 +1164,8 @@ button.margin-pill:hover {
 
 /* REDEFINIÇÃO DE VARIÁVEIS PARA O MODO ESCURO */
 html.dark-theme, body.dark-theme {
-  --bg: #030a16;
-  --surface: #071426;
+  --bg: #071426;
+  --surface: #030a16;
   --surface-soft: #0e2038;
   --ink: #f0f3f8;
   --muted: #72849c;
