@@ -329,10 +329,6 @@ const els = {
   loginMessage: document.querySelector("#loginMessage"),
   syncStatus: document.querySelector("#syncStatus"),
   logoutBtn: document.querySelector("#logoutBtn"),
-  prevSummaryMonth: document.querySelector("#prevSummaryMonth"),
-  nextSummaryMonth: document.querySelector("#nextSummaryMonth"),
-  summaryMonthPicker: document.querySelector("#summaryMonthPicker"),
-  summaryMonthLabel: document.querySelector("#summaryMonthLabel"),
   partnerCount: document.querySelector("#partnerCount"),
   courseCount: document.querySelector("#courseCount"),
   salesCount: document.querySelector("#salesCount"),
@@ -349,7 +345,6 @@ const els = {
   selectedPartner: document.querySelector("#selectedPartner"),
   mainTabs: document.querySelectorAll("[data-main-view]"),
   courseTabs: document.querySelectorAll("[data-course-view]"),
-  addPartnerBtn: document.querySelector("#addPartnerBtn"),
   addCourseBtn: document.querySelector("#addCourseBtn"),
   partnerDialog: document.querySelector("#partnerDialog"),
   partnerForm: document.querySelector("#partnerForm"),
@@ -1242,8 +1237,6 @@ function filteredExpenses() {
 function renderSummary() {
   const totals = getMonthlySummary(state.summaryMonth);
 
-  els.summaryMonthPicker.value = state.summaryMonth;
-  els.summaryMonthLabel.textContent = formatMonthLabel(state.summaryMonth);
   els.partnerCount.textContent = state.data.partners.length;
   els.courseCount.textContent = state.data.courses.length;
   els.salesCount.textContent = totals.salesCount;
@@ -2192,22 +2185,6 @@ function upsertExpense() {
   render();
 }
 
-els.prevSummaryMonth.addEventListener("click", () => {
-  state.summaryMonth = shiftMonth(state.summaryMonth, -1);
-  renderSummary();
-});
-
-els.nextSummaryMonth.addEventListener("click", () => {
-  state.summaryMonth = shiftMonth(state.summaryMonth, 1);
-  renderSummary();
-});
-
-els.summaryMonthPicker.addEventListener("change", (event) => {
-  state.summaryMonth = event.target.value || today().slice(0, 7);
-  renderSummary();
-});
-
-els.addPartnerBtn.addEventListener("click", () => openPartnerDialog());
 els.addCourseBtn.addEventListener("click", () => openCourseDialog());
 els.addSaleBtn.addEventListener("click", () => openSaleDialog());
 els.addExpenseBtn.addEventListener("click", () => openExpenseDialog());
