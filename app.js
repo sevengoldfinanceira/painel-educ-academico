@@ -293,7 +293,7 @@ const seedData = {
 
 const state = {
   data: loadData(),
-  mainView: "courses",
+  mainView: "overview",
   selectedPartnerId: "all",
   partnerSearch: "",
   courseSearch: "",
