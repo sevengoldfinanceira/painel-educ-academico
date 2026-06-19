@@ -1703,6 +1703,7 @@ function renderContracts() {
       const documentItem = partner.documents.find((item) => item.id === button.dataset.openPartnerDocument);
       openSavedDocument(documentItem?.dataUrl);
     });
+  });
 }
 
 function renderMarketing() {
