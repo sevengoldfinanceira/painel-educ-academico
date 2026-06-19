@@ -332,6 +332,7 @@ const els = {
   salesCount: document.querySelector("#salesCount"),
   totalProfit: document.querySelector("#totalProfit"),
   summaryGrid: document.querySelector("#summaryGrid"),
+  quickActions: document.querySelector("#quickActions"),
   partnerSidebar: document.querySelector("#partnerSidebar"),
   coursesView: document.querySelector("#coursesView"),
   partnersView: document.querySelector("#partnersView"),
@@ -1255,6 +1256,7 @@ function renderMainView() {
   els.marketingView.hidden = !showingMarketing;
   els.partnerSidebar.classList.toggle("hidden", !showingPartners);
   if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", !showingOverview);
+  if (els.quickActions) els.quickActions.classList.toggle("hidden", !showingOverview);
 
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
