@@ -295,7 +295,6 @@ const state = {
   data: loadData(),
   mainView: "overview",
   selectedPartnerId: "all",
-  partnerSearch: "",
   courseSearch: "",
   courseType: "",
   modality: "",
@@ -308,10 +307,10 @@ const state = {
   salesSeller: "",
   salesPayment: "",
   salesPartnerId: "",
+  clientSearch: "",
   salesCourseId: "",
   expenseSearch: "",
   expenseType: "",
-  selectedContractPartnerId: "",
   marketingSearch: "",
   marketingCategory: "",
   summaryMonth: today().slice(0, 7),
@@ -332,12 +331,9 @@ const els = {
   salesCount: document.querySelector("#salesCount"),
   totalProfit: document.querySelector("#totalProfit"),
   summaryGrid: document.querySelector("#summaryGrid"),
-  partnerSidebar: document.querySelector("#partnerSidebar"),
   coursesView: document.querySelector("#coursesView"),
   partnersView: document.querySelector("#partnersView"),
   salesView: document.querySelector("#salesView"),
-  partnerList: document.querySelector("#partnerList"),
-  partnerSearch: document.querySelector("#partnerSearch"),
   courseSearch: document.querySelector("#courseSearch"),
   courseSort: document.querySelector("#courseSort"),
   courseRows: document.querySelector("#courseRows"),
@@ -345,6 +341,7 @@ const els = {
   selectedPartner: document.querySelector("#selectedPartner"),
   mainTabs: document.querySelectorAll("[data-main-view]"),
   addCourseBtn: document.querySelector("#addCourseBtn"),
+  addPartnerBtnQuick: document.querySelector("#addPartnerBtnQuick"),
   partnerDialog: document.querySelector("#partnerDialog"),
   partnerForm: document.querySelector("#partnerForm"),
   partnerDialogTitle: document.querySelector("#partnerDialogTitle"),
@@ -382,6 +379,7 @@ const els = {
   courseDiplomas: document.querySelector("#courseDiplomas"),
   courseExamFile: document.querySelector("#courseExamFile"),
   courseExamStatus: document.querySelector("#courseExamStatus"),
+  removeCourseExam: document.querySelector("#removeCourseExam"),
   courseNotes: document.querySelector("#courseNotes"),
   deleteCourse: document.querySelector("#deleteCourse"),
   salesSearch: document.querySelector("#salesSearch"),
@@ -440,15 +438,28 @@ const els = {
   expenseAmount: document.querySelector("#expenseAmount"),
   expenseNotes: document.querySelector("#expenseNotes"),
   deleteExpense: document.querySelector("#deleteExpense"),
-  contractsView: document.querySelector("#contractsView"),
+  clientsView: document.querySelector("#clientsView"),
   marketingView: document.querySelector("#marketingView"),
-  contractPartnerSelect: document.querySelector("#contractPartnerSelect"),
-  contractTextEditor: document.querySelector("#contractTextEditor"),
-  openContractPdfBtn: document.querySelector("#openContractPdfBtn"),
-  saveContractTextBtn: document.querySelector("#saveContractTextBtn"),
-  printContractBtn: document.querySelector("#printContractBtn"),
-  partnerDocumentsList: document.querySelector("#partnerDocumentsList"),
-  partnerCatalogsList: document.querySelector("#partnerCatalogsList"),
+  clientRows: document.querySelector("#clientRows"),
+  clientSearch: document.querySelector("#clientSearch"),
+  emptyClientState: document.querySelector("#emptyClientState"),
+  clientDialog: document.querySelector("#clientDialog"),
+  clientForm: document.querySelector("#clientForm"),
+  clientDialogTitle: document.querySelector("#clientDialogTitle"),
+  clientId: document.querySelector("#clientId"),
+  clientName: document.querySelector("#clientName"),
+  clientCourse: document.querySelector("#clientCourse"),
+  clientPartner: document.querySelector("#clientPartner"),
+  clientCpf: document.querySelector("#clientCpf"),
+  clientPhone: document.querySelector("#clientPhone"),
+  clientEmail: document.querySelector("#clientEmail"),
+  clientContractFile: document.querySelector("#clientContractFile"),
+  clientHistoryFile: document.querySelector("#clientHistoryFile"),
+  clientDeclarationFile: document.querySelector("#clientDeclarationFile"),
+  clientDiplomaFile: document.querySelector("#clientDiplomaFile"),
+  saveClient: document.querySelector("#saveClient"),
+  deleteClient: document.querySelector("#deleteClient"),
+  addClientBtn: document.querySelector("#addClientBtn"),
   exportDataBtn: document.querySelector("#exportDataBtn"),
   importDataInput: document.querySelector("#importDataInput"),
   addMarketingBtn: document.querySelector("#addMarketingBtn"),
@@ -564,6 +575,7 @@ function normalizeData(data) {
   data.sales ||= [];
   data.expenses ||= [];
   data.marketing ||= [];
+  data.clients ||= [];
   data.imports ||= {};
   data.profile ||= {};
   data.profile.displayName ||= "";
@@ -1054,6 +1066,30 @@ function normalize(value) {
     .toLowerCase();
 }
 
+const MODALITY_LABELS = {
+  "Ensino medio": "Ensino médio",
+  "Ensino fundamental": "Ensino fundamental",
+  "Cursos livres": "Cursos livres",
+  "Tecnico": "Técnico",
+  "Tecnologo": "Tecnólogo",
+  "Sequencial superior": "Sequencial superior",
+  "Graduacao": "Graduação",
+  "Bacharel": "Bacharel",
+  "Licenciatura": "Licenciatura",
+  "Segunda licenciatura": "Segunda licenciatura",
+  "Formacao pedagogica": "Formação pedagógica",
+  "Pos-graduacao": "Pós - Graduação",
+  "Mestrado": "Mestrado",
+  "Doutorado": "Doutorado",
+  "Detran": "Detran"
+};
+
+function getModalityLabel(m) {
+  if (!m) return "";
+  const key = Object.keys(MODALITY_LABELS).find(k => normalize(k) === normalize(m));
+  return key ? MODALITY_LABELS[key] : m;
+}
+
 function matchesSearch(values, query) {
   return normalize(values.join(" ")).includes(normalize(query));
 }
@@ -1160,6 +1196,14 @@ function filteredCourses() {
     switch (state.courseSort) {
       case "name-desc":
         return compareText(right.name, left.name);
+      case "type-asc":
+        return compareText(left.type, right.type) || compareText(left.name, right.name);
+      case "type-desc":
+        return compareText(right.type, left.type) || compareText(left.name, right.name);
+      case "modality-asc":
+        return compareText(left.modality, right.modality) || compareText(left.name, right.name);
+      case "modality-desc":
+        return compareText(right.modality, left.modality) || compareText(left.name, right.name);
       case "partner-asc":
         return compareText(leftPartner?.name, rightPartner?.name) || compareText(left.name, right.name);
       case "partner-desc":
@@ -1245,15 +1289,14 @@ function renderMainView() {
   const showingPartners = state.mainView === "partners";
   const showingSales = state.mainView === "sales";
   const showingCosts = state.mainView === "costs";
-  const showingContracts = state.mainView === "contracts";
+  const showingClients = state.mainView === "clients";
   const showingMarketing = state.mainView === "marketing";
   els.coursesView.hidden = !showingCourses;
   els.partnersView.hidden = !showingPartners;
   els.salesView.hidden = !showingSales;
   els.costsView.hidden = !showingCosts;
-  els.contractsView.hidden = !showingContracts;
+  els.clientsView.hidden = !showingClients;
   els.marketingView.hidden = !showingMarketing;
-  els.partnerSidebar.classList.toggle("hidden", !showingPartners);
   if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", !showingOverview);
 
   els.mainTabs.forEach((tab) => {
@@ -1262,50 +1305,6 @@ function renderMainView() {
 
   document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => {
     item.classList.toggle("active", item.dataset.sidebarView === state.mainView);
-  });
-}
-
-function renderPartners() {
-  const partners = state.data.partners.filter((partner) => {
-    return (
-      !state.partnerSearch ||
-      matchesSearch(
-        [partner.name, partner.type, partner.city, partner.contact, partner.notes, partner.siteUrl, partner.mecUrl],
-        state.partnerSearch
-      )
-    );
-  });
-
-  els.partnerList.innerHTML = "";
-
-  const allButton = document.createElement("button");
-  allButton.className = `partner-item ${state.selectedPartnerId === "all" ? "active" : ""}`;
-  allButton.type = "button";
-  allButton.innerHTML = `<strong>Todos os cursos</strong><span>Plano geral com todas as parcerias</span>`;
-  allButton.addEventListener("click", () => {
-    state.selectedPartnerId = "all";
-    state.mainView = "overview";
-    render();
-    document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
-  });
-  els.partnerList.appendChild(allButton);
-
-  partners.forEach((partner) => {
-    const courseTotal = state.data.courses.filter((course) => course.partnerId === partner.id).length;
-    const button = document.createElement("button");
-    button.className = `partner-item ${state.selectedPartnerId === partner.id ? "active" : ""}`;
-    button.type = "button";
-    button.innerHTML = `
-      <strong>${escapeHtml(partner.name)}</strong>
-      <span>${escapeHtml(partner.type || "Parceria")} - ${escapeHtml(partner.city || "Sem cidade")} - ${courseTotal} curso(s)</span>
-    `;
-    button.addEventListener("click", () => {
-      state.selectedPartnerId = partner.id;
-      state.mainView = "overview";
-      render();
-      document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
-    });
-    els.partnerList.appendChild(button);
   });
 }
 
@@ -1333,6 +1332,11 @@ function renderPartnersFull() {
       <td>${escapeHtml(p.city || "-")}</td>
       <td>${escapeHtml(p.contact || "-")}</td>
       <td>${courseTotal}</td>
+      <td class="action-cell">
+        <button class="row-action" type="button" data-partner-id="${escapeHtml(p.id)}" title="Ver detalhes/Editar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </td>
     `;
     tr.addEventListener("click", () => {
       state.mainView = "overview";
@@ -1340,54 +1344,14 @@ function renderPartnersFull() {
       render();
       document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
     });
+    const btn = tr.querySelector(`[data-partner-id="${p.id}"]`);
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openPartnerDialog(p);
+      });
+    }
     tbody.appendChild(tr);
-  });
-}
-
-function renderSelectedPartner() {
-  const partner = getPartner(state.selectedPartnerId);
-  const show = state.selectedPartnerId !== "all" && partner;
-  els.selectedPartner.classList.toggle("visible", Boolean(show));
-
-  if (!show) {
-    els.selectedPartner.innerHTML = "";
-    return;
-  }
-
-  els.selectedPartner.innerHTML = `
-    <div>
-      <h2>${escapeHtml(partner.name)}</h2>
-      <p>${escapeHtml(partner.type || "Parceria")} - ${escapeHtml(partner.city || "Sem cidade")} - ${escapeHtml(partner.contact || "Sem contato")}</p>
-      ${partner.notes ? `<div class="partner-notes"><strong>Observacoes</strong><p>${escapeHtml(partner.notes)}</p></div>` : ""}
-    </div>
-    <div class="partner-actions">
-      <button class="link-action" type="button" data-partner-site="${escapeHtml(partner.id)}" ${partner.siteUrl ? "" : "disabled"}>Site</button>
-      <button class="link-action" type="button" data-partner-mec="${escapeHtml(partner.id)}" ${partner.mecUrl ? "" : "disabled"}>MEC</button>
-      <button class="link-action" type="button" data-partner-contract="${escapeHtml(partner.id)}" ${partner.contractDataUrl ? "" : "disabled"}>Contrato</button>
-      <button class="link-action" type="button" data-partner-catalog="${escapeHtml(partner.id)}" ${partner.catalogs.length ? "" : "disabled"}>Catalogos</button>
-      <button class="link-action" type="button" data-partner-documents="${escapeHtml(partner.id)}" ${partner.documents.length ? "" : "disabled"}>Documentos</button>
-      <button class="secondary-action" type="button" id="editPartnerBtn">Editar parceria</button>
-    </div>
-  `;
-  document.querySelector("#editPartnerBtn").addEventListener("click", () => openPartnerDialog(partner));
-  document.querySelector("[data-partner-site]")?.addEventListener("click", () => {
-    window.open(normalizeUrl(partner.siteUrl), "_blank", "noopener");
-  });
-  document.querySelector("[data-partner-mec]")?.addEventListener("click", () => {
-    window.open(normalizeUrl(partner.mecUrl), "_blank", "noopener");
-  });
-  document.querySelector("[data-partner-contract]")?.addEventListener("click", () => {
-    openSavedDocument(partner.contractDataUrl);
-  });
-  document.querySelector("[data-partner-catalog]")?.addEventListener("click", () => {
-    state.selectedContractPartnerId = partner.id;
-    state.mainView = "contracts";
-    render();
-  });
-  document.querySelector("[data-partner-documents]")?.addEventListener("click", () => {
-    state.selectedContractPartnerId = partner.id;
-    state.mainView = "contracts";
-    render();
   });
 }
 
@@ -1402,10 +1366,15 @@ function renderCourses() {
     row.innerHTML = `
       <td class="course-detail-cell">
         <strong>${escapeHtml(course.name)}</strong>
-        <small>${escapeHtml(course.modality || "")}</small>
+        <small>${escapeHtml(getModalityLabel(course.modality || ""))}</small>
+      </td>
+      <td>
+        ${course.examDataUrl 
+          ? `<button class="margin-pill" type="button" data-open-exam="${escapeHtml(course.id)}" title="Abrir prova: ${escapeHtml(course.examFileName)}">Sim</button>` 
+          : `<span class="margin-pill">—</span>`}
       </td>
       <td><span class="margin-pill">${escapeHtml(course.type || getCourseTypeFromModality(course.modality))}</span></td>
-      <td><span class="margin-pill">${escapeHtml(course.modality)}</span></td>
+      <td><span class="margin-pill">${escapeHtml(getModalityLabel(course.modality))}</span></td>
       <td>
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
       </td>
@@ -1459,8 +1428,8 @@ function renderCourses() {
   document.querySelectorAll("[data-course-catalog]").forEach((button) => {
     button.addEventListener("click", () => {
       const partner = getPartner(button.dataset.courseCatalog);
-      state.selectedContractPartnerId = partner?.id || "";
-      state.mainView = "contracts";
+      state.selectedPartnerId = partner?.id || "";
+      state.mainView = "partners";
       render();
     });
   });
@@ -1468,9 +1437,18 @@ function renderCourses() {
   document.querySelectorAll("[data-course-documents]").forEach((button) => {
     button.addEventListener("click", () => {
       const partner = getPartner(button.dataset.courseDocuments);
-      state.selectedContractPartnerId = partner?.id || "";
-      state.mainView = "contracts";
+      state.selectedPartnerId = partner?.id || "";
+      state.mainView = "partners";
       render();
+    });
+  });
+
+  document.querySelectorAll("[data-open-exam]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const course = getCourse(button.dataset.openExam);
+      if (course?.examDataUrl) {
+        openSavedDocument(course.examDataUrl);
+      }
     });
   });
 }
@@ -1502,7 +1480,7 @@ function renderSales() {
     row.innerHTML = `
       <td>${formatDate(sale.date)}</td>
       <td>${escapeHtml(sale.student)}</td>
-      <td>${escapeHtml(course?.modality || "")}</td>
+      <td>${escapeHtml(getModalityLabel(course?.modality || ""))}</td>
       <td>${escapeHtml(course?.name || "Curso removido")}</td>
       <td>${escapeHtml(partner?.name || "Parceria removida")}</td>
       <td>${escapeHtml(sale.status)}</td>
@@ -1554,6 +1532,82 @@ function renderExpenses() {
     button.addEventListener("click", () => {
       const expense = state.data.expenses.find((item) => item.id === button.dataset.expenseId);
       openExpenseDialog(expense);
+    });
+  });
+}
+
+function renderClients() {
+  const clients = state.data.clients || [];
+  const search = state.clientSearch?.toLowerCase() || "";
+  const filtered = clients.filter((client) => {
+    if (!search) return true;
+    const course = state.data.courses.find((c) => c.id === client.courseId);
+    const partner = state.data.partners.find((p) => p.id === client.partnerId || course?.partnerId);
+    const text = [
+      client.name,
+      client.cpf,
+      client.email,
+      client.phone,
+      course?.name,
+      partner?.name,
+    ].filter(Boolean).join(" ");
+    return text.toLowerCase().includes(search);
+  });
+
+  els.clientRows.innerHTML = "";
+  els.emptyClientState.classList.toggle("visible", filtered.length === 0);
+
+  filtered.forEach((client) => {
+    const course = state.data.courses.find((c) => c.id === client.courseId);
+    const partner = state.data.partners.find((p) => p.id === client.partnerId || course?.partnerId);
+    const statusClassOk = "status-ok";
+    const statusClassEmpty = "status-empty";
+    const getStatus = (file) => (file ? statusClassOk : statusClassEmpty);
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><strong>${escapeHtml(client.name)}</strong></td>
+      <td>${escapeHtml(course?.name || "—")}</td>
+      <td>${escapeHtml(partner?.name || "—")}</td>
+      <td>
+        ${client.contractDataUrl 
+          ? `<button class="doc-status status-ok" type="button" data-open-doc="contract" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir contrato">●</button>` 
+          : `<span class="doc-status status-empty" title="Sem contrato">●</span>`}
+      </td>
+      <td>
+        ${client.historyDataUrl 
+          ? `<button class="doc-status status-ok" type="button" data-open-doc="history" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir histórico">●</button>` 
+          : `<span class="doc-status status-empty" title="Sem histórico">●</span>`}
+      </td>
+      <td>
+        ${client.declarationDataUrl 
+          ? `<button class="doc-status status-ok" type="button" data-open-doc="declaration" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir declaração">●</button>` 
+          : `<span class="doc-status status-empty" title="Sem declaração">●</span>`}
+      </td>
+      <td>
+        ${client.diplomaDataUrl 
+          ? `<button class="doc-status status-ok" type="button" data-open-doc="diploma" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir diploma">●</button>` 
+          : `<span class="doc-status status-empty" title="Sem diploma">●</span>`}
+      </td>
+      <td><button class="row-action" type="button" data-client-id="${escapeHtml(client.id)}">Editar</button></td>
+    `;
+    els.clientRows.appendChild(row);
+  });
+
+  document.querySelectorAll("[data-client-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const client = state.data.clients?.find((c) => c.id === button.dataset.clientId);
+      openClientDialog(client);
+    });
+  });
+
+  document.querySelectorAll("[data-open-doc]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const client = state.data.clients?.find((c) => c.id === button.dataset.clientIdDoc);
+      if (!client) return;
+      const docType = button.dataset.openDoc;
+      const dataUrl = client[`${docType}DataUrl`];
+      openSavedDocument(dataUrl);
     });
   });
 }
@@ -1640,75 +1694,6 @@ function renderSalesFilterOptions() {
     state.salesCourseId,
     "Todos cursos"
   );
-}
-
-function getSelectedContractPartner() {
-  return getPartner(state.selectedContractPartnerId) || state.data.partners[0] || null;
-}
-
-function renderContracts() {
-  if (!getPartner(state.selectedContractPartnerId)) {
-    state.selectedContractPartnerId = state.data.partners[0]?.id || "";
-  }
-
-  renderSelectOptions(
-    els.contractPartnerSelect,
-    state.data.partners.map((partner) => ({ value: partner.id, label: partner.name })),
-    state.selectedContractPartnerId,
-    "Selecione uma parceria"
-  );
-
-  const partner = getSelectedContractPartner();
-  els.contractTextEditor.disabled = !partner;
-  els.contractTextEditor.value = partner?.contractText || "";
-  els.openContractPdfBtn.disabled = !partner?.contractDataUrl;
-  els.saveContractTextBtn.disabled = !partner;
-  els.printContractBtn.disabled = !partner;
-  els.partnerCatalogsList.innerHTML = "";
-  els.partnerDocumentsList.innerHTML = "";
-
-  if (!partner?.catalogs.length) {
-    els.partnerCatalogsList.innerHTML = `<p class="file-note">Nenhum catalogo anexado.</p>`;
-  } else {
-    partner.catalogs.forEach((catalog) => {
-      const item = document.createElement("div");
-      item.className = "document-item";
-      item.innerHTML = `
-        <strong>${escapeHtml(catalog.name)}</strong>
-        <button class="link-action" type="button" data-open-catalog="${escapeHtml(catalog.id)}">Abrir</button>
-      `;
-      els.partnerCatalogsList.appendChild(item);
-    });
-
-    document.querySelectorAll("[data-open-catalog]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const catalog = partner.catalogs.find((item) => item.id === button.dataset.openCatalog);
-        openSavedDocument(catalog?.dataUrl);
-      });
-    });
-  }
-
-  if (!partner?.documents.length) {
-    els.partnerDocumentsList.innerHTML = `<p class="file-note">Nenhum outro documento anexado.</p>`;
-    return;
-  }
-
-  partner.documents.forEach((documentItem) => {
-    const item = document.createElement("div");
-    item.className = "document-item";
-    item.innerHTML = `
-      <strong>${escapeHtml(documentItem.name)}</strong>
-      <button class="link-action" type="button" data-open-partner-document="${escapeHtml(documentItem.id)}">Abrir</button>
-    `;
-    els.partnerDocumentsList.appendChild(item);
-  });
-
-  document.querySelectorAll("[data-open-partner-document]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const documentItem = partner.documents.find((item) => item.id === button.dataset.openPartnerDocument);
-      openSavedDocument(documentItem?.dataUrl);
-    });
-  });
 }
 
 function renderMarketing() {
@@ -1858,7 +1843,7 @@ function updateCourseModalityOptions() {
   const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
   const currentValue = els.courseModality.value;
   els.courseModality.innerHTML = modalities.map((m) =>
-    `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+    `<option value="${escapeHtml(m)}">${escapeHtml(getModalityLabel(m))}</option>`
   ).join("");
   if (modalities.includes(currentValue)) {
     els.courseModality.value = currentValue;
@@ -1870,8 +1855,6 @@ function updateCourseModalityOptions() {
 function render() {
   renderSummary();
   renderMainView();
-  renderPartners();
-  renderSelectedPartner();
   renderCourseTypeFilters();
   renderModalityFilterCards();
   renderCourses();
@@ -1880,8 +1863,8 @@ function render() {
   renderCoursePartnerOptions();
   renderSaleCourseOptions();
   renderSalesFilterOptions();
-  renderContracts();
   renderPartnersFull();
+  renderClients();
   renderMarketing();
   renderProfile();
 }
@@ -1897,9 +1880,20 @@ function openPartnerDialog(partner = null) {
   els.partnerSite.value = partner?.siteUrl || "";
   els.partnerMecUrl.value = partner?.mecUrl || "";
   els.partnerContract.value = "";
-  els.partnerContractStatus.textContent = partner?.contractFileName
-    ? `Contrato salvo: ${partner.contractFileName}`
-    : "Nenhum contrato salvo.";
+  if (partner?.contractFileName) {
+    els.partnerContractStatus.innerHTML = `Contrato salvo: <a href="#" id="viewPartnerContractLink" class="file-link" style="color: var(--brand); text-decoration: underline; cursor: pointer; font-weight: 600;">${escapeHtml(partner.contractFileName)}</a>`;
+    const link = document.getElementById("viewPartnerContractLink");
+    if (link) {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (partner.contractDataUrl) {
+          openSavedDocument(partner.contractDataUrl);
+        }
+      });
+    }
+  } else {
+    els.partnerContractStatus.textContent = "Nenhum contrato salvo.";
+  }
   els.partnerCatalog.value = "";
   els.partnerCatalogStatus.textContent = partner?.catalogs.length
     ? `${partner.catalogs.length} catalogo(s) salvo(s). Novos arquivos serao adicionados a lista.`
@@ -1909,6 +1903,38 @@ function openPartnerDialog(partner = null) {
   els.partnerFormMessage.textContent = "";
   renderPartnerEditAttachments(partner);
   els.partnerDialog.showModal();
+}
+
+function openClientDialog(client = null) {
+  els.clientDialogTitle.textContent = client ? "Editar cliente" : "Novo cliente";
+  els.clientId.value = client?.id || "";
+  els.clientName.value = client?.name || "";
+  els.clientCpf.value = client?.cpf || "";
+  els.clientPhone.value = client?.phone || "";
+  els.clientEmail.value = client?.email || "";
+  els.clientContractFile.value = "";
+  els.clientHistoryFile.value = "";
+  els.clientDeclarationFile.value = "";
+  els.clientDiplomaFile.value = "";
+
+  els.clientPartner.innerHTML = state.data.partners
+    .map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}</option>`)
+    .join("");
+
+  const partnerId = client?.partnerId || state.data.partners[0]?.id || "";
+  els.clientPartner.value = partnerId;
+
+  els.clientCourse.innerHTML = state.data.courses
+    .filter((c) => c.partnerId === partnerId)
+    .map((c) => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`)
+    .join("");
+
+  if (client?.courseId) {
+    els.clientCourse.value = client.courseId;
+  }
+
+  els.deleteClient.style.visibility = client ? "visible" : "hidden";
+  els.clientDialog.showModal();
 }
 
 function openCourseDialog(course = null) {
@@ -1932,9 +1958,22 @@ function openCourseDialog(course = null) {
   els.courseResponsible.value = course?.responsible || "";
   els.courseDiplomas.value = course?.diplomas || "";
   els.courseExamFile.value = "";
-  els.courseExamStatus.textContent = course?.examFileName
-    ? `Prova salva: ${course.examFileName}`
-    : "Nenhuma prova salva.";
+  if (course?.examFileName) {
+    els.courseExamStatus.innerHTML = `Prova salva: <a href="#" id="viewCourseExamLink" class="file-link" style="color: var(--brand); text-decoration: underline; cursor: pointer; font-weight: 600;">${escapeHtml(course.examFileName)}</a>`;
+    els.removeCourseExam.style.display = "inline-flex";
+    const link = document.getElementById("viewCourseExamLink");
+    if (link) {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (course.examDataUrl) {
+          openSavedDocument(course.examDataUrl);
+        }
+      });
+    }
+  } else {
+    els.courseExamStatus.textContent = "Nenhuma prova salva.";
+    els.removeCourseExam.style.display = "none";
+  }
   els.courseNotes.value = course?.notes || "";
   els.deleteCourse.style.visibility = course ? "visible" : "hidden";
   els.courseDialog.showModal();
@@ -2176,9 +2215,14 @@ function upsertExpense() {
 els.addCourseBtn.addEventListener("click", () => openCourseDialog());
 els.addSaleBtn.addEventListener("click", () => openSaleDialog());
 els.addExpenseBtn.addEventListener("click", () => openExpenseDialog());
+els.addClientBtn.addEventListener("click", () => openClientDialog());
 
 const addSaleBtnQuick = document.querySelector("#addSaleBtnQuick");
 if (addSaleBtnQuick) addSaleBtnQuick.addEventListener("click", () => openSaleDialog());
+
+if (els.addPartnerBtnQuick) {
+  els.addPartnerBtnQuick.addEventListener("click", () => openPartnerDialog());
+}
 
 els.profileButton.addEventListener("click", openProfileDialog);
 
@@ -2203,12 +2247,80 @@ els.addMarketingBtn.addEventListener("click", () => {
 
 els.removePartnerContract.addEventListener("click", () => {
   const partner = getPartner(els.partnerId.value);
-  if (!partner) return;
-  partner.contractFileName = "";
-  partner.contractDataUrl = "";
+  if (partner) {
+    partner.contractFileName = "";
+    partner.contractDataUrl = "";
+  }
+  els.partnerContract.value = "";
   els.partnerContractStatus.textContent = "Nenhum contrato salvo.";
+  els.removePartnerContract.style.display = "none";
   saveData();
   renderPartnerEditAttachments(partner);
+});
+
+els.removeCourseExam.addEventListener("click", () => {
+  const course = getCourse(els.courseId.value);
+  if (course) {
+    course.examFileName = "";
+    course.examDataUrl = "";
+  }
+  els.courseExamFile.value = "";
+  els.courseExamStatus.textContent = "Nenhuma prova salva.";
+  els.removeCourseExam.style.display = "none";
+  saveData();
+  renderCourses();
+});
+
+els.courseExamFile.addEventListener("change", () => {
+  const file = els.courseExamFile.files[0];
+  if (file) {
+    els.courseExamStatus.innerHTML = `Nova prova selecionada: <span style="font-weight: 600; color: var(--ink);">${escapeHtml(file.name)}</span>`;
+    els.removeCourseExam.style.display = "inline-flex";
+  } else {
+    const course = getCourse(els.courseId.value);
+    if (course?.examFileName) {
+      els.courseExamStatus.innerHTML = `Prova salva: <a href="#" id="viewCourseExamLink" class="file-link" style="color: var(--brand); text-decoration: underline; cursor: pointer; font-weight: 600;">${escapeHtml(course.examFileName)}</a>`;
+      els.removeCourseExam.style.display = "inline-flex";
+      const link = document.getElementById("viewCourseExamLink");
+      if (link) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (course.examDataUrl) {
+            openSavedDocument(course.examDataUrl);
+          }
+        });
+      }
+    } else {
+      els.courseExamStatus.textContent = "Nenhuma prova salva.";
+      els.removeCourseExam.style.display = "none";
+    }
+  }
+});
+
+els.partnerContract.addEventListener("change", () => {
+  const file = els.partnerContract.files[0];
+  if (file) {
+    els.partnerContractStatus.innerHTML = `Novo contrato selecionado: <span style="font-weight: 600; color: var(--ink);">${escapeHtml(file.name)}</span>`;
+    els.removePartnerContract.style.display = "inline-flex";
+  } else {
+    const partner = getPartner(els.partnerId.value);
+    if (partner?.contractFileName) {
+      els.partnerContractStatus.innerHTML = `Contrato salvo: <a href="#" id="viewPartnerContractLink" class="file-link" style="color: var(--brand); text-decoration: underline; cursor: pointer; font-weight: 600;">${escapeHtml(partner.contractFileName)}</a>`;
+      els.removePartnerContract.style.display = "inline-flex";
+      const link = document.getElementById("viewPartnerContractLink");
+      if (link) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (partner.contractDataUrl) {
+            openSavedDocument(partner.contractDataUrl);
+          }
+        });
+      }
+    } else {
+      els.partnerContractStatus.textContent = "Nenhum contrato salvo.";
+      els.removePartnerContract.style.display = "none";
+    }
+  }
 });
 
 els.loginForm.addEventListener("submit", async (event) => {
@@ -2244,10 +2356,7 @@ els.profileForm.addEventListener("submit", async (event) => {
   els.profileDialog.close();
 });
 
-els.partnerSearch.addEventListener("input", (event) => {
-  state.partnerSearch = event.target.value;
-  renderPartners();
-});
+
 
 const partnerSearchFull = document.querySelector("#partnerSearchFull");
 if (partnerSearchFull) {
@@ -2296,6 +2405,31 @@ els.courseModality.addEventListener("change", () => {
 els.courseSort.addEventListener("change", (event) => {
   state.courseSort = event.target.value;
   renderCourses();
+});
+
+const sortHeaders = [
+  { id: "headerSortCurso", asc: "name-asc", desc: "name-desc" },
+  { id: "headerSortTipo", asc: "type-asc", desc: "type-desc" },
+  { id: "headerSortModalidade", asc: "modality-asc", desc: "modality-desc" },
+  { id: "headerSortParceira", asc: "partner-asc", desc: "partner-desc" },
+  { id: "headerSortValor", asc: "sale-desc", desc: "sale-asc" }
+];
+
+sortHeaders.forEach(({ id, asc, desc }) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("click", () => {
+      if (state.courseSort === asc) {
+        state.courseSort = desc;
+      } else {
+        state.courseSort = asc;
+      }
+      if (els.courseSort.querySelector(`option[value="${state.courseSort}"]`)) {
+        els.courseSort.value = state.courseSort;
+      }
+      renderCourses();
+    });
+  }
 });
 
 els.salesSearch.addEventListener("input", (event) => {
@@ -2406,37 +2540,6 @@ els.expenseSearch.addEventListener("input", (event) => {
 els.expenseTypeFilter.addEventListener("change", (event) => {
   state.expenseType = event.target.value;
   renderExpenses();
-});
-
-els.contractPartnerSelect.addEventListener("change", (event) => {
-  state.selectedContractPartnerId = event.target.value;
-  renderContracts();
-});
-
-els.saveContractTextBtn.addEventListener("click", () => {
-  const partner = getSelectedContractPartner();
-  if (!partner) return;
-  partner.contractText = els.contractTextEditor.value;
-  saveData();
-  renderContracts();
-});
-
-els.openContractPdfBtn.addEventListener("click", () => {
-  openSavedDocument(getSelectedContractPartner()?.contractDataUrl);
-});
-
-els.printContractBtn.addEventListener("click", () => {
-  const partner = getSelectedContractPartner();
-  if (!partner) return;
-  const printWindow = window.open("", "_blank");
-  if (!printWindow) return;
-  printWindow.document.write(`
-    <html><head><title>Contrato - ${escapeHtml(partner.name)}</title>
-    <style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.5}pre{white-space:pre-wrap;font:inherit}</style>
-    </head><body><pre>${escapeHtml(els.contractTextEditor.value)}</pre></body></html>
-  `);
-  printWindow.document.close();
-  printWindow.print();
 });
 
 els.exportDataBtn.addEventListener("click", () => {
@@ -2580,6 +2683,78 @@ els.partnerForm.addEventListener("submit", async (event) => {
   }
 });
 
+els.clientForm.addEventListener("submit", async (event) => {
+  if (event.submitter?.value === "cancel") return;
+  event.preventDefault();
+
+  if (event.submitter?.value === "delete") {
+    state.data.clients = state.data.clients.filter((c) => c.id !== els.clientId.value);
+    saveData();
+    els.clientDialog.close();
+    renderClients();
+    return;
+  }
+  const existing = state.data.clients.find((c) => c.id === els.clientId.value);
+  const client = {
+    id: els.clientId.value || createId("client"),
+    name: els.clientName.value.trim(),
+    cpf: els.clientCpf.value.trim(),
+    phone: els.clientPhone.value.trim(),
+    email: els.clientEmail.value.trim(),
+    partnerId: els.clientPartner.value,
+    courseId: els.clientCourse.value,
+    contractFileName: existing?.contractFileName || "",
+    contractDataUrl: existing?.contractDataUrl || "",
+    historyFileName: existing?.historyFileName || "",
+    historyDataUrl: existing?.historyDataUrl || "",
+    declarationFileName: existing?.declarationFileName || "",
+    declarationDataUrl: existing?.declarationDataUrl || "",
+    diplomaFileName: existing?.diplomaFileName || "",
+    diplomaDataUrl: existing?.diplomaDataUrl || "",
+  };
+
+  if (els.clientContractFile.files[0]) {
+    const file = els.clientContractFile.files[0];
+    client.contractFileName = file.name;
+    client.contractDataUrl = await readFileAsDataUrl(file);
+  }
+  if (els.clientHistoryFile.files[0]) {
+    const file = els.clientHistoryFile.files[0];
+    client.historyFileName = file.name;
+    client.historyDataUrl = await readFileAsDataUrl(file);
+  }
+  if (els.clientDeclarationFile.files[0]) {
+    const file = els.clientDeclarationFile.files[0];
+    client.declarationFileName = file.name;
+    client.declarationDataUrl = await readFileAsDataUrl(file);
+  }
+  if (els.clientDiplomaFile.files[0]) {
+    const file = els.clientDiplomaFile.files[0];
+    client.diplomaFileName = file.name;
+    client.diplomaDataUrl = await readFileAsDataUrl(file);
+  }
+
+  const index = state.data.clients.findIndex((c) => c.id === client.id);
+  if (index >= 0) state.data.clients[index] = client;
+  else state.data.clients.push(client);
+  saveData();
+  els.clientDialog.close();
+  renderClients();
+});
+
+els.clientSearch.addEventListener("input", (event) => {
+  state.clientSearch = event.target.value;
+  renderClients();
+});
+
+els.clientPartner.addEventListener("change", () => {
+  const partnerId = els.clientPartner.value;
+  els.clientCourse.innerHTML = state.data.courses
+    .filter((c) => c.partnerId === partnerId)
+    .map((c) => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`)
+    .join("");
+});
+
 els.courseForm.addEventListener("submit", async (event) => {
   if (event.submitter?.value === "cancel") return;
   event.preventDefault();
@@ -2675,6 +2850,39 @@ els.marketingForm.addEventListener("submit", async (event) => {
   render();
   els.marketingDialog.close();
 });
+
+(function initTheme() {
+  const THEME_KEY = "educamais_theme";
+  const body = document.body;
+  const docHtml = document.documentElement;
+  const toggleBtn = document.querySelector("#themeToggleBtn");
+  if (!toggleBtn) return;
+  const buttons = toggleBtn.querySelectorAll(".theme-btn");
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      body.classList.add("dark-theme");
+      docHtml.classList.add("dark-theme");
+    } else {
+      body.classList.remove("dark-theme");
+      docHtml.classList.remove("dark-theme");
+    }
+    buttons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  // Load saved theme or default
+  const savedTheme = localStorage.getItem(THEME_KEY) || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  applyTheme(savedTheme);
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      applyTheme(btn.dataset.theme);
+    });
+  });
+})();
 
 render();
 initializeCloud();

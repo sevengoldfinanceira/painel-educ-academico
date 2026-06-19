@@ -6,6 +6,14 @@
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem("educamais_theme");
+        if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark-theme");
+        }
+      })();
+    </script>
   </head>
   <body>
     <section class="loading-screen" id="loadingScreen" aria-live="polite">
@@ -52,9 +60,9 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           <span>Vendas</span>
         </a>
-        <a class="sidebar-item" data-sidebar-view="contracts" href="#">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>Contratos</span>
+        <a class="sidebar-item" data-sidebar-view="clients" href="#">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Clientes</span>
         </a>
         <a class="sidebar-item" data-sidebar-view="partners" href="#">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -102,18 +110,26 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             <span>Nova venda</span>
           </button>
-          <button class="quick-action-icon-sm" type="button" aria-label="Novo contrato" onclick="document.querySelector('[data-main-view=contracts]').click()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span>Novo contrato</span>
-          </button>
           <button class="quick-action-icon-sm" id="addCourseBtn" type="button" aria-label="Novo curso">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             <span>Novo curso</span>
+          </button>
+          <button class="quick-action-icon-sm" id="addPartnerBtnQuick" type="button" aria-label="Nova parceria">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+            <span>Nova parceria</span>
           </button>
           <span class="sync-status" id="syncStatus">Dados online carregados</span>
           <button class="icon-btn-circle" id="notifBtn" type="button" aria-label="Notificações">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </button>
+          <div class="theme-toggle" id="themeToggleBtn" title="Alternar tema">
+            <button class="theme-btn active" data-theme="light" type="button" aria-label="Modo Claro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+            <button class="theme-btn" data-theme="dark" type="button" aria-label="Modo Escuro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
           <button class="btn-sair" id="logoutBtn" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
@@ -170,7 +186,7 @@
             <button class="tab active" data-main-view="courses" type="button">Cursos</button>
             <button class="tab" data-main-view="sales" type="button">Vendas</button>
             <button class="tab" data-main-view="costs" type="button">Custos</button>
-            <button class="tab" data-main-view="contracts" type="button">Contratos</button>
+            <button class="tab" data-main-view="clients" type="button">Clientes</button>
             <button class="tab" data-main-view="exams" type="button">Provas</button>
             <button class="tab" data-main-view="marketing" type="button">Marketing</button>
           </div>
@@ -353,7 +369,7 @@
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
                     </div>
                     <div>
-                      <strong>Pós-graduação</strong>
+                      <strong>Pós - Graduação</strong>
                       <span>Nível Master</span>
                     </div>
                   </button>
@@ -398,6 +414,10 @@
                 <select id="courseSort" aria-label="Ordenar cursos">
                   <option value="name-asc">Ordenar: Nome (A-Z)</option>
                   <option value="name-desc">Ordenar: Nome (Z-A)</option>
+                  <option value="type-asc">Tipo (A-Z)</option>
+                  <option value="type-desc">Tipo (Z-A)</option>
+                  <option value="modality-asc">Modalidade (A-Z)</option>
+                  <option value="modality-desc">Modalidade (Z-A)</option>
                   <option value="partner-asc">Instituição A-Z</option>
                   <option value="partner-desc">Instituição Z-A</option>
                   <option value="cost-asc">Menor custo</option>
@@ -412,12 +432,13 @@
                 <table>
                   <thead>
                     <tr>
-                      <th>CURSO</th>
-                      <th>TIPO</th>
-                      <th>MODALIDADE</th>
-                      <th>PARCEIRA</th>
+                      <th class="sortable-header" id="headerSortCurso" title="Ordenar por nome">CURSO</th>
+                      <th>PROVA</th>
+                      <th class="sortable-header" id="headerSortTipo" title="Ordenar por tipo">TIPO</th>
+                      <th class="sortable-header" id="headerSortModalidade" title="Ordenar por modalidade">MODALIDADE</th>
+                      <th class="sortable-header" id="headerSortParceira" title="Ordenar por parceira">PARCEIRA</th>
                       <th>DURAÇÃO</th>
-                      <th>VALOR</th>
+                      <th class="sortable-header" id="headerSortValor" title="Ordenar por valor">VALOR</th>
                       <th>AÇÕES</th>
                     </tr>
                   </thead>
@@ -429,20 +450,6 @@
           </section>
 
           <section id="partnersView" hidden>
-            <aside class="sidebar" id="partnerSidebar" aria-label="Lista de parcerias">
-              <div class="section-head">
-                <div>
-                  <h2>Parcerias</h2>
-                  <p>Escolas, faculdades e polos.</p>
-                </div>
-              </div>
-              <label class="search-field">
-                <span>Buscar parceria</span>
-                <input id="partnerSearch" type="search" placeholder="Nome, cidade ou tipo" />
-              </label>
-              <div class="partner-list" id="partnerList"></div>
-            </aside>
-
             <div class="courses-card">
               <div class="courses-card-header">
                 <div>
@@ -465,6 +472,7 @@
                       <th>Cidade</th>
                       <th>Contato</th>
                       <th>Cursos</th>
+                      <th>Ações</th>
                     </tr>
                   </thead>
                   <tbody id="partnerRowsFull"></tbody>
@@ -632,44 +640,6 @@
             </div>
           </section>
 
-          <section id="contractsView" hidden>
-            <div class="document-workspace">
-              <div class="document-toolbar">
-                <label>
-                  <span>Faculdade/parceria</span>
-                  <select id="contractPartnerSelect"></select>
-                </label>
-                <div class="document-actions">
-                  <button class="secondary-action" id="openContractPdfBtn" type="button">Abrir PDF anexado</button>
-                  <button class="primary-action" id="saveContractTextBtn" type="button">Salvar texto</button>
-                  <button class="secondary-action" id="printContractBtn" type="button">Imprimir / salvar PDF</button>
-                </div>
-              </div>
-              <label class="contract-editor-label">
-                <span>Editor do contrato</span>
-                <textarea id="contractTextEditor" class="contract-editor" rows="24"></textarea>
-              </label>
-              <div class="attachments-panel">
-                <h2>Catalogos de precos</h2>
-                <div id="partnerCatalogsList" class="document-list"></div>
-              </div>
-              <div class="attachments-panel">
-                <h2>Outros documentos da faculdade</h2>
-                <div id="partnerDocumentsList" class="document-list"></div>
-              </div>
-              <div class="data-backup">
-                <div>
-                  <h2>Levar dados para o site online</h2>
-                  <p>Exporte os dados editados neste computador e importe no navegador onde o site estiver publicado.</p>
-                </div>
-                <div class="document-actions">
-                  <button class="secondary-action" id="exportDataBtn" type="button">Exportar dados</button>
-                  <label class="secondary-action file-action">Importar dados<input id="importDataInput" type="file" accept="application/json" /></label>
-                </div>
-              </div>
-            </div>
-          </section>
-
           <section id="marketingView" hidden>
             <div class="sales-head">
               <div>
@@ -693,6 +663,51 @@
               </select>
             </div>
             <div id="marketingList" class="marketing-list"></div>
+          </section>
+
+          <section id="clientsView" hidden>
+            <div class="sales-head">
+              <div>
+                <h2>Clientes</h2>
+                <p>Gerencie clientes e acompanhe os documentos necessarios.</p>
+              </div>
+              <button class="primary-action" id="addClientBtn" type="button">Adicionar cliente</button>
+            </div>
+            <div class="toolbar">
+              <label class="search-field wide">
+                <span>Buscar cliente</span>
+                <input id="clientSearch" type="search" placeholder="Nome, curso ou instituicao" />
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Curso</th>
+                    <th>Instituicao</th>
+                    <th>Contrato</th>
+                    <th>Historico</th>
+                    <th>Declaracao</th>
+                    <th>Diploma</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody id="clientRows"></tbody>
+              </table>
+              <div class="empty-state" id="emptyClientState">Nenhum cliente encontrado.</div>
+            </div>
+
+            <div class="data-backup">
+              <div>
+                <h2>Levar dados para o site online</h2>
+                <p>Exporte os dados editados neste computador e importe no navegador onde o site estiver publicado.</p>
+              </div>
+              <div class="document-actions">
+                <button class="secondary-action" id="exportDataBtn" type="button">Exportar dados</button>
+                <label class="secondary-action file-action">Importar dados<input id="importDataInput" type="file" accept="application/json" /></label>
+              </div>
+            </div>
           </section>
         </section>
       </section>
@@ -735,6 +750,35 @@
       </form>
     </dialog>
 
+    <dialog id="clientDialog">
+      <form method="dialog" id="clientForm">
+        <header>
+          <h2 id="clientDialogTitle">Novo cliente</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <input type="hidden" id="clientId" />
+        <label>Nome completo<input id="clientName" required /></label>
+        <label>Curso<select id="clientCourse" required></select></label>
+        <label>Parceria/Instituicao<select id="clientPartner" required></select></label>
+        <label>CPF<input id="clientCpf" placeholder="000.000.000-00" /></label>
+        <label>Telefone<input id="clientPhone" placeholder="(00) 00000-0000" /></label>
+        <label>E-mail<input id="clientEmail" type="email" placeholder="email@exemplo.com" /></label>
+        <div class="document-uploads">
+          <h3>Documentos do cliente</h3>
+          <label>Contrato assinado<input id="clientContractFile" type="file" accept=".pdf,.jpg,.jpeg,.png" /></label>
+          <label>Historico escolar<input id="clientHistoryFile" type="file" accept=".pdf,.jpg,.jpeg,.png" /></label>
+          <label>Declaracao<input id="clientDeclarationFile" type="file" accept=".pdf,.jpg,.jpeg,.png" /></label>
+          <label>Diploma<input id="clientDiplomaFile" type="file" accept=".pdf,.jpg,.jpeg,.png" /></label>
+        </div>
+        <menu class="dialog-actions">
+          <button class="danger-action" id="deleteClient" value="delete" type="submit" formnovalidate>Excluir cliente</button>
+          <span></span>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="saveClient" value="default" type="submit">Salvar</button>
+        </menu>
+      </form>
+    </dialog>
+
     <dialog id="courseDialog">
       <form method="dialog" id="courseForm">
         <header>
@@ -769,7 +813,7 @@
             <option value="Licenciatura">Licenciatura</option>
             <option value="Segunda Licenciatura">Segunda licenciatura</option>
             <option value="Formacao Pedagogica">Formação pedagógica</option>
-            <option value="Pos-graduacao">Pós-graduação</option>
+            <option value="Pos-graduacao">Pós - Graduação</option>
             <option value="Mestrado">Mestrado</option>
             <option value="Doutorado">Doutorado</option>
             <option value="Detran">Detran</option>
@@ -788,7 +832,10 @@
           <label>Diplomas<input id="courseDiplomas" placeholder="Digital, fisico, prazo..." /></label>
         </div>
         <label>Prova do curso em PDF<input id="courseExamFile" type="file" accept="application/pdf" /></label>
-        <p class="file-note" id="courseExamStatus">Nenhuma prova salva.</p>
+        <div class="saved-file-line">
+          <p class="file-note" id="courseExamStatus">Nenhuma prova salva.</p>
+          <button class="remove-file-action" id="removeCourseExam" type="button" aria-label="Remover prova">x</button>
+        </div>
         <label>Observacoes<textarea id="courseNotes" rows="3" placeholder="Condicoes, parcelas, campanha..."></textarea></label>
         <menu>
           <button class="danger-action" id="deleteCourse" value="delete" type="submit" formnovalidate>Excluir</button>
