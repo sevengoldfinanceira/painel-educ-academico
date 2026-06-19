@@ -601,6 +601,7 @@ function normalizeData(data) {
   });
   data.courses.forEach((course) => {
     course.type ||= getCourseTypeFromModality(course.modality);
+    course.area = "";
     course.transfer ||= "";
     course.deadline ||= "";
     course.responsible ||= "";
