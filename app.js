@@ -381,7 +381,6 @@ const els = {
   courseName: document.querySelector("#courseName"),
   courseType: document.querySelector("#courseType"),
   courseModality: document.querySelector("#courseModality"),
-  courseArea: document.querySelector("#courseArea"),
   courseCost: document.querySelector("#courseCost"),
   courseSale: document.querySelector("#courseSale"),
   courseTransfer: document.querySelector("#courseTransfer"),
@@ -1944,7 +1943,6 @@ function openCourseDialog(course = null) {
   els.courseType.value = course?.type || getCourseTypeFromModality(course?.modality || "Graduacao");
   updateCourseModalityOptions();
   els.courseModality.value = course?.modality || "Graduacao";
-  els.courseArea.value = course?.area || "";
   els.courseCost.value = course?.cost ?? "";
   els.courseSale.value = course?.sale ?? "";
   els.courseTransfer.value = course?.transfer || "";
@@ -2122,7 +2120,7 @@ async function upsertCourse() {
     name: els.courseName.value.trim(),
     type: els.courseType.value || getCourseTypeFromModality(els.courseModality.value),
     modality: els.courseModality.value,
-    area: els.courseArea.value.trim(),
+    area: existing?.area || "",
     cost: Number(els.courseCost.value),
     sale: Number(els.courseSale.value),
     transfer: els.courseTransfer.value.trim(),
