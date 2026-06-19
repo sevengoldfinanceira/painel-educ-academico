@@ -295,7 +295,6 @@ const state = {
   data: loadData(),
   mainView: "courses",
   selectedPartnerId: "all",
-  courseView: "general",
   partnerSearch: "",
   courseSearch: "",
   courseType: "",
@@ -333,6 +332,7 @@ const els = {
   courseCount: document.querySelector("#courseCount"),
   salesCount: document.querySelector("#salesCount"),
   totalProfit: document.querySelector("#totalProfit"),
+  summaryGrid: document.querySelector("#summaryGrid"),
   partnerSidebar: document.querySelector("#partnerSidebar"),
   coursesView: document.querySelector("#coursesView"),
   salesView: document.querySelector("#salesView"),
@@ -344,7 +344,6 @@ const els = {
   emptyState: document.querySelector("#emptyState"),
   selectedPartner: document.querySelector("#selectedPartner"),
   mainTabs: document.querySelectorAll("[data-main-view]"),
-  courseTabs: document.querySelectorAll("[data-course-view]"),
   addCourseBtn: document.querySelector("#addCourseBtn"),
   partnerDialog: document.querySelector("#partnerDialog"),
   partnerForm: document.querySelector("#partnerForm"),
@@ -1129,7 +1128,7 @@ function getMonthlySummary(monthValue) {
 function filteredCourses() {
   const courses = state.data.courses.filter((course) => {
     const partner = getPartner(course.partnerId);
-    const viewMatch = state.courseView === "general" || course.partnerId === state.selectedPartnerId;
+    const viewMatch = state.selectedPartnerId === "all" || course.partnerId === state.selectedPartnerId;
     const typeMatch = !state.courseType || normalize(course.type) === normalize(state.courseType);
     const modalityMatch = !state.modality || isSameCourseModality(course.modality, state.modality);
     const searchMatch =
@@ -1244,7 +1243,7 @@ function renderSummary() {
 }
 
 function renderMainView() {
-  const showingCourses = state.mainView === "courses";
+  const showingCourses = state.mainView === "courses" || state.mainView === "overview";
   const showingSales = state.mainView === "sales";
   const showingCosts = state.mainView === "costs";
   const showingContracts = state.mainView === "contracts";
@@ -1256,7 +1255,8 @@ function renderMainView() {
   els.contractsView.hidden = !showingContracts;
   els.examsView.hidden = !showingExams;
   els.marketingView.hidden = !showingMarketing;
-  els.partnerSidebar.classList.toggle("hidden", !(showingCourses && state.courseView === "partner"));
+  els.partnerSidebar.classList.toggle("hidden", !showingCourses);
+  if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", state.mainView !== "overview");
 
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
@@ -1286,7 +1286,6 @@ function renderPartners() {
   allButton.innerHTML = `<strong>Todos os cursos</strong><span>Plano geral com todas as parcerias</span>`;
   allButton.addEventListener("click", () => {
     state.selectedPartnerId = "all";
-    state.courseView = "general";
     render();
   });
   els.partnerList.appendChild(allButton);
@@ -1302,7 +1301,6 @@ function renderPartners() {
     `;
     button.addEventListener("click", () => {
       state.selectedPartnerId = partner.id;
-      state.courseView = "partner";
       render();
     });
     els.partnerList.appendChild(button);
@@ -1311,7 +1309,7 @@ function renderPartners() {
 
 function renderSelectedPartner() {
   const partner = getPartner(state.selectedPartnerId);
-  const show = state.courseView === "partner" && partner;
+  const show = state.selectedPartnerId !== "all" && partner;
   els.selectedPartner.classList.toggle("visible", Boolean(show));
 
   if (!show) {
@@ -1829,12 +1827,6 @@ function renderPartnerEditAttachments(partner) {
   });
 }
 
-function renderCourseTabs() {
-  els.courseTabs.forEach((tab) => {
-    tab.classList.toggle("active", tab.dataset.courseView === state.courseView);
-  });
-}
-
 function renderCourseTypeFilters() {
   document.querySelectorAll("[data-course-type]").forEach((card) => {
     const isType = card.dataset.courseType;
@@ -1873,10 +1865,6 @@ function updateCourseModalityOptions() {
 }
 
 function render() {
-  if (state.courseView === "partner" && state.selectedPartnerId === "all") {
-    state.courseView = "general";
-  }
-
   renderSummary();
   renderMainView();
   renderPartners();
@@ -1892,7 +1880,6 @@ function render() {
   renderContracts();
   renderExams();
   renderMarketing();
-  renderCourseTabs();
   renderProfile();
 }
 
@@ -2068,7 +2055,6 @@ async function upsertPartner() {
   } else {
     state.data.partners.push(partner);
     state.selectedPartnerId = id;
-    state.courseView = "partner";
   }
 
   saveData();
@@ -2086,7 +2072,6 @@ function deletePartner(partnerId) {
 
   if (state.selectedPartnerId === partnerId) {
     state.selectedPartnerId = "all";
-    state.courseView = "general";
   }
 
   if (state.salesPartnerId === partnerId) {
@@ -2562,18 +2547,6 @@ document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => 
     });
   });
 })();
-
-els.courseTabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    state.courseView = tab.dataset.courseView;
-    if (state.courseView === "general") {
-      state.selectedPartnerId = "all";
-    } else if (state.selectedPartnerId === "all") {
-      state.selectedPartnerId = state.data.partners[0]?.id || "all";
-    }
-    render();
-  });
-});
 
 els.partnerForm.addEventListener("submit", async (event) => {
   if (event.submitter?.value === "cancel") return;
