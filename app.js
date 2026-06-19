@@ -1375,7 +1375,7 @@ function renderCourses() {
     row.innerHTML = `
       <td class="course-detail-cell">
         <strong>${escapeHtml(course.name)}</strong>
-        <small>${escapeHtml(course.area || course.type || "")}</small>
+        <small>${escapeHtml(course.modality || "")}</small>
       </td>
       <td><span class="margin-pill">${escapeHtml(course.type || getCourseTypeFromModality(course.modality))}</span></td>
       <td><span class="margin-pill">${escapeHtml(course.modality)}</span></td>
