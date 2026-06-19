@@ -2189,12 +2189,8 @@ els.addCourseBtn.addEventListener("click", () => openCourseDialog());
 els.addSaleBtn.addEventListener("click", () => openSaleDialog());
 els.addExpenseBtn.addEventListener("click", () => openExpenseDialog());
 
-const addPartnerBtnQuick = document.querySelector("#addPartnerBtnQuick");
 const addSaleBtnQuick = document.querySelector("#addSaleBtnQuick");
-const fabAdd = document.querySelector("#fabAdd");
-if (addPartnerBtnQuick) addPartnerBtnQuick.addEventListener("click", () => openPartnerDialog());
 if (addSaleBtnQuick) addSaleBtnQuick.addEventListener("click", () => openSaleDialog());
-if (fabAdd) fabAdd.addEventListener("click", () => openSaleDialog());
 
 els.profileButton.addEventListener("click", openProfileDialog);
 
