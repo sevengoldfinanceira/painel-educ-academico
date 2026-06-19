@@ -379,6 +379,7 @@ const els = {
   courseId: document.querySelector("#courseId"),
   coursePartner: document.querySelector("#coursePartner"),
   courseName: document.querySelector("#courseName"),
+  courseType: document.querySelector("#courseType"),
   courseModality: document.querySelector("#courseModality"),
   courseArea: document.querySelector("#courseArea"),
   courseCost: document.querySelector("#courseCost"),
@@ -1866,6 +1867,20 @@ function renderCourseModalityOptions() {
   els.modalityFilter.value = state.modality;
 }
 
+function updateCourseModalityOptions() {
+  const typeGroup = getCourseTypeGroup(els.courseType.value);
+  const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
+  const currentValue = els.courseModality.value;
+  els.courseModality.innerHTML = modalities.map((m) =>
+    `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+  ).join("");
+  if (modalities.includes(currentValue)) {
+    els.courseModality.value = currentValue;
+  } else if (modalities.length) {
+    els.courseModality.value = modalities[0];
+  }
+}
+
 function render() {
   if (state.courseView === "partner" && state.selectedPartnerId === "all") {
     state.courseView = "general";
@@ -1926,6 +1941,8 @@ function openCourseDialog(course = null) {
   els.coursePartner.value =
     course?.partnerId || (state.selectedPartnerId !== "all" ? state.selectedPartnerId : state.data.partners[0].id);
   els.courseName.value = course?.name || "";
+  els.courseType.value = course?.type || getCourseTypeFromModality(course?.modality || "Graduacao");
+  updateCourseModalityOptions();
   els.courseModality.value = course?.modality || "Graduacao";
   els.courseArea.value = course?.area || "";
   els.courseCost.value = course?.cost ?? "";
@@ -2103,7 +2120,7 @@ async function upsertCourse() {
     id,
     partnerId: els.coursePartner.value,
     name: els.courseName.value.trim(),
-    type: getCourseTypeFromModality(els.courseModality.value),
+    type: els.courseType.value || getCourseTypeFromModality(els.courseModality.value),
     modality: els.courseModality.value,
     area: els.courseArea.value.trim(),
     cost: Number(els.courseCost.value),
@@ -2290,6 +2307,17 @@ document.querySelectorAll(".modality-card").forEach((card) => {
     state.modality = "";
     render();
   });
+});
+
+els.courseType.addEventListener("change", () => {
+  updateCourseModalityOptions();
+});
+
+els.courseModality.addEventListener("change", () => {
+  const computedType = getCourseTypeFromModality(els.courseModality.value);
+  if (computedType && els.courseType.value !== computedType) {
+    els.courseType.value = computedType;
+  }
 });
 
 els.courseSort.addEventListener("change", (event) => {

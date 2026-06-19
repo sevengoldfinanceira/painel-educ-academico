@@ -642,24 +642,36 @@
         <input type="hidden" id="courseId" />
         <label>Parceria<select id="coursePartner" required></select></label>
         <label>Nome do curso<input id="courseName" required /></label>
+        <label>Tipo
+          <select id="courseType">
+            <option value="">Selecione o tipo</option>
+            <option>EJA</option>
+            <option>Cursos Livres</option>
+            <option>Cursos Técnicos</option>
+            <option>Especializações</option>
+            <option>Graduações</option>
+            <option>Nível Master</option>
+            <option>Cursos Detran</option>
+          </select>
+        </label>
         <div class="form-grid">
           <label>Modalidade
             <select id="courseModality">
-              <option>Ensino medio</option>
-              <option>Ensino fundamental</option>
-              <option>Cursos livres</option>
-              <option>Tecnico</option>
-              <option>Tecnologo</option>
+              <option value="Ensino medio">Ensino médio</option>
+              <option value="Ensino fundamental">Ensino fundamental</option>
+              <option value="Cursos livres">Cursos livres</option>
+              <option value="Tecnico">Técnico</option>
+              <option value="Tecnologo">Tecnólogo</option>
               <option value="Sequencial Superior">Sequencial superior</option>
-              <option>Graduacao</option>
-              <option>Bacharel</option>
-              <option>Licenciatura</option>
-              <option>Segunda Licenciatura</option>
-              <option value="Formacao Pedagogica">Formacao pedagogica</option>
-              <option>Pos-graduacao</option>
-              <option>Mestrado</option>
-              <option>Doutorado</option>
-              <option>Detran</option>
+              <option value="Graduacao">Graduação</option>
+              <option value="Bacharel">Bacharel</option>
+              <option value="Licenciatura">Licenciatura</option>
+              <option value="Segunda Licenciatura">Segunda licenciatura</option>
+              <option value="Formacao Pedagogica">Formação pedagógica</option>
+              <option value="Pos-graduacao">Pós-graduação</option>
+              <option value="Mestrado">Mestrado</option>
+              <option value="Doutorado">Doutorado</option>
+              <option value="Detran">Detran</option>
             </select>
           </label>
           <label>Area<input id="courseArea" placeholder="Educacao, saude..." /></label>
