@@ -343,7 +343,6 @@ const els = {
   partnerList: document.querySelector("#partnerList"),
   partnerSearch: document.querySelector("#partnerSearch"),
   courseSearch: document.querySelector("#courseSearch"),
-  modalityFilter: document.querySelector("#modalityFilter"),
   courseSort: document.querySelector("#courseSort"),
   courseRows: document.querySelector("#courseRows"),
   emptyState: document.querySelector("#emptyState"),
@@ -1866,24 +1865,6 @@ function renderModalityFilterCards() {
   });
 }
 
-function renderCourseModalityOptions() {
-  const typeGroup = getCourseTypeGroup(state.courseType);
-  const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
-  const selectedModality = modalities.find((modality) => isSameCourseModality(modality, state.modality));
-
-  if (state.modality && !selectedModality) {
-    state.modality = "";
-  } else if (selectedModality) {
-    state.modality = selectedModality;
-  }
-
-  els.modalityFilter.innerHTML = [
-    `<option value="">Todas as modalidades</option>`,
-    ...modalities.map((modality) => `<option value="${escapeHtml(modality)}">${escapeHtml(modality)}</option>`),
-  ].join("");
-  els.modalityFilter.value = state.modality;
-}
-
 function updateCourseModalityOptions() {
   const typeGroup = getCourseTypeGroup(els.courseType.value);
   const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
@@ -1909,7 +1890,6 @@ function render() {
   renderSelectedPartner();
   renderCourseTypeFilters();
   renderModalityFilterCards();
-  renderCourseModalityOptions();
   renderCourses();
   renderSales();
   renderExpenses();
@@ -2311,11 +2291,6 @@ els.partnerSearch.addEventListener("input", (event) => {
 els.courseSearch.addEventListener("input", (event) => {
   state.courseSearch = event.target.value;
   renderCourses();
-});
-
-els.modalityFilter.addEventListener("change", (event) => {
-  state.modality = event.target.value;
-  render();
 });
 
 document.querySelectorAll(".modality-card").forEach((card) => {
