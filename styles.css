@@ -487,6 +487,14 @@ body {
 }
 
 /* FILTER SECTIONS */
+.filter-todos-row {
+  margin-bottom: 16px;
+}
+.filter-todos-row .modality-card {
+  flex: 0 0 auto;
+  min-width: 200px;
+  max-width: 260px;
+}
 .filter-section {
   margin-bottom: 16px;
 }
@@ -497,6 +505,9 @@ body {
   letter-spacing: 0.5px;
   color: var(--muted);
   margin: 0 0 8px 4px;
+}
+.filter-section .modality-cards {
+  justify-content: flex-start;
 }
 
 /* MODALITY CARDS */

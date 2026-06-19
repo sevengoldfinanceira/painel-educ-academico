@@ -1845,7 +1845,8 @@ function renderCourseTabs() {
 
 function renderCourseTypeFilters() {
   document.querySelectorAll("[data-course-type]").forEach((card) => {
-    card.classList.toggle("active", normalize(card.dataset.courseType || "") === normalize(state.courseType));
+    const isType = card.dataset.courseType;
+    card.classList.toggle("active", isType && normalize(card.dataset.courseType) === normalize(state.courseType));
   });
 }
 
@@ -1855,10 +1856,13 @@ function renderModalityFilterCards() {
 
   document.querySelectorAll(".modality-filter-card").forEach((card) => {
     const modality = card.dataset.modality;
-    const isAll = !modality;
-    const matchesType = !allowedModalities || isAll || allowedModalities.some((m) => isSameCourseModality(m, modality));
+    const matchesType = !allowedModalities || allowedModalities.some((m) => isSameCourseModality(m, modality));
     card.classList.toggle("active", isSameCourseModality(modality || "", state.modality || ""));
     card.style.display = matchesType ? "" : "none";
+  });
+
+  document.querySelectorAll("[data-modality-all]").forEach((card) => {
+    card.classList.toggle("active", !state.courseType && !state.modality);
   });
 }
 
@@ -2325,6 +2329,14 @@ document.querySelectorAll(".modality-card").forEach((card) => {
 document.querySelectorAll(".modality-filter-card").forEach((card) => {
   card.addEventListener("click", () => {
     state.modality = card.dataset.modality || "";
+    render();
+  });
+});
+
+document.querySelectorAll("[data-modality-all]").forEach((card) => {
+  card.addEventListener("click", () => {
+    state.courseType = "";
+    state.modality = "";
     render();
   });
 });
