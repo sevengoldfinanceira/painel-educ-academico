@@ -489,14 +489,16 @@ body {
 /* MODALITY CARDS */
 .modality-cards {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 8px;
   margin-bottom: 24px;
+  overflow-x: auto;
 }
 .modality-card {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 20px;
-  min-width: 160px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  min-width: 0;
+  flex: 1 1 0;
   border: 1.5px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -513,9 +515,9 @@ body {
   box-shadow: 0 2px 8px rgba(197, 138, 0, 0.12);
 }
 .modality-card-icon {
-  width: 40px; height: 40px;
+  width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   flex-shrink: 0;
 }
 .modality-card-icon.purple { background: #F0E6FF; color: #7C3AED; }
@@ -525,10 +527,10 @@ body {
 .modality-card-icon.blue { background: #E8F0FE; color: #3B82F6; }
 .modality-card-icon.red { background: #FEE2E2; color: #DC2626; }
 .modality-card strong {
-  display: block; font-size: 14px; font-weight: 700; color: var(--ink);
+  display: block; font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap;
 }
 .modality-card span {
-  display: block; font-size: 12px; color: var(--muted); margin-top: 1px;
+  display: block; font-size: 10px; color: var(--muted); margin-top: 1px; white-space: nowrap;
 }
 
 /* TOOLBAR */
