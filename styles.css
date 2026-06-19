@@ -509,6 +509,12 @@ body {
 .filter-section .modality-cards {
   justify-content: flex-start;
 }
+.filter-section #modalityCards {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  flex-wrap: unset;
+}
 
 /* MODALITY CARDS */
 .modality-cards {
