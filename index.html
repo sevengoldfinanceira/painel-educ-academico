@@ -256,79 +256,214 @@
                 <button class="tab" data-course-view="partner" type="button">Por parceria</button>
               </div>
 
-              <div class="modality-cards">
-                <button class="modality-card active" data-course-type="" type="button">
-                  <div class="modality-card-icon purple">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                  </div>
-                  <div>
-                    <strong>Todos</strong>
-                    <span>Todos os cursos</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="EJA" type="button">
-                  <div class="modality-card-icon green">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
-                  </div>
-                  <div>
-                    <strong>EJA</strong>
-                    <span>Ensino médio e fundamental</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Cursos Livres" type="button">
-                  <div class="modality-card-icon orange">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
-                  </div>
-                  <div>
-                    <strong>Cursos Livres</strong>
-                    <span>Cursos livres</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Cursos Técnicos" type="button">
-                  <div class="modality-card-icon yellow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                  </div>
-                  <div>
-                    <strong>Cursos Técnicos</strong>
-                    <span>Técnico</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Especializações" type="button">
-                  <div class="modality-card-icon blue">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  </div>
-                  <div>
-                    <strong>Especializações</strong>
-                    <span>Tecnólogo e sequencial</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Graduações" type="button">
-                  <div class="modality-card-icon red">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                  </div>
-                  <div>
-                    <strong>Graduações</strong>
-                    <span>Bacharel e licenciatura</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Nível Master" type="button">
-                  <div class="modality-card-icon purple">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
-                  </div>
-                  <div>
-                    <strong>Nível Master</strong>
-                    <span>Pós, mestrado e doutorado</span>
-                  </div>
-                </button>
-                <button class="modality-card" data-course-type="Cursos Detran" type="button">
-                  <div class="modality-card-icon blue">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  </div>
-                  <div>
-                    <strong>Cursos Detran</strong>
-                    <span>Detran</span>
-                  </div>
-                </button>
+              <div class="filter-section">
+                <h3 class="filter-section-title">Por tipo</h3>
+                <div class="modality-cards">
+                  <button class="modality-card active" data-course-type="" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <div>
+                      <strong>Todos</strong>
+                      <span>Todos os cursos</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="EJA" type="button">
+                    <div class="modality-card-icon green">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>EJA</strong>
+                      <span>Ensino médio e fundamental</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Cursos Livres" type="button">
+                    <div class="modality-card-icon orange">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Cursos Livres</strong>
+                      <span>Cursos livres</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Cursos Técnicos" type="button">
+                    <div class="modality-card-icon yellow">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <div>
+                      <strong>Cursos Técnicos</strong>
+                      <span>Técnico</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Especializações" type="button">
+                    <div class="modality-card-icon blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                      <strong>Especializações</strong>
+                      <span>Tecnólogo e sequencial</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Graduações" type="button">
+                    <div class="modality-card-icon red">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <div>
+                      <strong>Graduações</strong>
+                      <span>Bacharel e licenciatura</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Nível Master" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Nível Master</strong>
+                      <span>Pós, mestrado e doutorado</span>
+                    </div>
+                  </button>
+                  <button class="modality-card" data-course-type="Cursos Detran" type="button">
+                    <div class="modality-card-icon blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                      <strong>Cursos Detran</strong>
+                      <span>Detran</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <h3 class="filter-section-title">Por modalidade</h3>
+                <div class="modality-cards" id="modalityCards">
+                  <button class="modality-filter-card active" data-modality="" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Todas</strong>
+                      <span>Todas as modalidades</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Ensino medio" type="button">
+                    <div class="modality-card-icon green">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Ensino médio</strong>
+                      <span>EJA</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Ensino fundamental" type="button">
+                    <div class="modality-card-icon green">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Ensino fundamental</strong>
+                      <span>EJA</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Cursos livres" type="button">
+                    <div class="modality-card-icon orange">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Cursos livres</strong>
+                      <span>Cursos Livres</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Tecnico" type="button">
+                    <div class="modality-card-icon yellow">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <div>
+                      <strong>Técnico</strong>
+                      <span>Cursos Técnicos</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Tecnologo" type="button">
+                    <div class="modality-card-icon blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                      <strong>Tecnólogo</strong>
+                      <span>Especializações</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Sequencial Superior" type="button">
+                    <div class="modality-card-icon blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                      <strong>Sequencial superior</strong>
+                      <span>Especializações</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Bacharel" type="button">
+                    <div class="modality-card-icon red">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <div>
+                      <strong>Bacharel</strong>
+                      <span>Graduações</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Licenciatura" type="button">
+                    <div class="modality-card-icon red">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <div>
+                      <strong>Licenciatura</strong>
+                      <span>Graduações</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Formacao Pedagogica" type="button">
+                    <div class="modality-card-icon red">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <div>
+                      <strong>Formação pedagógica</strong>
+                      <span>Graduações</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Pos-graduacao" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Pós-graduação</strong>
+                      <span>Nível Master</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Mestrado" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Mestrado</strong>
+                      <span>Nível Master</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Doutorado" type="button">
+                    <div class="modality-card-icon purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                    </div>
+                    <div>
+                      <strong>Doutorado</strong>
+                      <span>Nível Master</span>
+                    </div>
+                  </button>
+                  <button class="modality-filter-card" data-modality="Detran" type="button">
+                    <div class="modality-card-icon blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                      <strong>Detran</strong>
+                      <span>Cursos Detran</span>
+                    </div>
+                  </button>
+                </div>
               </div>
 
               <div class="selected-partner" id="selectedPartner"></div>

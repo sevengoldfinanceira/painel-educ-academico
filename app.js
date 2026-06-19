@@ -1849,6 +1849,19 @@ function renderCourseTypeFilters() {
   });
 }
 
+function renderModalityFilterCards() {
+  const typeGroup = getCourseTypeGroup(state.courseType);
+  const allowedModalities = typeGroup ? typeGroup.modalities : null;
+
+  document.querySelectorAll(".modality-filter-card").forEach((card) => {
+    const modality = card.dataset.modality;
+    const isAll = !modality;
+    const matchesType = !allowedModalities || isAll || allowedModalities.some((m) => isSameCourseModality(m, modality));
+    card.classList.toggle("active", isSameCourseModality(modality || "", state.modality || ""));
+    card.style.display = matchesType ? "" : "none";
+  });
+}
+
 function renderCourseModalityOptions() {
   const typeGroup = getCourseTypeGroup(state.courseType);
   const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
@@ -1891,6 +1904,7 @@ function render() {
   renderPartners();
   renderSelectedPartner();
   renderCourseTypeFilters();
+  renderModalityFilterCards();
   renderCourseModalityOptions();
   renderCourses();
   renderSales();
@@ -2297,13 +2311,20 @@ els.courseSearch.addEventListener("input", (event) => {
 
 els.modalityFilter.addEventListener("change", (event) => {
   state.modality = event.target.value;
-  renderCourses();
+  render();
 });
 
 document.querySelectorAll(".modality-card").forEach((card) => {
   card.addEventListener("click", () => {
     state.courseType = card.dataset.courseType || "";
     state.modality = "";
+    render();
+  });
+});
+
+document.querySelectorAll(".modality-filter-card").forEach((card) => {
+  card.addEventListener("click", () => {
+    state.modality = card.dataset.modality || "";
     render();
   });
 });

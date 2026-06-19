@@ -486,6 +486,19 @@ body {
   cursor: pointer;
 }
 
+/* FILTER SECTIONS */
+.filter-section {
+  margin-bottom: 16px;
+}
+.filter-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin: 0 0 8px 4px;
+}
+
 /* MODALITY CARDS */
 .modality-cards {
   display: flex;
@@ -494,7 +507,7 @@ body {
   margin-bottom: 24px;
   overflow-x: auto;
 }
-.modality-card {
+.modality-card, .modality-filter-card {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 14px;
   min-width: 0;
@@ -506,11 +519,11 @@ body {
   transition: all 0.2s;
   overflow: hidden;
 }
-.modality-card:hover {
+.modality-card:hover, .modality-filter-card:hover {
   border-color: var(--brand);
   background: var(--brand-bg-light);
 }
-.modality-card.active {
+.modality-card.active, .modality-filter-card.active {
   border-color: var(--brand);
   background: var(--brand-bg-light);
   box-shadow: 0 2px 8px rgba(197, 138, 0, 0.12);
@@ -527,11 +540,11 @@ body {
 .modality-card-icon.yellow { background: #FFFDE7; color: #C58A00; }
 .modality-card-icon.blue { background: #E8F0FE; color: #3B82F6; }
 .modality-card-icon.red { background: #FEE2E2; color: #DC2626; }
-.modality-card strong {
+.modality-card strong, .modality-filter-card strong {
   display: block; font-size: 12px; font-weight: 700; color: var(--ink);
   overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
 }
-.modality-card span {
+.modality-card span, .modality-filter-card span {
   display: block; font-size: 10px; color: var(--muted); margin-top: 1px;
   overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
