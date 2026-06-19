@@ -60,6 +60,85 @@ CONDICOES ESPECIFICAS:
 DATA E ASSINATURAS:
 [PREENCHER]`;
 
+const COURSE_TYPE_GROUPS = [
+  {
+    type: "EJA",
+    description: "Ensino medio e fundamental",
+    modalities: ["Ensino medio", "Ensino fundamental"],
+  },
+  {
+    type: "Cursos Livres",
+    description: "Cursos livres",
+    modalities: ["Cursos livres"],
+  },
+  {
+    type: "Cursos Técnicos",
+    description: "Cursos tecnicos",
+    modalities: ["Tecnico"],
+  },
+  {
+    type: "Especializações",
+    description: "Tecnologo e sequencial superior",
+    modalities: ["Tecnologo", "Sequencial superior"],
+  },
+  {
+    type: "Graduações",
+    description: "Bacharel, licenciatura e formacao pedagogica",
+    modalities: ["Bacharel", "Licenciatura", "Formacao pedagogica"],
+  },
+  {
+    type: "Nível Master",
+    description: "Pos-graduacao, mestrado e doutorado",
+    modalities: ["Pos-graduacao", "Mestrado", "Doutorado"],
+  },
+  {
+    type: "Cursos Detran",
+    description: "Detran",
+    modalities: ["Detran"],
+  },
+];
+
+const ALL_COURSE_MODALITIES = [...new Set(COURSE_TYPE_GROUPS.flatMap((group) => group.modalities))];
+
+function canonicalCourseText(value) {
+  const text = normalize(value);
+  return text
+    .replace(/\bpos\b/g, "pos")
+    .replace(/\btecnico\b/g, "tecnico")
+    .replace(/\btecnologo\b/g, "tecnologo");
+}
+
+function getCourseTypeFromModality(modality) {
+  const normalizedModality = canonicalCourseText(modality);
+  if (["ensino medio", "ensino fundamental", "eja"].includes(normalizedModality)) return "EJA";
+  if (["curso livre", "cursos livres", "livre"].includes(normalizedModality)) return "Cursos Livres";
+  if (["tecnico"].includes(normalizedModality)) return "Cursos Técnicos";
+  if (["tecnologo", "sequencial", "sequencial superior"].includes(normalizedModality)) return "Especializações";
+  if (["bacharel", "licenciatura", "formacao pedagogica", "graduacao", "segunda licenciatura"].includes(normalizedModality)) {
+    return "Graduações";
+  }
+  if (["pos graduacao", "pos-graduacao", "mestrado", "doutorado"].includes(normalizedModality)) return "Nível Master";
+  if (["detran"].includes(normalizedModality)) return "Cursos Detran";
+  return "Cursos Livres";
+}
+
+function getCourseTypeGroup(type) {
+  return COURSE_TYPE_GROUPS.find((group) => normalize(group.type) === normalize(type));
+}
+
+function isSameCourseModality(left, right) {
+  const normalizedLeft = canonicalCourseText(left);
+  const normalizedRight = canonicalCourseText(right);
+  if (normalizedLeft === normalizedRight) return true;
+
+  const aliases = [
+    ["livre", "curso livre", "cursos livres"],
+    ["eja", "ensino medio", "ensino fundamental"],
+  ];
+
+  return aliases.some((group) => group.includes(normalizedLeft) && group.includes(normalizedRight));
+}
+
 const seedData = {
   partners: [
     {
@@ -219,6 +298,7 @@ const state = {
   courseView: "general",
   partnerSearch: "",
   courseSearch: "",
+  courseType: "",
   modality: "",
   courseSort: "name-asc",
   salesSearch: "",
@@ -390,7 +470,93 @@ const els = {
   marketingCategory: document.querySelector("#marketingCategory"),
   marketingDescription: document.querySelector("#marketingDescription"),
   marketingFiles: document.querySelector("#marketingFiles"),
+  profileButton: document.querySelector("#profileButton"),
+  sidebarUserAvatar: document.querySelector("#sidebarUserAvatar"),
+  sidebarUserName: document.querySelector("#sidebarUserName"),
+  profileDialog: document.querySelector("#profileDialog"),
+  profileForm: document.querySelector("#profileForm"),
+  profileName: document.querySelector("#profileName"),
+  profilePhotoUrl: document.querySelector("#profilePhotoUrl"),
+  profilePhotoFile: document.querySelector("#profilePhotoFile"),
+  profilePreviewAvatar: document.querySelector("#profilePreviewAvatar"),
+  profilePreviewName: document.querySelector("#profilePreviewName"),
 };
+
+function getNameFromEmail(email) {
+  const baseName = String(email || "").split("@")[0].replace(/[._-]+/g, " ").trim();
+  if (!baseName) return "Usuario";
+  return baseName.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function getAuthProfile() {
+  const metadata = cloudUser?.user_metadata || {};
+  const email = cloudUser?.email || metadata.email || "";
+  return {
+    displayName:
+      metadata.full_name ||
+      metadata.name ||
+      metadata.display_name ||
+      metadata.preferred_username ||
+      getNameFromEmail(email),
+    avatarUrl: metadata.avatar_url || metadata.picture || "",
+  };
+}
+
+function getEffectiveProfile() {
+  const authProfile = getAuthProfile();
+  const savedProfile = state.data.profile || {};
+  return {
+    displayName: savedProfile.displayName || authProfile.displayName,
+    avatarUrl: savedProfile.avatarUrl || authProfile.avatarUrl,
+  };
+}
+
+function getInitials(name) {
+  const parts = String(name || "Usuario")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const initials = parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : parts[0]?.slice(0, 2);
+  return (initials || "US").toUpperCase();
+}
+
+function renderAvatar(target, profile) {
+  target.textContent = "";
+  if (profile.avatarUrl) {
+    const image = document.createElement("img");
+    image.src = profile.avatarUrl;
+    image.alt = `Foto de ${profile.displayName}`;
+    image.referrerPolicy = "no-referrer";
+    image.onerror = () => {
+      image.remove();
+      target.textContent = getInitials(profile.displayName);
+    };
+    target.appendChild(image);
+    return;
+  }
+  target.textContent = getInitials(profile.displayName);
+}
+
+function renderProfile() {
+  const profile = getEffectiveProfile();
+  els.sidebarUserName.textContent = profile.displayName;
+  renderAvatar(els.sidebarUserAvatar, profile);
+
+  if (els.profileDialog.open) {
+    els.profilePreviewName.textContent = profile.displayName;
+    renderAvatar(els.profilePreviewAvatar, profile);
+  }
+}
+
+function openProfileDialog() {
+  const profile = getEffectiveProfile();
+  els.profileName.value = profile.displayName;
+  els.profilePhotoUrl.value = state.data.profile?.avatarUrl || "";
+  els.profilePhotoFile.value = "";
+  els.profilePreviewName.textContent = profile.displayName;
+  renderAvatar(els.profilePreviewAvatar, profile);
+  els.profileDialog.showModal();
+}
 
 function loadData() {
   try {
@@ -409,6 +575,9 @@ function normalizeData(data) {
   data.expenses ||= [];
   data.marketing ||= [];
   data.imports ||= {};
+  data.profile ||= {};
+  data.profile.displayName ||= "";
+  data.profile.avatarUrl ||= "";
   mergeEduMaisCatalog(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
@@ -431,6 +600,7 @@ function normalizeData(data) {
     partner.contractText ||= DEFAULT_CONTRACT_TEXT;
   });
   data.courses.forEach((course) => {
+    course.type ||= getCourseTypeFromModality(course.modality);
     course.transfer ||= "";
     course.deadline ||= "";
     course.responsible ||= "";
@@ -750,6 +920,7 @@ async function initializeCloud() {
   try {
     const { data } = await supabaseClient.auth.getSession();
     cloudUser = data.session?.user || null;
+    renderProfile();
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
     if (cloudUser) await loadDataFromCloud();
   } catch (error) {
@@ -763,6 +934,7 @@ async function initializeCloud() {
     const nextUser = session?.user || null;
     const userChanged = nextUser?.id !== cloudUser?.id;
     cloudUser = nextUser;
+    renderProfile();
     if (userChanged) cloudReady = false;
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
     if (cloudUser && !cloudReady) {
@@ -963,12 +1135,14 @@ function filteredCourses() {
   const courses = state.data.courses.filter((course) => {
     const partner = getPartner(course.partnerId);
     const viewMatch = state.courseView === "general" || course.partnerId === state.selectedPartnerId;
-    const modalityMatch = !state.modality || normalize(course.modality) === normalize(state.modality);
+    const typeMatch = !state.courseType || normalize(course.type) === normalize(state.courseType);
+    const modalityMatch = !state.modality || isSameCourseModality(course.modality, state.modality);
     const searchMatch =
       !state.courseSearch ||
       matchesSearch(
         [
           course.name,
+          course.type,
           course.modality,
           course.area,
           course.transfer,
@@ -982,7 +1156,7 @@ function filteredCourses() {
         state.courseSearch
       );
 
-    return viewMatch && modalityMatch && searchMatch;
+    return viewMatch && typeMatch && modalityMatch && searchMatch;
   });
 
   const compareText = (left, right) =>
@@ -1200,8 +1374,9 @@ function renderCourses() {
     row.innerHTML = `
       <td class="course-detail-cell">
         <strong>${escapeHtml(course.name)}</strong>
-        <small>${escapeHtml(course.area || course.modality || "")}</small>
+        <small>${escapeHtml(course.area || course.type || "")}</small>
       </td>
+      <td><span class="margin-pill">${escapeHtml(course.type || getCourseTypeFromModality(course.modality))}</span></td>
       <td><span class="margin-pill">${escapeHtml(course.modality)}</span></td>
       <td>
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
@@ -1366,7 +1541,7 @@ function renderSaleCourseOptions(search = "", selectedCourseId = els.saleCourse?
   const courses = state.data.courses
     .filter((course) => {
       const partner = getPartner(course.partnerId);
-      return !search || matchesSearch([course.name, course.modality, course.area, partner?.name], search);
+      return !search || matchesSearch([course.name, course.type, course.modality, course.area, partner?.name], search);
     })
     .sort((a, b) => {
       const aName = normalize(a.name);
@@ -1667,6 +1842,30 @@ function renderCourseTabs() {
   });
 }
 
+function renderCourseTypeFilters() {
+  document.querySelectorAll("[data-course-type]").forEach((card) => {
+    card.classList.toggle("active", normalize(card.dataset.courseType || "") === normalize(state.courseType));
+  });
+}
+
+function renderCourseModalityOptions() {
+  const typeGroup = getCourseTypeGroup(state.courseType);
+  const modalities = typeGroup ? typeGroup.modalities : ALL_COURSE_MODALITIES;
+  const selectedModality = modalities.find((modality) => isSameCourseModality(modality, state.modality));
+
+  if (state.modality && !selectedModality) {
+    state.modality = "";
+  } else if (selectedModality) {
+    state.modality = selectedModality;
+  }
+
+  els.modalityFilter.innerHTML = [
+    `<option value="">Todas as modalidades</option>`,
+    ...modalities.map((modality) => `<option value="${escapeHtml(modality)}">${escapeHtml(modality)}</option>`),
+  ].join("");
+  els.modalityFilter.value = state.modality;
+}
+
 function render() {
   if (state.courseView === "partner" && state.selectedPartnerId === "all") {
     state.courseView = "general";
@@ -1676,6 +1875,8 @@ function render() {
   renderMainView();
   renderPartners();
   renderSelectedPartner();
+  renderCourseTypeFilters();
+  renderCourseModalityOptions();
   renderCourses();
   renderSales();
   renderExpenses();
@@ -1686,6 +1887,7 @@ function render() {
   renderExams();
   renderMarketing();
   renderCourseTabs();
+  renderProfile();
 }
 
 function openPartnerDialog(partner = null) {
@@ -1901,6 +2103,7 @@ async function upsertCourse() {
     id,
     partnerId: els.coursePartner.value,
     name: els.courseName.value.trim(),
+    type: getCourseTypeFromModality(els.courseModality.value),
     modality: els.courseModality.value,
     area: els.courseArea.value.trim(),
     cost: Number(els.courseCost.value),
@@ -2002,6 +2205,20 @@ if (addPartnerBtnQuick) addPartnerBtnQuick.addEventListener("click", () => openP
 if (addSaleBtnQuick) addSaleBtnQuick.addEventListener("click", () => openSaleDialog());
 if (fabAdd) fabAdd.addEventListener("click", () => openSaleDialog());
 
+els.profileButton.addEventListener("click", openProfileDialog);
+
+els.profileName.addEventListener("input", () => {
+  els.profilePreviewName.textContent = els.profileName.value.trim() || getEffectiveProfile().displayName;
+});
+
+els.profilePhotoUrl.addEventListener("input", () => {
+  const profile = {
+    displayName: els.profileName.value.trim() || getEffectiveProfile().displayName,
+    avatarUrl: els.profilePhotoUrl.value.trim(),
+  };
+  renderAvatar(els.profilePreviewAvatar, profile);
+});
+
 els.addMarketingBtn.addEventListener("click", () => {
   els.marketingCategory.value = "Venda";
   els.marketingDescription.value = "";
@@ -2037,6 +2254,21 @@ els.logoutBtn.addEventListener("click", async () => {
   setSyncStatus("Aguardando login");
 });
 
+els.profileForm.addEventListener("submit", async (event) => {
+  if (event.submitter?.value === "cancel") return;
+  event.preventDefault();
+
+  const file = els.profilePhotoFile.files[0];
+  const uploadedPhotoUrl = file ? await readFileAsDataUrl(file) : "";
+  state.data.profile = {
+    displayName: els.profileName.value.trim(),
+    avatarUrl: uploadedPhotoUrl || els.profilePhotoUrl.value.trim(),
+  };
+  saveData();
+  renderProfile();
+  els.profileDialog.close();
+});
+
 els.partnerSearch.addEventListener("input", (event) => {
   state.partnerSearch = event.target.value;
   renderPartners();
@@ -2054,12 +2286,9 @@ els.modalityFilter.addEventListener("change", (event) => {
 
 document.querySelectorAll(".modality-card").forEach((card) => {
   card.addEventListener("click", () => {
-    const modality = card.dataset.modality || "";
-    state.modality = modality;
-    els.modalityFilter.value = modality;
-    document.querySelectorAll(".modality-card").forEach(c => c.classList.remove("active"));
-    card.classList.add("active");
-    renderCourses();
+    state.courseType = card.dataset.courseType || "";
+    state.modality = "";
+    render();
   });
 });
 

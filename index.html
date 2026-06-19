@@ -78,13 +78,13 @@
         </a>
       </nav>
       <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="sidebar-user-avatar">JF</div>
+        <button class="sidebar-user" id="profileButton" type="button" aria-label="Editar perfil">
+          <div class="sidebar-user-avatar" id="sidebarUserAvatar">--</div>
           <div>
-            <strong>João Ferreira</strong>
+            <strong id="sidebarUserName">Carregando...</strong>
             <span>Administrador</span>
           </div>
-        </div>
+        </button>
         <p class="sidebar-copyright">© 2026 Educ Acadêmico<br/>Todos os direitos reservados.</p>
       </div>
     </aside>
@@ -234,21 +234,10 @@
               <div class="courses-search-bar">
                 <div class="search-input-wrapper">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <input id="courseSearch" type="search" placeholder="Buscar curso por nome, instituição ou área" />
+                  <input id="courseSearch" type="search" placeholder="Buscar curso por nome, tipo, modalidade ou instituição" />
                 </div>
                 <select id="modalityFilter" aria-label="Filtrar modalidade">
                   <option value="">Todas as modalidades</option>
-                  <option value="Graduacao">Graduação</option>
-                  <option value="Bacharel">Bacharel</option>
-                  <option value="Tecnologo">Tecnólogo</option>
-                  <option value="Licenciatura">Licenciatura</option>
-                  <option value="Segunda Licenciatura">Segunda Licenciatura</option>
-                  <option value="Formacao Pedagogica">Formação Pedagógica</option>
-                  <option value="Pos-graduacao">Pós-graduação</option>
-                  <option value="Tecnico">Técnico</option>
-                  <option value="Sequencial Superior">Sequencial Superior</option>
-                  <option value="EJA">EJA</option>
-                  <option value="Livre">Livre</option>
                 </select>
                 <select id="courseSort" aria-label="Ordenar cursos">
                   <option value="name-asc">Ordenar: Nome (A-Z)</option>
@@ -268,7 +257,7 @@
               </div>
 
               <div class="modality-cards">
-                <button class="modality-card active" data-modality="" type="button">
+                <button class="modality-card active" data-course-type="" type="button">
                   <div class="modality-card-icon purple">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                   </div>
@@ -277,49 +266,67 @@
                     <span>Todos os cursos</span>
                   </div>
                 </button>
-                <button class="modality-card" data-modality="Graduacao" type="button">
+                <button class="modality-card" data-course-type="EJA" type="button">
                   <div class="modality-card-icon green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
                   </div>
                   <div>
-                    <strong>Graduação</strong>
-                    <span>Cursos de graduação</span>
+                    <strong>EJA</strong>
+                    <span>Ensino médio e fundamental</span>
                   </div>
                 </button>
-                <button class="modality-card" data-modality="Pos-graduacao" type="button">
+                <button class="modality-card" data-course-type="Cursos Livres" type="button">
                   <div class="modality-card-icon orange">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
                   </div>
                   <div>
-                    <strong>Pós-graduação</strong>
-                    <span>Especializações e MBAs</span>
+                    <strong>Cursos Livres</strong>
+                    <span>Cursos livres</span>
                   </div>
                 </button>
-                <button class="modality-card" data-modality="Tecnologo" type="button">
+                <button class="modality-card" data-course-type="Cursos Técnicos" type="button">
                   <div class="modality-card-icon yellow">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                   </div>
                   <div>
-                    <strong>Tecnólogo</strong>
-                    <span>Cursos tecnológicos</span>
+                    <strong>Cursos Técnicos</strong>
+                    <span>Técnico</span>
                   </div>
                 </button>
-                <button class="modality-card" data-modality="Sequencial Superior" type="button">
+                <button class="modality-card" data-course-type="Especializações" type="button">
                   <div class="modality-card-icon blue">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                   </div>
                   <div>
-                    <strong>Sequencial</strong>
-                    <span>Cursos sequenciais</span>
+                    <strong>Especializações</strong>
+                    <span>Tecnólogo e sequencial</span>
                   </div>
                 </button>
-                <button class="modality-card" data-modality="Tecnico" type="button">
+                <button class="modality-card" data-course-type="Graduações" type="button">
                   <div class="modality-card-icon red">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
                   </div>
                   <div>
-                    <strong>Ensino Médio</strong>
-                    <span>Ensino médio</span>
+                    <strong>Graduações</strong>
+                    <span>Bacharel e licenciatura</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-course-type="Nível Master" type="button">
+                  <div class="modality-card-icon purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                  </div>
+                  <div>
+                    <strong>Nível Master</strong>
+                    <span>Pós, mestrado e doutorado</span>
+                  </div>
+                </button>
+                <button class="modality-card" data-course-type="Cursos Detran" type="button">
+                  <div class="modality-card-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  </div>
+                  <div>
+                    <strong>Cursos Detran</strong>
+                    <span>Detran</span>
                   </div>
                 </button>
               </div>
@@ -330,6 +337,7 @@
                   <thead>
                     <tr>
                       <th>CURSO</th>
+                      <th>TIPO</th>
                       <th>MODALIDADE</th>
                       <th>PARCEIRA</th>
                       <th>DURAÇÃO</th>
@@ -637,17 +645,21 @@
         <div class="form-grid">
           <label>Modalidade
             <select id="courseModality">
+              <option>Ensino medio</option>
+              <option>Ensino fundamental</option>
+              <option>Cursos livres</option>
+              <option>Tecnico</option>
+              <option>Tecnologo</option>
+              <option value="Sequencial Superior">Sequencial superior</option>
               <option>Graduacao</option>
               <option>Bacharel</option>
-              <option>Tecnologo</option>
               <option>Licenciatura</option>
               <option>Segunda Licenciatura</option>
-              <option>Formacao Pedagogica</option>
+              <option value="Formacao Pedagogica">Formacao pedagogica</option>
               <option>Pos-graduacao</option>
-              <option>Tecnico</option>
-              <option>Sequencial Superior</option>
-              <option>EJA</option>
-              <option>Livre</option>
+              <option>Mestrado</option>
+              <option>Doutorado</option>
+              <option>Detran</option>
             </select>
           </label>
           <label>Area<input id="courseArea" placeholder="Educacao, saude..." /></label>
@@ -775,6 +787,30 @@
         <menu>
           <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
           <button class="primary-action" value="default" type="submit">Adicionar arquivos</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="profileDialog">
+      <form method="dialog" id="profileForm">
+        <header>
+          <h2>Editar perfil</h2>
+          <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
+        </header>
+        <div class="profile-preview">
+          <div class="sidebar-user-avatar profile-preview-avatar" id="profilePreviewAvatar">--</div>
+          <div>
+            <strong id="profilePreviewName">Seu nome</strong>
+            <span>Administrador</span>
+          </div>
+        </div>
+        <label>Nome exibido<input id="profileName" required /></label>
+        <label>Foto por link<input id="profilePhotoUrl" type="url" placeholder="https://..." /></label>
+        <label>Trocar foto<input id="profilePhotoFile" type="file" accept="image/*" /></label>
+        <p class="file-note">Se deixar a foto em branco, o sistema usa automaticamente a imagem do Google quando ela estiver disponível.</p>
+        <menu>
+          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
+          <button class="primary-action" id="saveProfile" value="default" type="submit">Salvar perfil</button>
         </menu>
       </form>
     </dialog>

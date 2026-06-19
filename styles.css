@@ -152,9 +152,17 @@ body {
   border-top: 1px solid var(--line);
 }
 .sidebar-user {
+  width: 100%;
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 }
+.sidebar-user:hover strong { color: var(--brand); }
 .sidebar-user-avatar {
   width: 38px; height: 38px;
   border-radius: 50%;
@@ -162,6 +170,13 @@ body {
   color: var(--brand);
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 13px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.sidebar-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .sidebar-user strong { display: block; font-size: 13px; }
 .sidebar-user span { color: var(--muted); font-size: 11px; }
@@ -952,6 +967,21 @@ dialog label {
   color: var(--muted); font-size: 13px; font-weight: 700;
 }
 .file-note { margin: -4px 0 0; color: var(--muted); font-size: 12px; }
+.profile-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+.profile-preview-avatar {
+  width: 48px;
+  height: 48px;
+}
+.profile-preview strong { display: block; }
+.profile-preview span { color: var(--muted); font-size: 12px; }
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
