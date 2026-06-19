@@ -1240,7 +1240,8 @@ function renderSummary() {
 }
 
 function renderMainView() {
-  const showingCourses = state.mainView === "courses" || state.mainView === "overview";
+  const showingOverview = state.mainView === "overview";
+  const showingCourses = state.mainView === "courses";
   const showingPartners = state.mainView === "partners";
   const showingSales = state.mainView === "sales";
   const showingCosts = state.mainView === "costs";
@@ -1253,7 +1254,7 @@ function renderMainView() {
   els.contractsView.hidden = !showingContracts;
   els.marketingView.hidden = !showingMarketing;
   els.partnerSidebar.classList.toggle("hidden", !showingPartners);
-  if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", state.mainView !== "overview");
+  if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", !showingOverview);
 
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
