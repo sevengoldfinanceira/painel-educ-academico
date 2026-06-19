@@ -1263,7 +1263,7 @@ function renderMainView() {
   els.contractsView.hidden = !showingContracts;
   els.examsView.hidden = !showingExams;
   els.marketingView.hidden = !showingMarketing;
-  els.partnerSidebar.classList.toggle("hidden", !showingCourses);
+  els.partnerSidebar.classList.toggle("hidden", !(showingCourses && state.courseView === "partner"));
 
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
