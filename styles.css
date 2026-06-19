@@ -502,16 +502,15 @@ body {
 /* MODALITY CARDS */
 .modality-cards {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 24px;
-  overflow-x: auto;
 }
 .modality-card, .modality-filter-card {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 14px;
-  min-width: 0;
-  flex: 1 1 0;
+  min-width: 140px;
+  flex: 1 1 140px;
   border: 1.5px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
