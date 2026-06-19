@@ -963,8 +963,11 @@
           </div>
         </div>
         <label>Nome exibido<input id="profileName" required /></label>
-        <label>Foto por link<input id="profilePhotoUrl" type="url" placeholder="https://..." /></label>
-        <label>Trocar foto<input id="profilePhotoFile" type="file" accept="image/*" /></label>
+        <input id="profilePhotoUrl" type="hidden" />
+        <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; width: 100%;">
+          <label style="flex: 1; margin: 0;">Trocar foto<input id="profilePhotoFile" type="file" accept="image/*" /></label>
+          <button class="danger-action" id="removeProfilePhotoBtn" type="button" style="min-height: 42px; padding: 0 16px; border-radius: 999px; font-weight: 700; border: 1px solid #f0c8c8; cursor: pointer; transition: all 0.2s;">Remover foto</button>
+        </div>
         <p class="file-note">Se deixar a foto em branco, o sistema usa automaticamente a imagem do Google quando ela estiver disponível.</p>
         <menu>
           <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>

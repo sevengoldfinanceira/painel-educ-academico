@@ -2238,6 +2238,29 @@ els.profilePhotoUrl.addEventListener("input", () => {
   renderAvatar(els.profilePreviewAvatar, profile);
 });
 
+els.profilePhotoFile.addEventListener("change", async () => {
+  const file = els.profilePhotoFile.files[0];
+  const url = file ? await readFileAsDataUrl(file) : els.profilePhotoUrl.value;
+  const profile = {
+    displayName: els.profileName.value.trim() || getEffectiveProfile().displayName,
+    avatarUrl: url
+  };
+  renderAvatar(els.profilePreviewAvatar, profile);
+});
+
+const removeProfilePhotoBtn = document.getElementById("removeProfilePhotoBtn");
+if (removeProfilePhotoBtn) {
+  removeProfilePhotoBtn.addEventListener("click", () => {
+    els.profilePhotoUrl.value = "";
+    els.profilePhotoFile.value = "";
+    const profile = {
+      displayName: els.profileName.value.trim() || getEffectiveProfile().displayName,
+      avatarUrl: ""
+    };
+    renderAvatar(els.profilePreviewAvatar, profile);
+  });
+}
+
 els.addMarketingBtn.addEventListener("click", () => {
   els.marketingCategory.value = "Venda";
   els.marketingDescription.value = "";
