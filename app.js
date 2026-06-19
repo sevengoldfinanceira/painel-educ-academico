@@ -1252,7 +1252,7 @@ function renderMainView() {
   els.costsView.hidden = !showingCosts;
   els.contractsView.hidden = !showingContracts;
   els.marketingView.hidden = !showingMarketing;
-  els.partnerSidebar.classList.toggle("hidden", !showingCourses);
+  els.partnerSidebar.classList.toggle("hidden", !showingPartners);
   if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", state.mainView !== "overview");
 
   els.mainTabs.forEach((tab) => {
@@ -1283,7 +1283,9 @@ function renderPartners() {
   allButton.innerHTML = `<strong>Todos os cursos</strong><span>Plano geral com todas as parcerias</span>`;
   allButton.addEventListener("click", () => {
     state.selectedPartnerId = "all";
+    state.mainView = "overview";
     render();
+    document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
   });
   els.partnerList.appendChild(allButton);
 
@@ -1298,7 +1300,9 @@ function renderPartners() {
     `;
     button.addEventListener("click", () => {
       state.selectedPartnerId = partner.id;
+      state.mainView = "overview";
       render();
+      document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
     });
     els.partnerList.appendChild(button);
   });
