@@ -252,12 +252,13 @@ body {
 }
 .icon-btn-circle:hover { background: var(--brand-bg-light); border-color: var(--brand); color: var(--brand); }
 .quick-action-icon-sm {
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
   border: 1px solid var(--line);
-  border-radius: 50%;
+  border-radius: 20px;
   background: var(--surface);
   color: var(--ink);
+  font-size: 12px; font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
