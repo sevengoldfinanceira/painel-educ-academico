@@ -2496,6 +2496,73 @@ document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => 
   });
 });
 
+(function initSidebarDrag() {
+  const menu = document.querySelector(".sidebar-menu");
+  if (!menu) return;
+  const items = Array.from(menu.querySelectorAll(".sidebar-item"));
+  let dragItem = null;
+
+  function saveOrder() {
+    const order = Array.from(menu.querySelectorAll(".sidebar-item"))
+      .map(el => el.dataset.sidebarView);
+    localStorage.setItem("sidebarOrder", JSON.stringify(order));
+  }
+
+  function restoreOrder() {
+    try {
+      const order = JSON.parse(localStorage.getItem("sidebarOrder"));
+      if (!Array.isArray(order)) return;
+      const map = {};
+      menu.querySelectorAll(".sidebar-item").forEach(el => { map[el.dataset.sidebarView] = el; });
+      order.forEach(view => { if (map[view]) menu.appendChild(map[view]); });
+    } catch (_) {}
+  }
+
+  restoreOrder();
+
+  items.forEach(item => {
+    item.setAttribute("draggable", "true");
+
+    item.addEventListener("dragstart", (e) => {
+      dragItem = item;
+      item.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", "");
+    });
+
+    item.addEventListener("dragend", () => {
+      if (dragItem) dragItem.classList.remove("dragging");
+      dragItem = null;
+      menu.querySelectorAll(".sidebar-item").forEach(el => el.classList.remove("drag-over"));
+      saveOrder();
+    });
+
+    item.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      if (dragItem && dragItem !== item) {
+        item.classList.add("drag-over");
+        const rect = item.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        if (e.clientY < midY) {
+          menu.insertBefore(dragItem, item);
+        } else {
+          menu.insertBefore(dragItem, item.nextSibling);
+        }
+      }
+    });
+
+    item.addEventListener("dragleave", () => {
+      item.classList.remove("drag-over");
+    });
+
+    item.addEventListener("drop", (e) => {
+      e.preventDefault();
+      item.classList.remove("drag-over");
+    });
+  });
+})();
+
 els.courseTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     state.courseView = tab.dataset.courseView;

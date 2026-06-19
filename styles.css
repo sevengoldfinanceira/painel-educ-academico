@@ -146,6 +146,8 @@ body {
 }
 .sidebar-item.active svg { opacity: 1; color: var(--brand); }
 .sidebar-item.active + .sidebar-item:not(.active) { margin-top: 2px; }
+.sidebar-item.dragging { opacity: 0.4; }
+.sidebar-item.drag-over { border-top: 2px solid var(--brand); }
 
 .sidebar-footer {
   padding: 16px 20px 20px;
