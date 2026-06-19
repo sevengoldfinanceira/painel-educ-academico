@@ -251,6 +251,17 @@ body {
   transition: all 0.2s;
 }
 .icon-btn-circle:hover { background: var(--brand-bg-light); border-color: var(--brand); color: var(--brand); }
+.quick-action-icon-sm {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-action-icon-sm:hover { background: var(--brand-bg-light); border-color: var(--brand); color: var(--brand); }
 
 .btn-sair {
   display: flex; align-items: center; gap: 6px;
@@ -276,45 +287,6 @@ body {
   transition: all 0.2s;
 }
 .btn-nova-parceria:hover { opacity: 0.9; }
-
-/* QUICK ACTIONS */
-.quick-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin: 24px 0 28px;
-  padding: 20px 28px;
-  background: var(--surface);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-}
-.quick-action-item {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: var(--radius);
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.quick-action-item:hover { background: var(--brand-bg-light); }
-.quick-action-icon {
-  width: 52px; height: 52px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: var(--brand-bg-light);
-  color: var(--brand);
-  transition: all 0.2s;
-}
-.quick-action-icon.dark {
-  background: var(--ink);
-  color: #fff;
-}
-.quick-action-item:hover .quick-action-icon { transform: scale(1.08); }
-.quick-action-item span {
-  font-size: 13px; font-weight: 600; color: var(--ink);
-  white-space: nowrap;
-}
 
 /* SUMMARY GRID */
 .summary-grid {
@@ -1086,7 +1058,6 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   .app-sidebar.open { transform: translateX(0); }
   .app-main { margin-left: 0; }
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
-  .quick-actions { flex-wrap: wrap; }
   .courses-search-bar { flex-wrap: wrap; }
   .courses-search-bar select { min-width: 140px; }
   .report-filters { grid-template-columns: repeat(2, 1fr); }
