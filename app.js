@@ -312,7 +312,6 @@ const state = {
   expenseSearch: "",
   expenseType: "",
   selectedContractPartnerId: "",
-  examSearch: "",
   marketingSearch: "",
   marketingCategory: "",
   summaryMonth: today().slice(0, 7),
@@ -335,6 +334,7 @@ const els = {
   summaryGrid: document.querySelector("#summaryGrid"),
   partnerSidebar: document.querySelector("#partnerSidebar"),
   coursesView: document.querySelector("#coursesView"),
+  partnersView: document.querySelector("#partnersView"),
   salesView: document.querySelector("#salesView"),
   partnerList: document.querySelector("#partnerList"),
   partnerSearch: document.querySelector("#partnerSearch"),
@@ -441,7 +441,6 @@ const els = {
   expenseNotes: document.querySelector("#expenseNotes"),
   deleteExpense: document.querySelector("#deleteExpense"),
   contractsView: document.querySelector("#contractsView"),
-  examsView: document.querySelector("#examsView"),
   marketingView: document.querySelector("#marketingView"),
   contractPartnerSelect: document.querySelector("#contractPartnerSelect"),
   contractTextEditor: document.querySelector("#contractTextEditor"),
@@ -452,8 +451,6 @@ const els = {
   partnerCatalogsList: document.querySelector("#partnerCatalogsList"),
   exportDataBtn: document.querySelector("#exportDataBtn"),
   importDataInput: document.querySelector("#importDataInput"),
-  examSearch: document.querySelector("#examSearch"),
-  examCourseList: document.querySelector("#examCourseList"),
   addMarketingBtn: document.querySelector("#addMarketingBtn"),
   marketingSearch: document.querySelector("#marketingSearch"),
   marketingCategoryFilter: document.querySelector("#marketingCategoryFilter"),
@@ -1244,16 +1241,16 @@ function renderSummary() {
 
 function renderMainView() {
   const showingCourses = state.mainView === "courses" || state.mainView === "overview";
+  const showingPartners = state.mainView === "partners";
   const showingSales = state.mainView === "sales";
   const showingCosts = state.mainView === "costs";
   const showingContracts = state.mainView === "contracts";
-  const showingExams = state.mainView === "exams";
   const showingMarketing = state.mainView === "marketing";
   els.coursesView.hidden = !showingCourses;
+  els.partnersView.hidden = !showingPartners;
   els.salesView.hidden = !showingSales;
   els.costsView.hidden = !showingCosts;
   els.contractsView.hidden = !showingContracts;
-  els.examsView.hidden = !showingExams;
   els.marketingView.hidden = !showingMarketing;
   els.partnerSidebar.classList.toggle("hidden", !showingCourses);
   if (els.summaryGrid) els.summaryGrid.classList.toggle("hidden", state.mainView !== "overview");
@@ -1304,6 +1301,41 @@ function renderPartners() {
       render();
     });
     els.partnerList.appendChild(button);
+  });
+}
+
+function renderPartnersFull() {
+  const search = document.querySelector("#partnerSearchFull")?.value?.toLowerCase() || "";
+  const partners = state.data.partners.filter((p) =>
+    !search || [p.name, p.type, p.city, p.contact].some((f) => (f || "").toLowerCase().includes(search))
+  );
+  const tbody = document.querySelector("#partnerRowsFull");
+  const empty = document.querySelector("#emptyPartnerState");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  if (partners.length === 0) {
+    empty.style.display = "";
+    return;
+  }
+  empty.style.display = "none";
+  partners.forEach((p) => {
+    const courseTotal = state.data.courses.filter((c) => c.partnerId === p.id).length;
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.innerHTML = `
+      <td><strong>${escapeHtml(p.name)}</strong></td>
+      <td>${escapeHtml(p.type || "-")}</td>
+      <td>${escapeHtml(p.city || "-")}</td>
+      <td>${escapeHtml(p.contact || "-")}</td>
+      <td>${courseTotal}</td>
+    `;
+    tr.addEventListener("click", () => {
+      state.mainView = "overview";
+      state.selectedPartnerId = p.id;
+      render();
+      document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
+    });
+    tbody.appendChild(tr);
   });
 }
 
@@ -1671,41 +1703,6 @@ function renderContracts() {
       const documentItem = partner.documents.find((item) => item.id === button.dataset.openPartnerDocument);
       openSavedDocument(documentItem?.dataUrl);
     });
-  });
-}
-
-function renderExams() {
-  const courses = state.data.courses.filter((course) => {
-    const partner = getPartner(course.partnerId);
-    return !state.examSearch || matchesSearch([course.name, course.modality, partner?.name], state.examSearch);
-  });
-
-  els.examCourseList.innerHTML = "";
-  courses.forEach((course) => {
-    const partner = getPartner(course.partnerId);
-    const item = document.createElement("article");
-    item.className = "exam-course-item";
-    item.innerHTML = `
-      <div>
-        <strong>${escapeHtml(course.name)}</strong>
-        <span>${escapeHtml(course.modality)} - ${escapeHtml(partner?.name || "Sem parceria")}</span>
-        <small>${course.examFileName ? `Prova: ${escapeHtml(course.examFileName)}` : "Nenhuma prova anexada"}</small>
-      </div>
-      <div class="document-actions">
-        <button class="link-action" type="button" data-open-exam="${escapeHtml(course.id)}" ${course.examDataUrl ? "" : "disabled"}>Abrir prova</button>
-        <button class="secondary-action" type="button" data-edit-exam="${escapeHtml(course.id)}">Anexar / editar</button>
-      </div>
-    `;
-    els.examCourseList.appendChild(item);
-  });
-
-  document.querySelectorAll("[data-open-exam]").forEach((button) => {
-    button.addEventListener("click", () => openSavedDocument(getCourse(button.dataset.openExam)?.examDataUrl));
-  });
-
-  document.querySelectorAll("[data-edit-exam]").forEach((button) => {
-    button.addEventListener("click", () => openCourseDialog(getCourse(button.dataset.editExam)));
-  });
 }
 
 function renderMarketing() {
@@ -1878,7 +1875,7 @@ function render() {
   renderSaleCourseOptions();
   renderSalesFilterOptions();
   renderContracts();
-  renderExams();
+  renderPartnersFull();
   renderMarketing();
   renderProfile();
 }
@@ -2246,6 +2243,11 @@ els.partnerSearch.addEventListener("input", (event) => {
   renderPartners();
 });
 
+const partnerSearchFull = document.querySelector("#partnerSearchFull");
+if (partnerSearchFull) {
+  partnerSearchFull.addEventListener("input", () => renderPartnersFull());
+}
+
 els.courseSearch.addEventListener("input", (event) => {
   state.courseSearch = event.target.value;
   renderCourses();
@@ -2446,11 +2448,6 @@ els.importDataInput.addEventListener("change", async () => {
   els.importDataInput.value = "";
 });
 
-els.examSearch.addEventListener("input", (event) => {
-  state.examSearch = event.target.value;
-  renderExams();
-});
-
 els.marketingSearch.addEventListener("input", (event) => {
   state.marketingSearch = event.target.value;
   renderMarketing();
@@ -2472,7 +2469,7 @@ document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => 
   item.addEventListener("click", (e) => {
     e.preventDefault();
     const view = item.dataset.sidebarView;
-    if (view && view !== "partners" && view !== "settings") {
+    if (view && view !== "settings") {
       state.mainView = view;
       render();
     }
