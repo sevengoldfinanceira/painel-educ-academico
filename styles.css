@@ -18,8 +18,16 @@
   --radius-lg: 24px;
   --radius-xl: 28px;
 }
-
 * { box-sizing: border-box; }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img, table, input, textarea, select, button {
+  max-width: 100%;
+}
 
 .hidden { display: none !important; }
 
@@ -1052,44 +1060,303 @@ dialog label {
 h1, h2, p { margin-top: 0; }
 h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
-/* RESPONSIVE */
-@media (max-width: 1200px) {
-  .summary-grid { grid-template-columns: repeat(2, 1fr); }
-  .modality-cards { flex-wrap: wrap; }
+/* ESTILOS BOTÃO FECHAR SIDEBAR */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--ink);
+  cursor: pointer;
+  z-index: 101;
 }
 
-@media (max-width: 920px) {
-  .hamburger-btn { display: flex; }
-  .app-sidebar {
+/* CONTAINER AÇÕES MOBILE */
+.sidebar-mobile-only-section {
+  display: none;
+}
+
+/* RESPONSIVE SYSTEM */
+
+/* Breakpoint 1: Até 1024px - Layout Ajustado e Menu Hambúrguer Ativo */
+@media (max-width: 1024px) {
+  /* Globais Solicitadas */
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+  .hamburger-btn {
+    display: flex !important;
+  }
+  
+  .mobile-sidebar, .app-sidebar {
     position: fixed;
+    top: 0; bottom: 0; left: 0;
+    width: 280px;
+    max-width: 80%;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    box-shadow: none;
   }
-  .app-sidebar.open { transform: translateX(0); }
-  .app-main { margin-left: 0; }
-  .summary-grid { grid-template-columns: repeat(2, 1fr); }
-  .courses-search-bar { flex-wrap: wrap; }
-  .courses-search-bar select { min-width: 140px; }
-  .report-filters { grid-template-columns: repeat(2, 1fr); }
-  .cost-summary { grid-template-columns: 1fr; }
-  .marketing-category-list { grid-template-columns: repeat(2, 1fr); }
+  
+  .mobile-sidebar.open, .app-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mobile-overlay, .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+  }
+  
+  .mobile-overlay.open, .mobile-overlay.visible, .sidebar-overlay.visible {
+    display: block !important;
+  }
+
+  .app-main {
+    margin-left: 0 !important;
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  .sidebar-mobile-only-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line);
+  }
+  
+  .sidebar-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 12px 16px 6px;
+  }
+  
+  .sidebar-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: calc(100% - 24px);
+    margin: 0 auto;
+    text-align: left;
+  }
+  
+  .sidebar-action-item:hover {
+    background: var(--brand-bg-light);
+    border-color: var(--brand);
+  }
+  
+  .sidebar-action-item.logout {
+    border-color: rgba(166, 56, 56, 0.2);
+    color: var(--danger);
+    background: transparent;
+  }
+  
+  .sidebar-action-item.logout:hover {
+    background: rgba(166, 56, 56, 0.05);
+  }
+  
+  .theme-toggle-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+  }
+  
+  .theme-toggle-mobile span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  
+  .theme-btn-mobile {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-soft);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .theme-btn-mobile.active {
+    background: var(--brand-bg);
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+
+  /* Ajustar grids para 2 colunas */
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .report-filters {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .marketing-category-list {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .modality-cards {
+    flex-wrap: wrap;
+  }
 }
 
-@media (max-width: 640px) {
-  .topbar, .top-actions, .toolbar, .sales-head, .selected-partner.visible {
-    align-items: stretch; flex-direction: column;
+/* Breakpoint 2: Até 768px - Layout em 1 Coluna */
+@media (max-width: 768px) {
+  /* Esconder o menu superior largo */
+  .top-actions {
+    display: none !important;
   }
-  .summary-grid, .form-grid, .report-filters { grid-template-columns: 1fr; }
-  .toolbar select { max-width: none; }
-  .sales-totals { grid-template-columns: 1fr; }
-  .document-item, .exam-course-item {
-    align-items: stretch; flex-direction: column;
+
+  /* Todos os grids em 1 coluna */
+  .summary-grid,
+  .form-grid,
+  .report-filters,
+  .cost-summary,
+  .sales-totals,
+  .marketing-category-list,
+  .document-list {
+    grid-template-columns: 1fr !important;
   }
-  .marketing-category-list { grid-template-columns: 1fr; }
-  .modality-cards { flex-direction: column; }
-  .modality-card { min-width: auto; }
-  .quick-actions { gap: 8px; padding: 16px; }
-  .quick-action-item { padding: 8px 12px; }
+
+  /* Ajustes de layouts flex de 2 colunas para 1 coluna */
+  .courses-search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .courses-search-bar select,
+  .courses-search-bar input {
+    width: 100% !important;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .sales-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .document-item,
+  .exam-course-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .modality-cards {
+    flex-direction: column;
+  }
+
+  .modality-card {
+    min-width: auto;
+  }
+
+  .selected-partner.visible {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Botões quebram linha */
+  button, .sidebar-action-item {
+    white-space: normal;
+    height: auto;
+    line-height: 1.4;
+  }
+
+  /* Modais ocupando quase toda a largura */
+  dialog {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 20px auto;
+  }
+  
+  dialog form {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Breakpoint 3: Até 480px - Ajustar Espaçamentos, Fontes e Botões */
+@media (max-width: 480px) {
+  .app-main {
+    padding: 0 16px 20px !important;
+  }
+
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h2 {
+    font-size: 18px !important;
+  }
+
+  .topbar {
+    padding: 16px 0 8px !important;
+  }
+
+  .topbar h1 {
+    font-size: 20px !important;
+  }
+
+  .summary-card {
+    padding: 16px !important;
+  }
+
+  .courses-card {
+    padding: 16px !important;
+  }
+
+  th, td {
+    padding: 10px 8px !important;
+    font-size: 11px !important;
+  }
+
+  dialog form {
+    padding: 16px !important;
+    gap: 10px !important;
+  }
+
+  .sidebar-logo img {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 .doc-status {

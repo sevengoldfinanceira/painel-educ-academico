@@ -721,7 +721,7 @@ function scheduleCloudSave() {
   if (!cloudReady || !cloudUser || !supabaseClient) return;
   clearTimeout(cloudSaveTimer);
   setSyncStatus("Salvando...", "saving");
-  cloudSaveTimer = setTimeout(saveDataToCloud, 600);
+  cloudSaveTimer = setTimeout(saveDataToCloud, 200);
 }
 
 async function saveDataToCloud() {
@@ -1006,10 +1006,18 @@ function normalizeUrl(value) {
 
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error("Nenhum arquivo fornecido"));
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
+    reader.onerror = (error) => {
+      console.error("Erro ao ler arquivo:", error);
+      reject(new Error(`Falha ao ler arquivo: ${file.name}`));
+    };
+    reader.onabort = () => reject(new Error("Leitura cancelada"));
+    reader.readAsDataUrl(file);
   });
 }
 
@@ -2071,9 +2079,27 @@ async function upsertPartner() {
   const contractFile = els.partnerContract.files[0];
   const currentContractFileName = existing?.contractFileName || "";
   const currentContractDataUrl = existing?.contractDataUrl || "";
-  const contractDataUrl = contractFile ? await readFileAsDataUrl(contractFile) : currentContractDataUrl;
-  const newCatalogs = await readFilesAsDocuments(els.partnerCatalog.files);
-  const newDocuments = await readFilesAsDocuments(els.partnerDocuments.files);
+  
+  let contractDataUrl = currentContractDataUrl;
+  if (contractFile) {
+    try {
+      contractDataUrl = await readFileAsDataUrl(contractFile);
+    } catch (error) {
+      console.error("Erro ao ler arquivo do contrato:", error);
+      alert("Erro ao ler arquivo do contrato");
+    }
+  }
+  
+  let newCatalogs = [];
+  let newDocuments = [];
+  try {
+    newCatalogs = await readFilesAsDocuments(els.partnerCatalog.files);
+    newDocuments = await readFilesAsDocuments(els.partnerDocuments.files);
+  } catch (error) {
+    console.error("Erro ao ler arquivos:", error);
+    alert("Erro ao ler arquivos");
+  }
+  
   const partner = {
     id,
     name: els.partnerName.value.trim(),
@@ -2132,7 +2158,17 @@ async function upsertCourse() {
   const id = els.courseId.value || createId("course");
   const existing = state.data.courses.find((course) => course.id === id);
   const examFile = els.courseExamFile.files[0];
-  const examDataUrl = examFile ? await readFileAsDataUrl(examFile) : existing?.examDataUrl || "";
+  
+  let examDataUrl = existing?.examDataUrl || "";
+  if (examFile) {
+    try {
+      examDataUrl = await readFileAsDataUrl(examFile);
+    } catch (error) {
+      console.error("Erro ao ler prova:", error);
+      alert("Erro ao ler arquivo da prova");
+    }
+  }
+  
   const course = {
     id,
     partnerId: els.coursePartner.value,
@@ -2240,12 +2276,19 @@ els.profilePhotoUrl.addEventListener("input", () => {
 
 els.profilePhotoFile.addEventListener("change", async () => {
   const file = els.profilePhotoFile.files[0];
-  const url = file ? await readFileAsDataUrl(file) : els.profilePhotoUrl.value;
-  const profile = {
-    displayName: els.profileName.value.trim() || getEffectiveProfile().displayName,
-    avatarUrl: url
-  };
-  renderAvatar(els.profilePreviewAvatar, profile);
+  if (!file) return;
+  try {
+    const url = await readFileAsDataUrl(file);
+    const profile = {
+      displayName: els.profileName.value.trim() || getEffectiveProfile().displayName,
+      avatarUrl: url
+    };
+    renderAvatar(els.profilePreviewAvatar, profile);
+  } catch (error) {
+    console.error("Erro ao carregar foto:", error);
+    alert("Erro ao carregar foto. Tente novamente.");
+    els.profilePhotoFile.value = "";
+  }
 });
 
 const removeProfilePhotoBtn = document.getElementById("removeProfilePhotoBtn");
@@ -2368,15 +2411,25 @@ els.profileForm.addEventListener("submit", async (event) => {
   if (event.submitter?.value === "cancel") return;
   event.preventDefault();
 
-  const file = els.profilePhotoFile.files[0];
-  const uploadedPhotoUrl = file ? await readFileAsDataUrl(file) : "";
-  state.data.profile = {
-    displayName: els.profileName.value.trim(),
-    avatarUrl: uploadedPhotoUrl || els.profilePhotoUrl.value.trim(),
-  };
-  saveData();
-  renderProfile();
-  els.profileDialog.close();
+  try {
+    const file = els.profilePhotoFile.files[0];
+    const uploadedPhotoUrl = file ? await readFileAsDataUrl(file) : "";
+    state.data.profile = {
+      displayName: els.profileName.value.trim(),
+      avatarUrl: uploadedPhotoUrl || els.profilePhotoUrl.value.trim(),
+    };
+    saveData();
+    renderProfile();
+    els.profileDialog.close();
+    
+    const result = await saveDataToCloud();
+    if (!result.ok) {
+      setSyncStatus("Erro ao salvar perfil online", "error");
+    }
+  } catch (error) {
+    console.error("Erro ao salvar foto:", error);
+    alert("Erro ao salvar foto. Tente novamente.");
+  }
 });
 
 
@@ -2696,6 +2749,13 @@ els.partnerForm.addEventListener("submit", async (event) => {
 
   try {
     await upsertPartner();
+    setSyncStatus("Salvando parceria online...", "saving");
+    const result = await saveDataToCloud();
+    if (result.ok) {
+      setSyncStatus("Parceria salva online", "saved");
+    } else {
+      setSyncStatus("Erro ao salvar parceria online", "error");
+    }
   } catch (error) {
     console.error(error);
     setSyncStatus("Erro ao salvar parceria", "error");
@@ -2737,32 +2797,61 @@ els.clientForm.addEventListener("submit", async (event) => {
   };
 
   if (els.clientContractFile.files[0]) {
-    const file = els.clientContractFile.files[0];
-    client.contractFileName = file.name;
-    client.contractDataUrl = await readFileAsDataUrl(file);
+    try {
+      const file = els.clientContractFile.files[0];
+      client.contractFileName = file.name;
+      client.contractDataUrl = await readFileAsDataUrl(file);
+    } catch (error) {
+      console.error("Erro ao ler contrato:", error);
+      alert("Erro ao ler arquivo do contrato");
+    }
   }
   if (els.clientHistoryFile.files[0]) {
-    const file = els.clientHistoryFile.files[0];
-    client.historyFileName = file.name;
-    client.historyDataUrl = await readFileAsDataUrl(file);
+    try {
+      const file = els.clientHistoryFile.files[0];
+      client.historyFileName = file.name;
+      client.historyDataUrl = await readFileAsDataUrl(file);
+    } catch (error) {
+      console.error("Erro ao ler histórico:", error);
+      alert("Erro ao ler arquivo do histórico");
+    }
   }
   if (els.clientDeclarationFile.files[0]) {
-    const file = els.clientDeclarationFile.files[0];
-    client.declarationFileName = file.name;
-    client.declarationDataUrl = await readFileAsDataUrl(file);
+    try {
+      const file = els.clientDeclarationFile.files[0];
+      client.declarationFileName = file.name;
+      client.declarationDataUrl = await readFileAsDataUrl(file);
+    } catch (error) {
+      console.error("Erro ao ler declaração:", error);
+      alert("Erro ao ler arquivo da declaração");
+    }
   }
   if (els.clientDiplomaFile.files[0]) {
-    const file = els.clientDiplomaFile.files[0];
-    client.diplomaFileName = file.name;
-    client.diplomaDataUrl = await readFileAsDataUrl(file);
+    try {
+      const file = els.clientDiplomaFile.files[0];
+      client.diplomaFileName = file.name;
+      client.diplomaDataUrl = await readFileAsDataUrl(file);
+    } catch (error) {
+      console.error("Erro ao ler diploma:", error);
+      alert("Erro ao ler arquivo do diploma");
+    }
   }
 
   const index = state.data.clients.findIndex((c) => c.id === client.id);
   if (index >= 0) state.data.clients[index] = client;
   else state.data.clients.push(client);
+  
   saveData();
   els.clientDialog.close();
   renderClients();
+  
+  setSyncStatus("Salvando cliente online...", "saving");
+  const result = await saveDataToCloud();
+  if (result.ok) {
+    setSyncStatus("Cliente salvo online", "saved");
+  } else {
+    setSyncStatus("Erro ao salvar cliente online", "error");
+  }
 });
 
 els.clientSearch.addEventListener("input", (event) => {
@@ -2793,6 +2882,14 @@ els.courseForm.addEventListener("submit", async (event) => {
 
   await upsertCourse();
   els.courseDialog.close();
+  
+  setSyncStatus("Salvando curso online...", "saving");
+  const result = await saveDataToCloud();
+  if (result.ok) {
+    setSyncStatus("Curso salvo online", "saved");
+  } else {
+    setSyncStatus("Erro ao salvar curso online", "error");
+  }
 });
 
 els.saleForm.addEventListener("submit", async (event) => {
@@ -2841,7 +2938,7 @@ els.saleForm.addEventListener("submit", async (event) => {
   }
 });
 
-els.expenseForm.addEventListener("submit", (event) => {
+els.expenseForm.addEventListener("submit", async (event) => {
   if (event.submitter?.value === "cancel") return;
   event.preventDefault();
 
@@ -2855,6 +2952,14 @@ els.expenseForm.addEventListener("submit", (event) => {
 
   upsertExpense();
   els.expenseDialog.close();
+  
+  setSyncStatus("Salvando custo online...", "saving");
+  const result = await saveDataToCloud();
+  if (result.ok) {
+    setSyncStatus("Custo salvo online", "saved");
+  } else {
+    setSyncStatus("Erro ao salvar custo online", "error");
+  }
 });
 
 els.marketingForm.addEventListener("submit", async (event) => {
@@ -2878,9 +2983,7 @@ els.marketingForm.addEventListener("submit", async (event) => {
   const THEME_KEY = "educamais_theme";
   const body = document.body;
   const docHtml = document.documentElement;
-  const toggleBtn = document.querySelector("#themeToggleBtn");
-  if (!toggleBtn) return;
-  const buttons = toggleBtn.querySelectorAll(".theme-btn");
+  const buttons = document.querySelectorAll(".theme-btn, .theme-btn-mobile");
 
   function applyTheme(theme) {
     if (theme === "dark") {
@@ -2910,18 +3013,82 @@ els.marketingForm.addEventListener("submit", async (event) => {
 render();
 initializeCloud();
 
-const hamburgerBtn = document.querySelector("#hamburgerBtn");
-const appSidebar = document.querySelector("#appSidebar");
-const sidebarOverlay = document.querySelector("#sidebarOverlay");
-if (hamburgerBtn && appSidebar) {
-  hamburgerBtn.addEventListener("click", () => {
-    appSidebar.classList.toggle("open");
-    sidebarOverlay.classList.toggle("visible");
+// RESPONSIVIDADE MOBILE GLOBALS & EVENTOS
+(function initMobileMenu() {
+  const hamburgerBtn = document.querySelector("#hamburgerBtn");
+  const appSidebar = document.querySelector("#appSidebar");
+  const sidebarOverlay = document.querySelector("#sidebarOverlay");
+  const sidebarCloseBtn = document.querySelector("#sidebarCloseBtn");
+  const sidebarItems = document.querySelectorAll(".sidebar-item");
+
+  function closeMobileMenu() {
+    if (appSidebar) appSidebar.classList.remove("open");
+    if (sidebarOverlay) {
+      sidebarOverlay.classList.remove("visible");
+      sidebarOverlay.classList.remove("open");
+    }
+  }
+
+  if (hamburgerBtn && appSidebar) {
+    hamburgerBtn.addEventListener("click", () => {
+      appSidebar.classList.add("open");
+      if (sidebarOverlay) {
+        sidebarOverlay.classList.add("visible");
+        sidebarOverlay.classList.add("open");
+      }
+    });
+  }
+
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener("click", closeMobileMenu);
+  }
+
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener("click", closeMobileMenu);
+  }
+
+  // Clicar em uma aba fecha o menu automaticamente
+  sidebarItems.forEach((item) => {
+    item.addEventListener("click", closeMobileMenu);
   });
-}
-if (sidebarOverlay) {
-  sidebarOverlay.addEventListener("click", () => {
-    appSidebar.classList.remove("open");
-    sidebarOverlay.classList.remove("visible");
+
+  // Fechar menu com tecla ESC
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeMobileMenu();
+    }
   });
-}
+
+  // Ações Rápidas Mobile
+  const mobileAddSaleBtn = document.querySelector("#mobileAddSaleBtn");
+  const mobileAddCourseBtn = document.querySelector("#mobileAddCourseBtn");
+  const mobileAddPartnerBtn = document.querySelector("#mobileAddPartnerBtn");
+  const mobileLogoutBtn = document.querySelector("#mobileLogoutBtn");
+
+  if (mobileAddSaleBtn) {
+    mobileAddSaleBtn.addEventListener("click", () => {
+      closeMobileMenu();
+      if (typeof openSaleDialog === "function") openSaleDialog();
+    });
+  }
+  if (mobileAddCourseBtn) {
+    mobileAddCourseBtn.addEventListener("click", () => {
+      closeMobileMenu();
+      if (typeof openCourseDialog === "function") openCourseDialog();
+    });
+  }
+  if (mobileAddPartnerBtn) {
+    mobileAddPartnerBtn.addEventListener("click", () => {
+      closeMobileMenu();
+      if (typeof openPartnerDialog === "function") openPartnerDialog();
+    });
+  }
+  if (mobileLogoutBtn) {
+    mobileLogoutBtn.addEventListener("click", () => {
+      closeMobileMenu();
+      if (els.logoutBtn) {
+        els.logoutBtn.click();
+      }
+    });
+  }
+})();
