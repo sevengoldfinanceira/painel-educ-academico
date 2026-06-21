@@ -1,0 +1,18 @@
+{
+  "name": "Educ Acadêmico - Painel Administrativo",
+  "short_name": "Educ Acadêmico",
+  "description": "Painel administrativo Educ Acadêmico - Centro de Ensino",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/brand/perfil-e-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

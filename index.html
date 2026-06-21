@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
+    <link rel="apple-touch-icon" href="assets/brand/perfil-e-logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0a1628" />
     <link rel="stylesheet" href="styles.css" />
     <script>
       (function() {
@@ -976,5 +979,10 @@
     <script src="supabase-config.js"></script>
     <script src="educamais-catalog-data.js"></script>
     <script src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      }
+    </script>
   </body>
 </html>
