@@ -1234,9 +1234,39 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
 /* Breakpoint 2: Até 768px - Layout em 1 Coluna */
 @media (max-width: 768px) {
-  /* Esconder o menu superior largo */
+  /* Mostrar apenas as ações rápidas com ícones no topo */
+  .topbar {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
   .top-actions {
+    display: flex !important;
+    gap: 6px !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+  }
+  /* Esconder o resto */
+  .top-actions > *:not(#addSaleBtnQuick):not(#addCourseBtn):not(#addPartnerBtnQuick) {
     display: none !important;
+  }
+  /* Esconder a parte escrita do botão */
+  .quick-action-icon-sm span {
+    display: none !important;
+  }
+  /* Botões viram círculos com ícones */
+  .quick-action-icon-sm {
+    padding: 0 !important;
+    width: 38px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    border: 1px solid var(--line) !important;
+    background: var(--surface) !important;
+    color: var(--ink) !important;
   }
 
   /* Todos os grids em 1 coluna */

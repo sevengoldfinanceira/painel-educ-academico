@@ -3060,29 +3060,8 @@ initializeCloud();
   });
 
   // Ações Rápidas Mobile
-  const mobileAddSaleBtn = document.querySelector("#mobileAddSaleBtn");
-  const mobileAddCourseBtn = document.querySelector("#mobileAddCourseBtn");
-  const mobileAddPartnerBtn = document.querySelector("#mobileAddPartnerBtn");
   const mobileLogoutBtn = document.querySelector("#mobileLogoutBtn");
 
-  if (mobileAddSaleBtn) {
-    mobileAddSaleBtn.addEventListener("click", () => {
-      closeMobileMenu();
-      if (typeof openSaleDialog === "function") openSaleDialog();
-    });
-  }
-  if (mobileAddCourseBtn) {
-    mobileAddCourseBtn.addEventListener("click", () => {
-      closeMobileMenu();
-      if (typeof openCourseDialog === "function") openCourseDialog();
-    });
-  }
-  if (mobileAddPartnerBtn) {
-    mobileAddPartnerBtn.addEventListener("click", () => {
-      closeMobileMenu();
-      if (typeof openPartnerDialog === "function") openPartnerDialog();
-    });
-  }
   if (mobileLogoutBtn) {
     mobileLogoutBtn.addEventListener("click", () => {
       closeMobileMenu();
