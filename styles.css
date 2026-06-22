@@ -1275,10 +1275,15 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   .form-grid,
   .report-filters,
   .cost-summary,
-  .sales-totals,
   .marketing-category-list,
   .document-list {
     grid-template-columns: 1fr !important;
+  }
+
+  .sales-totals {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    min-width: 0;
+    width: 100%;
   }
 
   /* Ajustes de layouts flex de 2 colunas para 1 coluna */
