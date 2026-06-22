@@ -1351,7 +1351,27 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     flex-direction: column;
   }
 
-  .modality-card {
+  .filter-todos-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  .filter-todos-row .modality-card {
+    width: min(100%, 260px);
+  }
+
+  .filter-section .modality-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-section #modalityCards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modality-card,
+  .modality-filter-card {
     min-width: auto;
   }
 
