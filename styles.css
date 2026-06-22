@@ -689,10 +689,18 @@ input:focus, select:focus, textarea:focus {
 .partner-notes p { white-space: pre-wrap; }
 
 /* COURSE TABLE */
-.course-table-wrap { width: 100%; overflow-x: auto; }
+.course-table-wrap,
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
 table {
   width: 100%; min-width: 800px;
   border-collapse: collapse;
+}
+.data-table {
+  min-width: 760px;
 }
 th, td {
   padding: 16px 18px;
@@ -872,7 +880,7 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
 
 /* DOCUMENTS */
 .document-workspace { padding: 18px 0; }
-.document-toolbar, .data-backup {
+.document-toolbar {
   display: flex; justify-content: space-between;
   align-items: end; gap: 16px;
   padding-bottom: 16px;
@@ -890,7 +898,7 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   background: #f8faf8; color: #1d2522;
   font-family: "Segoe UI", sans-serif; line-height: 1.5;
 }
-.attachments-panel, .data-backup {
+.attachments-panel {
   margin-top: 18px; padding-top: 18px;
   border-top: 1px solid var(--line);
 }
@@ -933,7 +941,7 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   display: grid; gap: 10px; padding: 16px 0;
 }
 .exam-course-item div:first-child { display: grid; gap: 3px; }
-.exam-course-item span, .exam-course-item small, .data-backup p {
+.exam-course-item span, .exam-course-item small {
   color: var(--muted); font-size: 12px;
 }
 
@@ -1273,11 +1281,26 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   /* Todos os grids em 1 coluna */
   .summary-grid,
   .form-grid,
-  .report-filters,
   .cost-summary,
   .marketing-category-list,
   .document-list {
     grid-template-columns: 1fr !important;
+  }
+
+  .report-filters {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .report-filters label,
+  .report-filters input,
+  .report-filters select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .report-filters .secondary-action {
+    grid-column: 1 / -1;
   }
 
   .sales-totals {
@@ -1302,6 +1325,13 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+  }
+
+  #salesStatusFilter,
+  #expenseTypeFilter,
+  #marketingCategoryFilter {
+    align-self: center;
+    width: min(100%, 220px);
   }
 
   .sales-head {
@@ -1375,6 +1405,11 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     padding: 16px !important;
   }
 
+  .report-filters {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
   .courses-card {
     padding: 16px !important;
   }
@@ -1382,6 +1417,19 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   th, td {
     padding: 10px 8px !important;
     font-size: 11px !important;
+  }
+
+  .table-wrap,
+  .course-table-wrap,
+  .sales-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    width: max-content;
+    min-width: 720px;
   }
 
   dialog form {

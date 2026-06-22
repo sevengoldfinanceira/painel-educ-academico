@@ -460,8 +460,6 @@ const els = {
   saveClient: document.querySelector("#saveClient"),
   deleteClient: document.querySelector("#deleteClient"),
   addClientBtn: document.querySelector("#addClientBtn"),
-  exportDataBtn: document.querySelector("#exportDataBtn"),
-  importDataInput: document.querySelector("#importDataInput"),
   addMarketingBtn: document.querySelector("#addMarketingBtn"),
   marketingSearch: document.querySelector("#marketingSearch"),
   marketingCategoryFilter: document.querySelector("#marketingCategoryFilter"),
@@ -1044,16 +1042,6 @@ function mergeUniqueDocuments(existingDocuments, newDocuments) {
     if (!duplicate) documents.push(newDocument);
   });
   return documents;
-}
-
-function downloadTextFile(filename, text, type = "application/json") {
-  const blob = new Blob([text], { type });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
 }
 
 function openSavedDocument(dataUrl) {
@@ -2616,21 +2604,6 @@ els.expenseSearch.addEventListener("input", (event) => {
 els.expenseTypeFilter.addEventListener("change", (event) => {
   state.expenseType = event.target.value;
   renderExpenses();
-});
-
-els.exportDataBtn.addEventListener("click", () => {
-  downloadTextFile(`eduacademico-backup-${today()}.json`, JSON.stringify(state.data));
-});
-
-els.importDataInput.addEventListener("change", async () => {
-  const file = els.importDataInput.files[0];
-  if (!file) return;
-  const imported = JSON.parse(await file.text());
-  state.data = imported;
-  saveData();
-  state.data = loadData();
-  render();
-  els.importDataInput.value = "";
 });
 
 els.marketingSearch.addEventListener("input", (event) => {
