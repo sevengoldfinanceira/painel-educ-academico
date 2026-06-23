@@ -2371,6 +2371,7 @@ function render() {
   const quickPartnerBtn = document.querySelector("#addPartnerBtnQuick");
   if (quickPartnerBtn) quickPartnerBtn.style.display = isAdmin() ? "" : "none";
   const admin = isAdmin();
+  if (els.addCourseBtn) els.addCourseBtn.style.display = admin ? "" : "none";
   if (els.addClientBtn) els.addClientBtn.style.display = admin ? "" : "none";
   document.querySelectorAll("#courseSort option[value^='cost-'], #courseSort option[value^='sale-']").forEach((opt) => {
     opt.style.display = admin ? "" : "none";
@@ -2448,6 +2449,7 @@ function openClientDialog(client = null) {
 }
 
 function openCourseDialog(course = null) {
+  if (!isAdmin()) return;
   if (!state.data.partners.length) {
     openPartnerDialog();
     return;
@@ -2494,6 +2496,7 @@ function openCourseDialog(course = null) {
 }
 
 function openSaleDialog(sale = null, selectedCourse = null) {
+  if (!isAdmin()) return;
   if (!state.data.courses.length) {
     openCourseDialog();
     return;
