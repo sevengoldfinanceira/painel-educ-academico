@@ -1660,10 +1660,18 @@ function renderPartnersFull() {
   const cards = document.querySelector("#partnerCardsFull");
   const mobileTotal = document.querySelector("#partnerMobileTotal");
   const empty = document.querySelector("#emptyPartnerState");
+  const partnerTotalDesktop = document.querySelector("#partnerTotalDesktop");
+  const partnerCoursesDesktop = document.querySelector("#partnerCoursesDesktop");
+  const partnerCitiesDesktop = document.querySelector("#partnerCitiesDesktop");
+  const partnerActiveDesktop = document.querySelector("#partnerActiveDesktop");
   if (!tbody) return;
   tbody.innerHTML = "";
   if (cards) cards.innerHTML = "";
   if (mobileTotal) mobileTotal.textContent = String(partners.length);
+  if (partnerTotalDesktop) partnerTotalDesktop.textContent = String(partners.length);
+  if (partnerCoursesDesktop) partnerCoursesDesktop.textContent = String(state.data.courses.length);
+  if (partnerCitiesDesktop) partnerCitiesDesktop.textContent = String(new Set(partners.map((p) => (p.city || "").trim()).filter(Boolean)).size);
+  if (partnerActiveDesktop) partnerActiveDesktop.textContent = String(partners.length);
   if (partners.length === 0) {
     empty.style.display = "";
     if (cards) cards.innerHTML = `<div class="empty-state visible">Nenhum parceiro encontrado.</div>`;
@@ -1721,12 +1729,12 @@ function renderPartnersFull() {
         </div>
         <div class="partner-mobile-info">
           <span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11 4.93"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L13 19.07"/></svg>
-            ${p.siteUrl ? `<a href="${escapeHtml(normalizeUrl(p.siteUrl))}" target="_blank" rel="noopener noreferrer" data-partner-link>Site da faculdade</a>` : "-"}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${escapeHtml(p.city || "-")}
           </span>
           <span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
-            ${p.mecUrl ? `<a href="${escapeHtml(normalizeUrl(p.mecUrl))}" target="_blank" rel="noopener noreferrer" data-partner-link>Link do MEC</a>` : "-"}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.11 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.32 1.78.59 2.63a2 2 0 0 1-.45 2.11L9 10.7a16 16 0 0 0 4.3 4.3l1.24-1.24a2 2 0 0 1 2.11-.45c.85.27 1.73.47 2.63.59A2 2 0 0 1 22 16.92Z"/></svg>
+            ${escapeHtml(p.contact || "-")}
           </span>
         </div>
         <div class="partner-mobile-footer">
