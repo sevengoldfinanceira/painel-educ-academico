@@ -1570,10 +1570,6 @@ body {
    CLIENTES - DESKTOP (min-width: 1024px)
    ============================================ */
 @media (min-width: 1024px) {
-  #clientsView {
-    display: block;
-  }
-
   .clients-desktop-wrap {
     background: #fff;
     border-radius: 28px;
