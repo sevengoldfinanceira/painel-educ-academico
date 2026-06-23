@@ -148,12 +148,13 @@ begin
     'authenticated', 'authenticated'
   );
   insert into auth.identities (
-    id, user_id, identity_data, provider,
+    id, user_id, identity_data, provider, provider_id,
     last_sign_in_at, created_at, updated_at
   ) values (
     new_id, new_id,
     jsonb_build_object('sub', new_id::text, 'email', user_email),
-    'email', now(), now(), now()
+    'email', user_email,
+    now(), now(), now()
   );
   return new_id;
 end;
