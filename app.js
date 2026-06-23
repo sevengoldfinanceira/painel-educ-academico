@@ -42,12 +42,34 @@ const VIEW_LABELS = {
   admin: "Administração",
 };
 
+const ROLE_CACHE_KEY = "edukie_user_role";
+
 function isAdmin() {
   return cloudUserRole === "admin";
 }
 
+function getCachedRole() {
+  try {
+    const raw = sessionStorage.getItem(ROLE_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (_) { return null; }
+}
+
+function setCachedRole(role) {
+  try { sessionStorage.setItem(ROLE_CACHE_KEY, JSON.stringify(role)); } catch (_) {}
+}
+
+function clearCachedRole() {
+  try { sessionStorage.removeItem(ROLE_CACHE_KEY); } catch (_) {}
+}
+
 async function loadUserRole() {
   if (!cloudUser || !supabaseClient) return;
+  const cached = getCachedRole();
+  if (cached) {
+    cloudUserRole = cached;
+    return;
+  }
   try {
     const { data, error } = await supabaseClient
       .from("user_profiles")
@@ -78,6 +100,7 @@ async function loadUserRole() {
         cloudUserRole = role;
       }
     }
+    setCachedRole(cloudUserRole);
   } catch (err) {
     console.error("Erro ao carregar permissao:", err);
     cloudUserRole = "user";
@@ -1120,14 +1143,19 @@ async function initializeCloud() {
     const { data } = await supabaseClient.auth.getSession();
     cloudUser = data.session?.user || null;
     if (cloudUser) {
-      await loadUserRole();
-      if (!isAdmin() && state.mainView === "overview") {
-        state.mainView = "courses";
+      const cached = getCachedRole();
+      if (cached) {
+        cloudUserRole = cached;
+        renderProfile();
+        if (!isAdmin() && state.mainView === "overview") state.mainView = "courses";
       }
+      await Promise.all([loadUserRole(), loadDataFromCloud()]);
+      if (!isAdmin() && state.mainView === "overview") state.mainView = "courses";
+      renderProfile();
+    } else {
+      renderProfile();
     }
-    renderProfile();
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
-    if (cloudUser) await loadDataFromCloud();
   } catch (error) {
     console.error("Falha ao iniciar o sistema.", error);
     setSyncStatus("Erro ao conectar com o banco online", "error");
@@ -1143,16 +1171,15 @@ async function initializeCloud() {
     if (userChanged) {
       cloudReady = false;
       cloudUserRole = null;
+      clearCachedRole();
     }
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
     if (cloudUser && !cloudReady) {
       setAppLoading(true);
       setTimeout(async () => {
-        await loadUserRole();
-        if (!isAdmin() && state.mainView === "overview") {
-          state.mainView = "courses";
-        }
-        await loadDataFromCloud();
+        await Promise.all([loadUserRole(), loadDataFromCloud()]);
+        if (!isAdmin() && state.mainView === "overview") state.mainView = "courses";
+        renderProfile();
         setAppLoading(false);
       }, 0);
     } else if (!cloudUser) {
