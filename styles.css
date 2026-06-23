@@ -1234,10 +1234,6 @@ body {
    PARCEIROS - DESKTOP (min-width: 1024px)
    ============================================ */
 @media (min-width: 1024px) {
-  #partnersView {
-    display: block;
-  }
-
   .partners-desktop-wrap {
     background: #fff;
     border-radius: 24px;
