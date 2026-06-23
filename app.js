@@ -766,23 +766,19 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
   }
   try {
     if (msgEl) msgEl.textContent = "Criando usuário...";
-    const serviceKey = window.SUPABASE_SERVICE_KEY;
-    if (serviceKey) {
-      const res = await fetch(SUPABASE_CONFIG.url + "/auth/v1/admin/users", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + serviceKey,
-          "apikey": serviceKey,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password, email_confirm: true })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || data.error || "Erro ao criar usuário");
-    } else {
-      const { error } = await supabaseClient.auth.signUp({ email, password });
-      if (error) throw error;
-    }
+    const serviceKey = window.SUPABASE_SERVICE_KEY || localStorage.getItem("supabase_admin_key");
+    if (!serviceKey) throw new Error("Chave service_role não configurada. Coloque em localStorage via DevTools ou crie supabase-admin-key.js.");
+    const res = await fetch(SUPABASE_CONFIG.url + "/auth/v1/admin/users", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + serviceKey,
+        "apikey": serviceKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password, email_confirm: true })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.msg || data.error || "Erro ao criar usuário");
     if (msgEl) msgEl.textContent = "Usuário criado! Ele já pode fazer login.";
     if (emailEl) emailEl.value = "";
     if (passEl) passEl.value = "";
