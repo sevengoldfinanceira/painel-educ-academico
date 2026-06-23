@@ -529,6 +529,7 @@ const els = {
   clientsView: document.querySelector("#clientsView"),
   marketingView: document.querySelector("#marketingView"),
   clientRows: document.querySelector("#clientRows"),
+  clientCards: document.querySelector("#clientCards"),
   clientSearch: document.querySelector("#clientSearch"),
   emptyClientState: document.querySelector("#emptyClientState"),
   clientDialog: document.querySelector("#clientDialog"),
@@ -2085,7 +2086,11 @@ function renderClients() {
   });
 
   els.clientRows.innerHTML = "";
+  if (els.clientCards) els.clientCards.innerHTML = "";
   els.emptyClientState.classList.toggle("visible", filtered.length === 0);
+  if (els.clientCards && filtered.length === 0) {
+    els.clientCards.innerHTML = `<div class="empty-state visible">Nenhum cliente encontrado.</div>`;
+  }
 
   filtered.forEach((client) => {
     const course = state.data.courses.find((c) => c.id === client.courseId);
@@ -2122,6 +2127,47 @@ function renderClients() {
       <td>${admin ? `<button class="row-action" type="button" data-client-id="${escapeHtml(client.id)}">Editar</button>` : ""}</td>
     `;
     els.clientRows.appendChild(row);
+
+    if (els.clientCards) {
+      const docItems = [
+        ["Contrato", "contract", client.contractDataUrl],
+        ["Histórico", "history", client.historyDataUrl],
+        ["Declaração", "declaration", client.declarationDataUrl],
+        ["Diploma", "diploma", client.diplomaDataUrl],
+      ];
+      const card = document.createElement("article");
+      card.className = "client-mobile-card";
+      card.innerHTML = `
+        <div class="client-mobile-head">
+          <span class="client-mobile-avatar">${escapeHtml(getInitials(client.name))}</span>
+          <div>
+            <h3>${escapeHtml(client.name)}</h3>
+            <p>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>
+              ${escapeHtml(course?.name || "—")}
+            </p>
+            <p>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+              ${escapeHtml(partner?.name || "—")}
+            </p>
+          </div>
+        </div>
+        <div class="client-doc-grid">
+          ${docItems.map(([label, key, dataUrl]) => `
+            <button class="client-doc-item ${dataUrl ? "is-ok" : ""}" type="button" ${dataUrl ? `data-open-doc="${key}" data-client-id-doc="${escapeHtml(client.id)}"` : "disabled"}>
+              <span class="client-doc-dot"></span>
+              <span>${label}</span>
+              <strong>${dataUrl ? "OK" : "—"}</strong>
+            </button>
+          `).join("")}
+        </div>
+        ${admin ? `<button class="client-card-edit" type="button" data-client-id="${escapeHtml(client.id)}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
+          Editar cliente
+        </button>` : ""}
+      `;
+      els.clientCards.appendChild(card);
+    }
   });
 
   document.querySelectorAll("[data-client-id]").forEach((button) => {
