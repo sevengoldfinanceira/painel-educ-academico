@@ -1690,6 +1690,13 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
     color: #0f1b33;
   }
 
+  .partner-mobile-info a {
+    color: #c89000;
+    font-weight: 900;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
   .partner-mobile-footer {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
