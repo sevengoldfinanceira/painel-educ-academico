@@ -792,37 +792,48 @@
             <div id="marketingList" class="marketing-list"></div>
           </section>
 
-          <section id="clientsView" hidden>
-            <div class="sales-head">
-              <div>
-                <h2>Clientes</h2>
-                <p>Gerencie clientes e acompanhe os documentos necessarios.</p>
+<section id="clientsView" hidden>
+            <div class="clients-desktop-wrap">
+              <div class="clients-header-row">
+                <div class="clients-header-left">
+                  <h2>Clientes</h2>
+                  <p>Gerencie clientes e acompanhe os documentos necessários.</p>
+                </div>
+                <div class="clients-header-actions">
+                  <button class="btn-gold" id="addClientBtn" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Adicionar cliente
+                  </button>
+                </div>
               </div>
-              <button class="primary-action" id="addClientBtn" type="button">Adicionar cliente</button>
-            </div>
-            <div class="toolbar">
-              <label class="search-field wide">
-                <span>Buscar cliente</span>
-                <input id="clientSearch" type="search" placeholder="Nome, curso ou instituicao" />
-              </label>
-            </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>Curso</th>
-                    <th>Instituicao</th>
-                    <th>Contrato</th>
-                    <th>Historico</th>
-                    <th>Declaracao</th>
-                    <th>Diploma</th>
-                    <th>Acoes</th>
-                  </tr>
-                </thead>
-                <tbody id="clientRows"></tbody>
-              </table>
-              <div class="empty-state" id="emptyClientState">Nenhum cliente encontrado.</div>
+
+              <div class="clients-search-bar">
+                <div class="search-input-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input id="clientSearch" type="search" placeholder="Buscar cliente por nome, curso ou instituição..." />
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Curso</th>
+                      <th>Instituição</th>
+                      <th>Contrato</th>
+                      <th>Histórico</th>
+                      <th>Declaração</th>
+                      <th>Diploma</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="clientRows"></tbody>
+                </table>
+                <div class="empty-state" id="emptyClientState">Nenhum cliente encontrado.</div>
+              </div>
+
+              <div class="clients-pagination" id="clientPagination"></div>
             </div>
             <div class="clients-mobile-cards" id="clientCards" aria-label="Clientes em cards"></div>
           </section>
