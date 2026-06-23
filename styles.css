@@ -1126,6 +1126,11 @@ body {
     margin-top: 0;
   }
 
+  .courses-filter-layout .filter-overview-column .modality-card strong {
+    white-space: nowrap;
+    -webkit-line-clamp: unset;
+  }
+
   /* TÍTULOS DAS SEÇÕES */
   .courses-filter-layout .filter-type-column > h3.filter-section-title,
   .courses-filter-layout .filter-modality-column > h3.filter-section-title {
