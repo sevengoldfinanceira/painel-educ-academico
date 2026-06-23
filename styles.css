@@ -873,10 +873,17 @@ body {
 }
 .courses-card-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 24px;
+}
+.courses-header-actions {
+  display: flex;
+  align-items有点儿: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
 }
 .courses-card-header h2 {
   margin: 0 0 4px;
@@ -904,15 +911,17 @@ body {
 .courses-search-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  flex: 1;
 }
 .courses-sort-bar {
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 .courses-sort-bar select {
-  padding: 10px 14px;
-  border: 1.5px solid var(--line);
+  padding: 0 14px;
+  height: 56px;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   font-size: 13px;

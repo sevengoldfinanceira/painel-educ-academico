@@ -264,6 +264,30 @@
                   <h2>Cursos</h2>
                   <p>Encontre rapidamente o curso que deseja vender.</p>
                 </div>
+                <div class="courses-header-actions">
+                  <div class="courses-search-bar">
+                    <div class="search-input-wrapper">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      <input id="courseSearch" type="search" placeholder="Buscar curso por nome, tipo, modalidade ou instituição" />
+                    </div>
+                  </div>
+                  <div class="courses-sort-bar">
+                    <select id="courseSort" aria-label="Ordenar cursos">
+                      <option value="name-asc">Ordenar: Nome (A-Z)</option>
+                      <option value="name-desc">Ordenar: Nome (Z-A)</option>
+                      <option value="type-asc">Tipo (A-Z)</option>
+                      <option value="type-desc">Tipo (Z-A)</option>
+                      <option value="modality-asc">Modalidade (A-Z)</option>
+                      <option value="modality-desc">Modalidade (Z-A)</option>
+                      <option value="partner-asc">Instituição A-Z</option>
+                      <option value="partner-desc">Instituição Z-A</option>
+                      <option value="cost-asc">Menor custo</option>
+                      <option value="cost-desc">Maior custo</option>
+                      <option value="sale-asc">Menor venda</option>
+                      <option value="sale-desc">Maior venda</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               <div class="courses-filter-layout">
@@ -469,30 +493,6 @@
                   </button>
                 </div>
               </div>
-              </div>
-
-              <div class="courses-search-bar">
-                <div class="search-input-wrapper">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <input id="courseSearch" type="search" placeholder="Buscar curso por nome, tipo, modalidade ou instituição" />
-                </div>
-              </div>
-
-              <div class="courses-sort-bar">
-                <select id="courseSort" aria-label="Ordenar cursos">
-                  <option value="name-asc">Ordenar: Nome (A-Z)</option>
-                  <option value="name-desc">Ordenar: Nome (Z-A)</option>
-                  <option value="type-asc">Tipo (A-Z)</option>
-                  <option value="type-desc">Tipo (Z-A)</option>
-                  <option value="modality-asc">Modalidade (A-Z)</option>
-                  <option value="modality-desc">Modalidade (Z-A)</option>
-                  <option value="partner-asc">Instituição A-Z</option>
-                  <option value="partner-desc">Instituição Z-A</option>
-                  <option value="cost-asc">Menor custo</option>
-                  <option value="cost-desc">Maior custo</option>
-                  <option value="sale-asc">Menor venda</option>
-                  <option value="sale-desc">Maior venda</option>
-                </select>
               </div>
 
               <div class="selected-partner" id="selectedPartner"></div>
