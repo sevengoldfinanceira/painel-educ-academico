@@ -4735,21 +4735,16 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
 /* Breakpoint 2: Até 768px - Layout em 1 Coluna */
 @media (max-width: 768px) {
-  /* Mostrar apenas as ações rápidas com ícones no topo */
+  /* Remover atalhos rápidos do topo no mobile */
   .topbar {
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     gap: 12px !important;
   }
-  .top-actions {
-    display: flex !important;
-    gap: 6px !important;
-    align-items: center !important;
-    flex-shrink: 0 !important;
-  }
-  /* Esconder o resto */
-  .top-actions > *:not(#addSaleBtnQuick):not(#addCourseBtn):not(#addPartnerBtnQuick) {
+  #addSaleBtnQuick,
+  #addCourseBtn,
+  #addPartnerBtnQuick {
     display: none !important;
   }
   /* Esconder a parte escrita do botão */
