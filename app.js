@@ -400,6 +400,10 @@ const state = {
   summaryMonth: today().slice(0, 7),
   coursePage: 1,
   coursePerPage: 10,
+  partnerPage: 1,
+  partnerPerPage: 10,
+  clientPage: 1,
+  clientPerPage: 10,
 };
 
 const els = {
@@ -1648,6 +1652,10 @@ function renderPartnersFull() {
   const partners = state.data.partners.filter((p) =>
     !search || [p.name, p.type, p.city, p.contact].some((f) => (f || "").toLowerCase().includes(search))
   );
+  const totalPages = Math.max(1, Math.ceil(partners.length / state.partnerPerPage));
+  if (state.partnerPage > totalPages) state.partnerPage = totalPages;
+  const start = (state.partnerPage - 1) * state.partnerPerPage;
+  const visiblePartners = partners.slice(start, start + state.partnerPerPage);
   const tbody = document.querySelector("#partnerRowsFull");
   const cards = document.querySelector("#partnerCardsFull");
   const mobileTotal = document.querySelector("#partnerMobileTotal");
@@ -1659,10 +1667,11 @@ function renderPartnersFull() {
   if (partners.length === 0) {
     empty.style.display = "";
     if (cards) cards.innerHTML = `<div class="empty-state visible">Nenhum parceiro encontrado.</div>`;
+    renderPartnerPagination(0);
     return;
   }
   empty.style.display = "none";
-  partners.forEach((p) => {
+  visiblePartners.forEach((p) => {
     const courseTotal = state.data.courses.filter((c) => c.partnerId === p.id).length;
     const tr = document.createElement("tr");
     tr.style.cursor = "pointer";
@@ -1748,6 +1757,20 @@ function renderPartnersFull() {
     link.addEventListener("click", (event) => {
       event.stopPropagation();
     });
+  });
+
+  renderPartnerPagination(partners.length);
+}
+
+function renderPartnerPagination(total) {
+  renderPagination({
+    containerId: "partnerPagination",
+    total,
+    pageKey: "partnerPage",
+    perPageKey: "partnerPerPage",
+    label: "parceiros",
+    selectId: "partnerPerPageSelect",
+    onChange: renderPartnersFull,
   });
 }
 
@@ -1922,12 +1945,24 @@ function renderCourses() {
 }
 
 function renderCoursePagination(total) {
-  const container = document.querySelector("#coursePagination");
+  renderPagination({
+    containerId: "coursePagination",
+    total,
+    pageKey: "coursePage",
+    perPageKey: "coursePerPage",
+    label: "cursos",
+    selectId: "coursePerPageSelect",
+    onChange: renderCourses,
+  });
+}
+
+function renderPagination({ containerId, total, pageKey, perPageKey, label, selectId, onChange }) {
+  const container = document.querySelector(`#${containerId}`);
   if (!container) return;
 
-  const perPage = state.coursePerPage;
+  const perPage = state[perPageKey];
   const totalPages = Math.max(1, Math.ceil(total / perPage));
-  const page = state.coursePage;
+  const page = state[pageKey];
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
 
@@ -1952,14 +1987,14 @@ function renderCoursePagination(total) {
   }
 
   container.innerHTML = `
-    <span class="pagination-info">Mostrando ${from} a ${to} de ${total} cursos</span>
+    <span class="pagination-info">Mostrando ${from} a ${to} de ${total} ${label}</span>
     <div class="pagination-controls">
       <button class="pagination-nav" data-page="${page - 1}" ${page <= 1 ? "disabled" : ""}>&lt;</button>
       ${pagesHtml}
       <button class="pagination-nav" data-page="${page + 1}" ${page >= totalPages ? "disabled" : ""}>&gt;</button>
     </div>
     <label class="pagination-per-page">
-      <select id="coursePerPageSelect">
+      <select id="${selectId}">
         <option value="5" ${perPage === 5 ? "selected" : ""}>5 por página</option>
         <option value="10" ${perPage === 10 ? "selected" : ""}>10 por página</option>
         <option value="25" ${perPage === 25 ? "selected" : ""}>25 por página</option>
@@ -1972,18 +2007,18 @@ function renderCoursePagination(total) {
     btn.addEventListener("click", () => {
       const p = Number(btn.dataset.page);
       if (p >= 1 && p <= totalPages) {
-        state.coursePage = p;
-        renderCourses();
+        state[pageKey] = p;
+        onChange();
       }
     });
   });
 
-  const select = container.querySelector("#coursePerPageSelect");
+  const select = container.querySelector(`#${selectId}`);
   if (select) {
     select.addEventListener("change", () => {
-      state.coursePerPage = Number(select.value);
-      state.coursePage = 1;
-      renderCourses();
+      state[perPageKey] = Number(select.value);
+      state[pageKey] = 1;
+      onChange();
     });
   }
 }
@@ -2089,6 +2124,10 @@ function renderClients() {
     ].filter(Boolean).join(" ");
     return text.toLowerCase().includes(search);
   });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / state.clientPerPage));
+  if (state.clientPage > totalPages) state.clientPage = totalPages;
+  const start = (state.clientPage - 1) * state.clientPerPage;
+  const visibleClients = filtered.slice(start, start + state.clientPerPage);
 
   els.clientRows.innerHTML = "";
   if (els.clientCards) els.clientCards.innerHTML = "";
@@ -2097,7 +2136,7 @@ function renderClients() {
     els.clientCards.innerHTML = `<div class="empty-state visible">Nenhum cliente encontrado.</div>`;
   }
 
-  filtered.forEach((client) => {
+  visibleClients.forEach((client) => {
     const course = state.data.courses.find((c) => c.id === client.courseId);
     const partner = state.data.partners.find((p) => p.id === client.partnerId || course?.partnerId);
     const statusClassOk = "status-ok";
@@ -2191,6 +2230,20 @@ function renderClients() {
       const dataUrl = client[`${docType}DataUrl`];
       openSavedDocument(dataUrl);
     });
+  });
+
+  renderClientPagination(filtered.length);
+}
+
+function renderClientPagination(total) {
+  renderPagination({
+    containerId: "clientPagination",
+    total,
+    pageKey: "clientPage",
+    perPageKey: "clientPerPage",
+    label: "clientes",
+    selectId: "clientPerPageSelect",
+    onChange: renderClients,
   });
 }
 
@@ -3083,7 +3136,10 @@ document.querySelector("#profileAdminPanelBtn")?.addEventListener("click", () =>
 
 const partnerSearchFull = document.querySelector("#partnerSearchFull");
 if (partnerSearchFull) {
-  partnerSearchFull.addEventListener("input", () => renderPartnersFull());
+  partnerSearchFull.addEventListener("input", () => {
+    state.partnerPage = 1;
+    renderPartnersFull();
+  });
 }
 
 els.courseSearch.addEventListener("input", (event) => {
@@ -3497,6 +3553,7 @@ els.clientForm.addEventListener("submit", async (event) => {
 
 els.clientSearch.addEventListener("input", (event) => {
   state.clientSearch = event.target.value;
+  state.clientPage = 1;
   renderClients();
 });
 

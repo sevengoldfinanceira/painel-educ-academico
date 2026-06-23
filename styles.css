@@ -1116,9 +1116,10 @@ body {
     width: 100%;
     min-width: 0;
     max-width: none;
-    min-height: 72px;
+    min-height: 64px;
     justify-content: flex-start;
-    padding: 16px;
+    align-items: center;
+    padding: 12px 14px;
     border-radius: 14px;
     margin-top: 0;
   }
@@ -5061,5 +5062,264 @@ body.dark-theme .remove-file-action {
   }
   .pagination-controls {
     justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    background: #f7f1e6;
+  }
+
+  #coursesView {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  #coursesView .courses-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px !important;
+    border-radius: 24px;
+    background: #fff;
+    border: 1px solid rgba(238, 228, 212, 0.75);
+    box-shadow: 0 14px 34px rgba(15, 27, 51, 0.08);
+    overflow-x: hidden;
+  }
+
+  #coursesView .courses-card-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  #coursesView .courses-card-header h2 {
+    position: relative;
+    margin: 0 0 18px;
+    color: #0f1b33;
+    font-size: 30px;
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.4px;
+  }
+
+  #coursesView .courses-card-header h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 26px;
+    height: 4px;
+    border-radius: 999px;
+    background: #c89000;
+  }
+
+  #coursesView .courses-card-header p {
+    width: 100%;
+    margin: 0;
+    color: #667085;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
+  #coursesView .courses-header-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+  }
+
+  #coursesView .courses-search-bar,
+  #coursesView .courses-sort-bar {
+    width: 100%;
+    margin: 0;
+  }
+
+  #coursesView .search-input-wrapper {
+    width: 100%;
+    min-height: 54px;
+    border-radius: 16px;
+    border: 1px solid #eee4d4;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(15, 27, 51, 0.05);
+  }
+
+  #coursesView .search-input-wrapper input {
+    min-height: 54px;
+    font-size: 16px;
+  }
+
+  #coursesView .courses-sort-bar select {
+    width: 100%;
+    min-height: 54px;
+    border-radius: 16px;
+    border: 1px solid #eee4d4;
+    background: #fff;
+    color: #0f1b33;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(15, 27, 51, 0.04);
+  }
+
+  #coursesView .courses-filter-layout {
+    display: grid;
+    gap: 26px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #coursesView .filter-todos-row,
+  #coursesView .filter-section {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  #coursesView .filter-section-title {
+    position: relative;
+    margin: 0 0 20px;
+    padding: 0;
+    color: #667085;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 0;
+  }
+
+  #coursesView .filter-section-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 24px;
+    height: 4px;
+    border-radius: 999px;
+    background: #c89000;
+  }
+
+  #coursesView .filter-todos-row .filter-section-title {
+    display: none;
+  }
+
+  #coursesView .filter-todos-row .modality-card {
+    width: 100% !important;
+    max-width: none;
+    min-height: 98px;
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1.5px solid #c89000;
+    border-radius: 18px;
+    background: #fff7e6;
+    box-shadow: 0 10px 24px rgba(200, 144, 0, 0.10);
+  }
+
+  #coursesView .filter-todos-row .modality-card > div:not(.modality-card-icon)::after {
+    content: "Cursos cadastrados";
+    display: block;
+    margin-top: 5px;
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  #coursesView .modality-cards,
+  #coursesView .filter-section .modality-cards,
+  #coursesView .filter-section #modalityCards {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin: 0;
+    width: 100%;
+  }
+
+  #coursesView .modality-card,
+  #coursesView .modality-filter-card {
+    min-width: 0;
+    width: 100%;
+    min-height: 78px;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid #eee4d4;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(15, 27, 51, 0.06);
+    overflow: hidden;
+  }
+
+  #coursesView .modality-card.active,
+  #coursesView .modality-filter-card.active {
+    border-color: #c89000;
+    background: #fff7e6;
+    box-shadow: 0 10px 24px rgba(200, 144, 0, 0.12);
+  }
+
+  #coursesView .modality-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  #coursesView .modality-card > div:not(.modality-card-icon),
+  #coursesView .modality-filter-card > div:not(.modality-card-icon) {
+    min-width: 0;
+  }
+
+  #coursesView .modality-card strong,
+  #coursesView .modality-filter-card strong {
+    display: block;
+    color: #0f1b33;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 900;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+
+  #coursesView .modality-card span,
+  #coursesView .modality-filter-card span {
+    display: block;
+    margin-top: 5px;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 700;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+
+  #coursesView .modality-card-count,
+  #coursesView .modality-filter-card .modality-card-count {
+    min-width: 42px;
+    height: 42px;
+    margin-left: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #0f1b33;
+    font-size: 16px;
+    font-weight: 900;
+    box-shadow: 0 8px 18px rgba(15, 27, 51, 0.08);
+  }
+}
+
+@media (max-width: 380px) {
+  #coursesView .modality-cards,
+  #coursesView .filter-section .modality-cards,
+  #coursesView .filter-section #modalityCards {
+    grid-template-columns: 1fr !important;
   }
 }
