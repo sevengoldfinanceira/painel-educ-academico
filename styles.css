@@ -1071,9 +1071,9 @@ body {
 @media (min-width: 1024px) {
   .courses-filter-layout {
     display: grid;
-    grid-template-columns: minmax(170px, 0.7fr) minmax(280px, 1fr) minmax(520px, 2.6fr);
-    gap: 20px;
-    align-items: stretch;
+    grid-template-columns: minmax(160px, 0.65fr) minmax(260px, 1fr) minmax(480px, 2.6fr);
+    gap: 16px;
+    align-items: start;
     margin-bottom: 24px;
   }
 
@@ -1081,108 +1081,152 @@ body {
   .courses-filter-layout .filter-section {
     min-width: 0;
     margin: 0;
-    padding: 18px;
+    padding: 16px;
     border: 1px solid var(--line);
-    border-radius: var(--radius-xl);
+    border-radius: 16px;
     background: var(--surface);
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 8px rgba(15, 27, 51, 0.04);
+  }
+
+  /* TÍTULOS DAS SEÇÕES - NAVY COM LINHA DOURADA */
+  .courses-filter-layout .filter-overview-column::before {
+    content: "Visão geral";
+    position: static;
+    display: block;
+    color: #1e3a5f;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c89000;
+  }
+
+  .courses-filter-layout .filter-type-column > h3.filter-section-title,
+  .courses-filter-layout .filter-modality-column > h3.filter-section-title {
+    color: #1e3a5f;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin: 0 0 14px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c89000;
   }
 
   .courses-filter-layout .filter-overview-column {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 48px;
-  }
-
-  .courses-filter-layout .filter-overview-column::before {
-    content: "Visão geral";
-    position: absolute;
-    top: 18px;
-    left: 18px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 0;
   }
 
   .courses-filter-layout .filter-overview-column .modality-card {
     width: 100%;
     min-width: 0;
     max-width: none;
-    min-height: 92px;
+    min-height: 72px;
     justify-content: flex-start;
-    padding: 18px;
+    padding: 16px;
+    border-radius: 14px;
   }
 
+  /* COLUNA POR TIPO - LISTA VERTICAL COMPACTA */
   .courses-filter-layout .filter-type-column .modality-cards {
     display: grid;
     grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0;
+  }
+
+  /* COLUNA POR MODALIDADE - 3 COLUNAS EQUILIBRADAS */
+  .courses-filter-layout .filter-modality-column #modalityCards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     margin: 0;
   }
 
-  .courses-filter-layout .filter-modality-column #modalityCards {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin: 0;
-  }
-
+  /* CARDS DE FILTRO - VISUAL PREMIUM */
   .courses-filter-layout .modality-card,
   .courses-filter-layout .modality-filter-card {
     width: 100%;
     min-width: 0;
     flex: none;
     justify-content: flex-start;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 18px;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(197, 138, 0, 0.15);
+    background: var(--surface);
+    box-shadow: none;
+    transition: all 0.2s ease;
+  }
+
+  .courses-filter-layout .modality-card:hover,
+  .courses-filter-layout .modality-filter-card:hover {
+    border-color: rgba(197, 138, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(197, 138, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  /* CARD SELECIONADO - DOURADO PREMIUM */
+  .courses-filter-layout .modality-card.active,
+  .courses-filter-layout .modality-filter-card.active {
+    background: #fffdf5;
+    border: 1.5px solid #c89000;
+    box-shadow: 0 4px 16px rgba(200, 144, 0, 0.15);
   }
 
   .courses-filter-layout .modality-card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    flex-shrink: 0;
   }
 
   .courses-filter-layout .modality-card strong,
   .courses-filter-layout .modality-filter-card strong {
-    font-size: 13px;
-    line-height: 1.2;
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
-  }
-
-  .courses-filter-layout .modality-card span,
-  .courses-filter-layout .modality-filter-card span {
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 700;
     line-height: 1.25;
     display: block;
     -webkit-line-clamp: unset;
     overflow: visible;
+    color: var(--ink);
   }
 
+  .courses-filter-layout .modality-card span,
+  .courses-filter-layout .modality-filter-card span {
+    font-size: 10px;
+    line-height: 1.3;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    color: var(--muted);
+  }
+
+  /* CONTADORES - PADRONIZADOS E ALINHADOS */
   .courses-filter-layout .modality-card-count,
   .courses-filter-layout .modality-filter-card .modality-card-count {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 28px !important;
-    height: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
     padding: 0 !important;
     margin-left: auto !important;
-    border-radius: 50% !important;
+    border-radius: 999px !important;
     background: #fff !important;
     color: var(--ink) !important;
-    font-size: 13px !important;
-    font-weight: 900 !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
     box-sizing: border-box !important;
-    box-shadow: 0 4px 12px rgba(15, 27, 51, 0.06) !important;
+    box-shadow: 0 2px 8px rgba(15, 27, 51, 0.08) !important;
     flex-shrink: 0 !important;
+    border: 1px solid rgba(197, 138, 0, 0.12) !important;
   }
 }
 
