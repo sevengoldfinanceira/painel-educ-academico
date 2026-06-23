@@ -2224,73 +2224,77 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
 
   .clients-mobile-cards {
     display: grid;
-    gap: 14px;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
   }
 
   .client-mobile-card {
+    position: relative;
     width: 100%;
     background: #fff;
     border: 1px solid #eee4d4;
     border-radius: 18px;
-    box-shadow: 0 8px 22px rgba(15, 27, 51, 0.07);
-    padding: 16px;
+    box-shadow: 0 6px 18px rgba(15, 27, 51, 0.06);
+    padding: 14px;
     overflow: hidden;
   }
 
   .client-mobile-head {
     display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: 50px minmax(0, 1fr);
+    gap: 10px;
     align-items: start;
+    padding-right: 64px;
   }
 
   .client-mobile-avatar {
-    width: 58px;
-    height: 58px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     display: grid;
     place-items: center;
     background: #fff7e6;
     color: #c89000;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 900;
   }
 
   .client-mobile-head h3 {
-    margin: 2px 0 10px;
+    margin: 1px 0 7px;
     color: #0f1b33;
-    font-size: 19px;
+    font-size: 17px;
     line-height: 1.15;
     font-weight: 900;
     overflow-wrap: anywhere;
   }
 
   .client-mobile-head p {
-    margin: 7px 0 0;
+    margin: 5px 0 0;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: #667085;
-    font-size: 14px;
+    font-size: 12.5px;
     line-height: 1.25;
     font-weight: 800;
     overflow-wrap: anywhere;
   }
 
   .client-mobile-head svg {
-    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
     color: #0f1b33;
   }
 
   .client-doc-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 16px;
-    padding-top: 14px;
+    gap: 5px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid #eee4d4;
   }
 
@@ -2299,36 +2303,38 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
     border: 0;
     background: transparent;
     padding: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    column-gap: 6px;
-    row-gap: 4px;
+    gap: 3px 5px;
     color: #667085;
     font-family: inherit;
     text-align: left;
   }
 
   .client-doc-item span:not(.client-doc-dot) {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 1.1;
     font-weight: 800;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .client-doc-item strong {
-    grid-column: 2;
+    flex: 0 0 100%;
+    padding-left: 12px;
     color: #0f1b33;
-    font-size: 13px;
+    font-size: 11px;
+    line-height: 1;
     font-weight: 900;
   }
 
   .client-doc-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #d1d5db;
+    flex: 0 0 8px;
   }
 
   .client-doc-item.is-ok {
@@ -2341,37 +2347,57 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   }
 
   .client-card-edit {
-    width: 100%;
-    min-height: 46px;
-    margin-top: 16px;
-    border: 0;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: auto;
+    min-height: 34px;
+    margin-top: 0;
+    padding: 0 10px;
+    border: 1px solid #eadfce;
     border-radius: 14px;
     background: #fff7e6;
     color: #c89000;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
+    gap: 6px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 900;
+    box-shadow: 0 5px 14px rgba(200, 144, 0, 0.08);
+  }
+
+  .client-card-edit svg {
+    width: 15px;
+    height: 15px;
   }
 }
 
 @media (max-width: 390px) {
   .client-mobile-head {
-    grid-template-columns: 62px minmax(0, 1fr);
+    grid-template-columns: 48px minmax(0, 1fr);
+    padding-right: 58px;
   }
 
   .client-mobile-avatar {
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .client-card-edit {
+    padding: 0 9px;
+    font-size: 11px;
   }
 }
 
 @media (max-width: 360px) {
   .client-doc-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .client-doc-item span:not(.client-doc-dot) {
+    font-size: 9px;
   }
 }
 
