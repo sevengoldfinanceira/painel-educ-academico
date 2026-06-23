@@ -827,7 +827,7 @@ body {
 }
 
 /* WORKSPACE */
-.workspace { max-width: 1400px; }
+.workspace { max-width: 100%; }
 .content-panel {
   background: transparent;
   border: none;
