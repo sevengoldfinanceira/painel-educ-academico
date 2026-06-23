@@ -579,6 +579,7 @@ function normalizeData(data) {
   data.profile.displayName ||= "";
   data.profile.avatarUrl ||= "";
   mergeEduMaisCatalog(data);
+  mergeCatedralCatalog(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -686,6 +687,40 @@ function mergeEduMaisCatalog(data) {
   });
 
   data.imports.educamaisCatalogV1 = true;
+}
+
+function mergeCatedralCatalog(data) {
+  const imported = window.CATEDRAL_CATALOG_IMPORT;
+  if (!imported || data.imports.catedralCatalogV1) return;
+
+  const importedPartner = structuredClone(imported.partner);
+  const existingPartner = data.partners.find(
+    (partner) => partner.id === importedPartner.id || normalize(partner.name) === normalize(importedPartner.name)
+  );
+  const partner = existingPartner || importedPartner;
+
+  if (!existingPartner) {
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  imported.courses.forEach((course, index) => {
+    const key = `${normalize(course.name)}|${normalize(course.modality)}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      ...structuredClone(course),
+      id: `catedral-course-${index + 1}`,
+      partnerId: partner.id,
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.catedralCatalogV1 = true;
 }
 
 function saveData({ sync = true } = {}) {

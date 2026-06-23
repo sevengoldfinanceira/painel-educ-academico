@@ -6,6 +6,7 @@ const ASSETS = [
   "/app.js",
   "/supabase-config.js",
   "/educamais-catalog-data.js",
+  "/catedral-catalog-data.js",
   "/assets/brand/perfil-e-logo.png",
   "/manifest.json"
 ];
