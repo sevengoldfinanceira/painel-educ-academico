@@ -5410,3 +5410,23 @@ body.dark-theme .remove-file-action {
 .clients-search-bar .search-input-wrapper svg {
   color: #a58d68 !important;
 }
+
+/* Search bars: keep every search field visually white across the panel. */
+.courses-search-bar .search-input-wrapper,
+.partners-search-bar .search-input-wrapper,
+.clients-search-bar .search-input-wrapper,
+#coursesView .search-input-wrapper,
+#partnersView .search-input-wrapper,
+#clientsView .search-input-wrapper {
+  background: #fff !important;
+  border-color: #eadfce !important;
+  box-shadow: none !important;
+}
+
+input[type="search"] {
+  background: #fff !important;
+}
+
+.search-input-wrapper input[type="search"] {
+  background: transparent !important;
+}
