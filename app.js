@@ -2611,9 +2611,18 @@ els.profilePhotoUrl.addEventListener("input", () => {
   renderAvatar(els.profilePreviewAvatar, profile);
 });
 
+function isProfilePhotoImage(file) {
+  return !!file && file.type.startsWith("image/");
+}
+
 els.profilePhotoFile.addEventListener("change", async () => {
   const file = els.profilePhotoFile.files[0];
   if (!file) return;
+  if (!isProfilePhotoImage(file)) {
+    alert("Escolha apenas arquivos de imagem para a foto do perfil.");
+    els.profilePhotoFile.value = "";
+    return;
+  }
   try {
     const url = await readFileAsDataUrl(file);
     const profile = {
@@ -2758,6 +2767,11 @@ els.profileForm.addEventListener("submit", async (event) => {
 
   try {
     const file = els.profilePhotoFile.files[0];
+    if (file && !isProfilePhotoImage(file)) {
+      alert("Escolha apenas arquivos de imagem para a foto do perfil.");
+      els.profilePhotoFile.value = "";
+      return;
+    }
     const uploadedPhotoUrl = file ? await readFileAsDataUrl(file) : "";
     state.data.profile = {
       displayName: els.profileName.value.trim(),
