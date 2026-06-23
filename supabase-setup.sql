@@ -147,6 +147,14 @@ begin
     now(), now(), '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated'
   );
+  insert into auth.identities (
+    id, user_id, identity_data, provider,
+    last_sign_in_at, created_at, updated_at
+  ) values (
+    new_id, new_id,
+    jsonb_build_object('sub', new_id::text, 'email', user_email),
+    'email', now(), now(), now()
+  );
   return new_id;
 end;
 $$;
