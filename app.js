@@ -80,10 +80,11 @@ async function loadUserRole() {
       cloudUserRole = data.role;
     } else {
       const isAdminEmail = ADMIN_EMAILS.includes(cloudUser.email);
-      const { count } = await supabaseClient
-        .from("user_profiles")
-        .select("*", { count: "exact", head: true });
-      const firstUser = count === null || count === 0;
+      let firstUser = false;
+      try {
+        const { data: userCount, error: countError } = await supabaseClient.rpc("get_user_count");
+        if (!countError) firstUser = userCount === 0 || userCount === null;
+      } catch (_) { firstUser = false; }
       const role = isAdminEmail || firstUser ? "admin" : "user";
       const { error: upsertError } = await supabaseClient
         .from("user_profiles")
@@ -677,26 +678,33 @@ async function renderAdminUserList() {
       return;
     }
     const currentUserId = cloudUser?.id;
+    const adminCount = data.filter((u) => u.role === "admin").length;
     listEl.innerHTML = `<div style="display:grid;gap:8px;">
-      ${data.map((u) => `
+      ${data.map((u) => {
+        const isSelf = u.id === currentUserId;
+        const isLastAdmin = u.role === "admin" && adminCount <= 1;
+        let actionHtml = `<span style="font-size:0.85em;opacity:0.5;">${isSelf ? "Você" : ""}</span>`;
+        if (!isSelf && !isLastAdmin) {
+          actionHtml = `<button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
+            ${u.role === "admin" ? "Revogar admin" : "Tornar admin"}
+          </button>`;
+        } else if (!isSelf && isLastAdmin) {
+          actionHtml = `<span style="font-size:0.85em;opacity:0.5;">Único admin</span>`;
+        }
+        return `
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border-color,#ddd);border-radius:8px;background:var(--card-bg,#fff);">
           <div>
             <strong>${escapeHtml(u.email)}</strong>
             <br/>
             <span style="font-size:0.85em;opacity:0.7;text-transform:capitalize;">${u.role}</span>
           </div>
-          ${u.id !== currentUserId ? `
-            <button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-toggle-role="${u.id}" data-admin-toggle-email="${escapeHtml(u.email)}" data-admin-toggle-current="${u.role}">
-              ${u.role === "admin" ? "Revogar admin" : "Tornar admin"}
-            </button>
-          ` : '<span style="font-size:0.85em;opacity:0.5;">Você</span>'}
-        </div>
-      `).join("")}
+          ${actionHtml}
+        </div>`;
+      }).join("")}
     </div>`;
     listEl.querySelectorAll("[data-admin-toggle-role]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const userId = btn.dataset.adminToggleRole;
-        const email = btn.dataset.adminToggleEmail;
         const currentRole = btn.dataset.adminToggleCurrent;
         const newRole = currentRole === "admin" ? "user" : "admin";
         btn.disabled = true;
@@ -1128,13 +1136,20 @@ async function loadDataFromCloud() {
         console.warn("A copia local esta cheia. Os dados continuarao online.", localError);
       }
     } else {
+      const freshData = structuredClone(seedData);
+      freshData.profile ||= {};
+      freshData.profile.displayName = getNameFromEmail(cloudUser.email);
       const { error: insertError } = await supabaseClient
         .from("crm_state")
-        .insert({ user_id: cloudUser.id, data: state.data });
+        .insert({ user_id: cloudUser.id, data: freshData });
       if (insertError) {
         setSyncStatus(`Erro ao criar dados online: ${insertError.message}`, "error");
         return;
       }
+      state.data = normalizeData(freshData);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizeForCache(state.data)));
+      } catch (_) {}
     }
 
     const salesResult = await loadSalesFromCloud();

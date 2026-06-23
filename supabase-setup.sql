@@ -80,6 +80,18 @@ $$;
 -- Conceder acesso para authenticated users usarem a funcao
 grant execute on function public.is_admin to authenticated;
 
+-- Funcao para contar usuarios (necessaria para saber se e o primeiro login)
+create or replace function public.get_user_count()
+returns bigint
+language sql
+security definer
+stable
+as $$
+  select count(*) from public.user_profiles;
+$$;
+
+grant execute on function public.get_user_count to authenticated;
+
 -- Usuario ve seu proprio perfil; admin ve todos
 drop policy if exists "user_profiles_select" on public.user_profiles;
 create policy "user_profiles_select"
