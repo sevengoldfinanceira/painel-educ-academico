@@ -766,7 +766,7 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
   }
   try {
     if (msgEl) msgEl.textContent = "Criando usuário...";
-    const tempClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey);
+    const tempClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey, { auth: { persistSession: false } });
     const { error } = await tempClient.auth.signUp({ email, password });
     if (error) throw error;
     if (msgEl) msgEl.textContent = "Usuário criado! Ele já pode fazer login.";
