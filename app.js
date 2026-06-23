@@ -2366,11 +2366,12 @@ function render() {
   renderMarketing();
   renderProfile();
   renderSidebarByRole();
-  const quickSaleBtn = document.querySelector("#addSaleBtnQuick");
-  if (quickSaleBtn) quickSaleBtn.style.display = isAdmin() ? "" : "none";
-  const quickPartnerBtn = document.querySelector("#addPartnerBtnQuick");
-  if (quickPartnerBtn) quickPartnerBtn.style.display = isAdmin() ? "" : "none";
   const admin = isAdmin();
+  document.querySelectorAll("[data-admin-only-action]").forEach((button) => {
+    button.classList.toggle("is-hidden-for-user", !admin);
+    button.hidden = !admin;
+    button.setAttribute("aria-hidden", String(!admin));
+  });
   if (els.addCourseBtn) els.addCourseBtn.style.display = admin ? "" : "none";
   if (els.addClientBtn) els.addClientBtn.style.display = admin ? "" : "none";
   document.querySelectorAll("#courseSort option[value^='cost-'], #courseSort option[value^='sale-']").forEach((opt) => {
