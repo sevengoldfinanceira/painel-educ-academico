@@ -5415,10 +5415,24 @@ body.dark-theme .btn-outline-icon:hover {
   }
 
   #coursesView .courses-filter-layout {
+    position: relative;
     display: grid;
     gap: 26px;
     width: 100%;
     max-width: 100%;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1.5px solid #eadfce;
+  }
+
+  #coursesView .courses-filter-layout::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1px;
+    background: rgba(200, 144, 0, 0.32);
   }
 
   #coursesView .filter-todos-row,
