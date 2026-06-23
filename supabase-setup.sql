@@ -120,6 +120,22 @@ create policy "user_profiles_update"
     or public.is_admin()
   );
 
+-- Funcao para admin deletar usuario COMPLETAMENTE (auth + dados)
+create or replace function public.admin_delete_user(target_id uuid)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'Permission denied';
+  end if;
+  delete from auth.users where id = target_id;
+end;
+$$;
+
+grant execute on function public.admin_delete_user to authenticated;
+
 -- Admin tambem pode deletar usuarios
 drop policy if exists "user_profiles_delete" on public.user_profiles;
 create policy "user_profiles_delete"

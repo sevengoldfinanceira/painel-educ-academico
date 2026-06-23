@@ -735,11 +735,9 @@ async function renderAdminUserList() {
         if (!confirm(`Remover usuário ${email}?\n\nIsso apaga COMPLETAMENTE o usuário do sistema (auth + dados).`)) return;
         btn.disabled = true;
         btn.textContent = "Removendo...";
-        const { data: fnData, error: fnError } = await supabaseClient.functions.invoke("delete-user", {
-          body: { userId }
-        });
-        if (fnError || fnData?.error) {
-          alert("Erro ao remover usuário: " + (fnError?.message || fnData?.error));
+        const { error: rpcError } = await supabaseClient.rpc("admin_delete_user", { target_id: userId });
+        if (rpcError) {
+          alert("Erro ao remover usuário: " + rpcError.message);
           await renderAdminUserList();
           return;
         }
