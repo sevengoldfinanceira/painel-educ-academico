@@ -2107,8 +2107,8 @@ function renderClients() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td><strong>${escapeHtml(client.name)}</strong></td>
-      <td>${escapeHtml(course?.name || "—")}</td>
       <td>${escapeHtml(partner?.name || "—")}</td>
+      <td>${escapeHtml(course?.name || "—")}</td>
       <td>
         ${client.contractDataUrl 
           ? `<button class="doc-status status-ok" type="button" data-open-doc="contract" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir contrato">●</button>` 
