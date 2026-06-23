@@ -1129,8 +1129,8 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 @media (max-width: 767px) {
   #adminPanelDialog {
     width: calc(100vw - 32px);
-    max-width: 430px;
-    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
+    max-width: 390px;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 14px);
     margin: auto;
     padding: 0;
     border: 0;
@@ -1148,9 +1148,9 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
   #adminPanelForm {
     display: grid;
-    gap: 18px;
-    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
-    padding: calc(env(safe-area-inset-top, 0px) + 18px) 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
+    gap: 12px;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 14px);
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px calc(env(safe-area-inset-bottom, 0px) + 12px);
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
@@ -1160,16 +1160,16 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
   #adminPanelForm header {
     display: grid;
-    grid-template-columns: 48px 1fr 44px;
+    grid-template-columns: 44px 1fr 38px;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin: 0;
   }
 
   #adminPanelForm header h2 {
     margin: 0;
     color: var(--ink);
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 900;
     letter-spacing: -0.2px;
   }
@@ -1179,13 +1179,13 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
 
   #adminPanelForm .icon-button {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     border: 0;
     border-radius: 50%;
     background: #f8f1e4;
     color: var(--ink);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 900;
     box-shadow: none;
   }
@@ -1195,28 +1195,47 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
 
   .admin-panel-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: #fff3d6;
     color: var(--brand);
-    font-size: 22px;
     flex: 0 0 auto;
   }
 
+  .admin-panel-icon::before,
+  .admin-secure-icon::before,
+  .admin-input-field::after,
+  .admin-user-info span::before,
+  .admin-remove-action::before {
+    width: 18px;
+    height: 18px;
+    content: "";
+    display: inline-block;
+    background: currentColor;
+    -webkit-mask: var(--admin-icon) center / contain no-repeat;
+    mask: var(--admin-icon) center / contain no-repeat;
+  }
+
+  .admin-users-icon,
+  .admin-invite-icon {
+    color: var(--brand);
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 11.2a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z'/%3E%3Cpath d='M3.5 19.5c.6-3.2 2.2-5 5-5 2.1 0 3.5 1 4.3 2.8'/%3E%3Cpath d='M18 7v6'/%3E%3Cpath d='M15 10h6'/%3E%3Cpath d='M16.2 17.8h5.6'/%3E%3Cpath d='M19 15v5.6'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
   .admin-panel-subtitle {
-    margin: 5px 0 0;
+    margin: 4px 0 0;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     line-height: 1.45;
   }
 
   .admin-user-list {
     display: grid;
-    gap: 12px;
+    gap: 9px;
     min-width: 0;
   }
 
@@ -1224,13 +1243,13 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     align-items: center;
     justify-content: space-between;
     color: var(--ink);
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 900;
   }
 
   .admin-user-section-head span {
-    min-width: 26px;
-    padding: 4px 9px;
+    min-width: 23px;
+    padding: 3px 8px;
     border-radius: 999px;
     background: #ffe5a8;
     color: var(--brand-strong);
@@ -1239,15 +1258,16 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
 
   .admin-user-card-stack {
-    gap: 10px !important;
+    gap: 7px !important;
   }
 
   .admin-user-card {
     display: grid !important;
-    grid-template-columns: 44px minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 10px;
     align-items: center !important;
-    padding: 14px !important;
+    min-height: 72px;
+    padding: 10px !important;
     border: 1px solid rgba(7, 20, 43, 0.1) !important;
     border-radius: 16px !important;
     background: #fff !important;
@@ -1255,14 +1275,14 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
 
   .admin-user-avatar {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: #fff4d8;
     color: var(--brand-strong);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
     letter-spacing: 0.3px;
     grid-row: span 2;
@@ -1276,7 +1296,8 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     display: block;
     overflow: hidden;
     color: var(--ink);
-    font-size: 14px;
+    max-width: 150px;
+    font-size: 12px;
     font-weight: 900;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1286,38 +1307,50 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-top: 4px;
+    margin-top: 2px;
     color: var(--muted) !important;
     font-size: 12px !important;
     font-weight: 700;
     opacity: 1 !important;
   }
 
+  .admin-user-info span::before {
+    width: 13px;
+    height: 13px;
+    color: #7f8a9b;
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='7.5' r='3.2'/%3E%3Cpath d='M6.2 19c.7-3.2 2.6-5 5.8-5s5.1 1.8 5.8 5'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
   .admin-self-badge {
+    grid-column: 3;
+    grid-row: 1 / span 2;
     justify-self: end;
     align-self: center;
-    padding: 7px 11px;
+    padding: 6px 9px;
     border-radius: 999px;
     background: #fff3d6;
     color: var(--brand-strong);
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-weight: 900;
     opacity: 1 !important;
   }
 
   .admin-user-actions {
-    grid-column: 2;
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: end;
     display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px !important;
-    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 6px !important;
+    width: auto;
   }
 
   .admin-user-actions button {
-    min-height: 42px;
+    min-height: 34px;
     padding: 0 10px !important;
     border-radius: 999px;
-    font-size: 12px !important;
+    font-size: 10px !important;
     font-weight: 900;
     white-space: nowrap;
   }
@@ -1334,63 +1367,75 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     color: #c33131;
   }
 
+  .admin-remove-action::before {
+    width: 13px;
+    height: 13px;
+    margin-right: 5px;
+    vertical-align: -2px;
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M10 11v6'/%3E%3Cpath d='M14 11v6'/%3E%3Cpath d='M6.5 7l.7 13h9.6l.7-13'/%3E%3Cpath d='M9 7l.7-3h4.6l.7 3'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
   .admin-panel-divider {
-    margin: 2px 0 !important;
+    margin: 3px 0 !important;
     border-top-color: rgba(7, 20, 43, 0.08) !important;
   }
 
   .admin-invite-section {
     display: grid;
-    gap: 14px;
+    gap: 10px;
   }
 
   .admin-invite-heading {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .admin-invite-heading h3 {
     margin: 0 !important;
     color: var(--ink);
-    font-size: 17px !important;
+    font-size: 15px !important;
     font-weight: 900;
   }
 
   .admin-invite-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 9px;
   }
 
   .admin-input-field {
     position: relative;
     display: grid;
-    gap: 7px;
+    gap: 5px;
     color: var(--ink);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
   }
 
   .admin-input-field::after {
     position: absolute;
-    left: 16px;
-    bottom: 15px;
+    left: 15px;
+    bottom: 13px;
     color: #7f8a9b;
-    font-size: 18px;
-    line-height: 1;
+    background: #7f8a9b;
     pointer-events: none;
   }
 
-  .admin-email-field::after { content: "✉"; }
-  .admin-password-field::after { content: "⚿"; }
+  .admin-email-field::after {
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5.5' width='17' height='13' rx='2'/%3E%3Cpath d='m4.5 7 7.5 6 7.5-6'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .admin-password-field::after {
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='10' width='14' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3Cpath d='M12 14.5v2'/%3E%3C/g%3E%3C/svg%3E");
+  }
 
   .admin-input-field input {
     width: 100%;
-    min-height: 52px;
+    min-height: 44px;
     border: 1px solid rgba(7, 20, 43, 0.12);
-    border-radius: 16px;
-    padding: 0 16px 0 46px;
+    border-radius: 13px;
+    padding: 0 14px 0 43px;
     background: #fbfcff;
     color: var(--ink);
     font-size: 16px;
@@ -1404,37 +1449,37 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
   .admin-secure-note {
     align-items: center;
-    gap: 12px;
-    padding: 14px;
+    gap: 10px;
+    padding: 11px;
     border: 1px solid rgba(197, 138, 0, 0.2);
     border-radius: 16px;
     background: linear-gradient(135deg, #fffaf0 0%, #fff 100%);
   }
 
   .admin-secure-icon {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 2px solid var(--brand);
     border-radius: 14px;
     color: var(--brand);
-    font-weight: 900;
     flex: 0 0 auto;
+    --admin-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5 19 6v5.2c0 4.4-2.8 7.5-7 9.3-4.2-1.8-7-4.9-7-9.3V6l7-2.5Z'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/g%3E%3C/svg%3E");
   }
 
   .admin-secure-note strong {
     display: block;
     color: var(--ink);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
   }
 
   .admin-secure-note p {
-    margin: 4px 0 0;
+    margin: 3px 0 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     line-height: 1.45;
   }
@@ -1443,9 +1488,9 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     position: sticky;
     bottom: calc(env(safe-area-inset-bottom, 0px) * -1);
     display: grid;
-    gap: 10px;
-    margin: 0 -16px calc(env(safe-area-inset-bottom, 0px) * -1);
-    padding: 10px 16px calc(env(safe-area-inset-bottom, 0px) + 2px);
+    gap: 8px;
+    margin: 0 -14px calc(env(safe-area-inset-bottom, 0px) * -1);
+    padding: 8px 14px calc(env(safe-area-inset-bottom, 0px) + 2px);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), #fff 28%);
   }
 
@@ -1460,7 +1505,7 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   #adminPanelForm menu {
     display: grid;
     grid-template-columns: minmax(116px, 0.75fr) minmax(150px, 1.25fr);
-    gap: 10px;
+    gap: 8px;
     margin: 0;
     padding: 0;
   }
@@ -1471,9 +1516,9 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
 
   #adminPanelForm menu button {
     width: 100%;
-    min-height: 52px;
+    min-height: 46px;
     border-radius: 999px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 900;
   }
 
