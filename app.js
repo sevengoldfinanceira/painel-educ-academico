@@ -766,12 +766,25 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
   }
   try {
     if (msgEl) msgEl.textContent = "Criando usuário...";
-    const { data: newUserId, error: rpcError } = await supabaseClient.rpc("admin_create_user", {
-      user_email: email,
-      user_password: password
-    });
-    if (rpcError) throw rpcError;
-    if (msgEl) msgEl.textContent = "Usuário criado! Ele precisa fazer o primeiro login para aparecer na lista.";
+    const serviceKey = window.SUPABASE_SERVICE_KEY;
+    let newUserId;
+    if (serviceKey) {
+      const res = await fetch(SUPABASE_CONFIG.url + "/auth/v1/admin/users", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + serviceKey,
+          "apikey": serviceKey,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password, email_confirm: true })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.msg || data.error || "Erro ao criar usuário");
+      newUserId = data.id;
+    } else {
+      throw new Error("Chave service_role nao configurada. Crie supabase-admin-key.js com a chave.");
+    }
+    if (msgEl) msgEl.textContent = "Usuário criado! Ele já pode fazer login.";
     if (emailEl) emailEl.value = "";
     if (passEl) passEl.value = "";
     setTimeout(() => renderAdminUserList(), 1000);
