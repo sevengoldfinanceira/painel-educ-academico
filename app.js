@@ -429,6 +429,7 @@ const els = {
   mainTabs: document.querySelectorAll("[data-main-view]"),
   addCourseBtn: document.querySelector("#addCourseBtn"),
   addPartnerBtnQuick: document.querySelector("#addPartnerBtnQuick"),
+  addPartnerBtnMobile: document.querySelector("#addPartnerBtnMobile"),
   partnerDialog: document.querySelector("#partnerDialog"),
   partnerForm: document.querySelector("#partnerForm"),
   partnerDialogTitle: document.querySelector("#partnerDialogTitle"),
@@ -1647,11 +1648,16 @@ function renderPartnersFull() {
     !search || [p.name, p.type, p.city, p.contact].some((f) => (f || "").toLowerCase().includes(search))
   );
   const tbody = document.querySelector("#partnerRowsFull");
+  const cards = document.querySelector("#partnerCardsFull");
+  const mobileTotal = document.querySelector("#partnerMobileTotal");
   const empty = document.querySelector("#emptyPartnerState");
   if (!tbody) return;
   tbody.innerHTML = "";
+  if (cards) cards.innerHTML = "";
+  if (mobileTotal) mobileTotal.textContent = String(partners.length);
   if (partners.length === 0) {
     empty.style.display = "";
+    if (cards) cards.innerHTML = `<div class="empty-state visible">Nenhum parceiro encontrado.</div>`;
     return;
   }
   empty.style.display = "none";
@@ -1686,6 +1692,56 @@ function renderPartnersFull() {
       });
     }
     tbody.appendChild(tr);
+
+    if (cards) {
+      const card = document.createElement("article");
+      card.className = "partner-mobile-card";
+      card.innerHTML = `
+        <div class="partner-mobile-main">
+          <span class="partner-mobile-icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          <div class="partner-mobile-title">
+            <div class="partner-mobile-topline">
+              <h3>${escapeHtml(p.name)}</h3>
+              <span class="partner-status-badge">Ativo</span>
+            </div>
+            <small>${escapeHtml(p.type || "-")}</small>
+          </div>
+        </div>
+        <div class="partner-mobile-info">
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${escapeHtml(p.city || "-")}
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.59 2.61a2 2 0 0 1-.45 2.11L9 10.7a16 16 0 0 0 4.3 4.3l1.26-1.25a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.61.59A2 2 0 0 1 22 16.92Z"/></svg>
+            ${escapeHtml(p.contact || "-")}
+          </span>
+        </div>
+        <div class="partner-mobile-footer">
+          <span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            ${courseTotal} ${courseTotal === 1 ? "curso" : "cursos"}
+          </span>
+          <button class="partner-card-details" type="button" data-partner-card-id="${escapeHtml(p.id)}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver detalhes
+          </button>
+        </div>
+      `;
+      cards.appendChild(card);
+    }
+  });
+
+  document.querySelectorAll("[data-partner-card-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const partner = state.data.partners.find((p) => p.id === button.dataset.partnerCardId);
+      if (!partner) return;
+      state.mainView = "overview";
+      state.selectedPartnerId = partner.id;
+      render();
+    });
   });
 }
 
@@ -2768,6 +2824,9 @@ if (addSaleBtnQuick) addSaleBtnQuick.addEventListener("click", () => openSaleDia
 
 if (els.addPartnerBtnQuick) {
   els.addPartnerBtnQuick.addEventListener("click", () => openPartnerDialog());
+}
+if (els.addPartnerBtnMobile) {
+  els.addPartnerBtnMobile.addEventListener("click", () => openPartnerDialog());
 }
 
 els.profileButton.addEventListener("click", openProfileDialog);
