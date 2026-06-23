@@ -1693,10 +1693,9 @@ function renderCourses() {
 
   const admin = isAdmin();
 
-  const valorHeader = document.querySelector("#coursesView th.sortable-header#headerSortValor");
-  if (valorHeader) {
-    valorHeader.style.display = admin ? "" : "none";
-  }
+  document.querySelectorAll(".course-admin-only").forEach((cell) => {
+    cell.hidden = !admin;
+  });
 
   const totalPages = Math.max(1, Math.ceil(allCourses.length / state.coursePerPage));
   if (state.coursePage > totalPages) state.coursePage = totalPages;
@@ -1721,12 +1720,13 @@ function renderCourses() {
       <td>
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
       </td>
-      <td>${formatMoney(course.cost)}</td>
-      ${admin ? `<td>${formatMoney(course.sale)}</td>` : ""}
+      ${admin ? `<td>${escapeHtml(course.deadline || "-")}</td>` : ""}
+      ${admin ? `<td>${formatMoney(course.cost)}</td>` : ""}
+      <td>${formatMoney(course.sale)}</td>
       <td class="action-cell">
-        <button class="row-action" type="button" data-course-id="${escapeHtml(course.id)}" title="Editar curso">
+        ${admin ? `<button class="row-action" type="button" data-course-id="${escapeHtml(course.id)}" title="Editar curso">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
+        </button>` : ""}
         ${admin ? `<button class="row-action" type="button" data-sale-course-id="${escapeHtml(course.id)}" title="Adicionar venda">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         </button>` : ""}
