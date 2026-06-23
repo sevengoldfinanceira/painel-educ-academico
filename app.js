@@ -767,7 +767,6 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
   try {
     if (msgEl) msgEl.textContent = "Criando usuário...";
     const serviceKey = window.SUPABASE_SERVICE_KEY;
-    let newUserId;
     if (serviceKey) {
       const res = await fetch(SUPABASE_CONFIG.url + "/auth/v1/admin/users", {
         method: "POST",
@@ -780,9 +779,9 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.msg || data.error || "Erro ao criar usuário");
-      newUserId = data.id;
     } else {
-      throw new Error("Chave service_role nao configurada. Crie supabase-admin-key.js com a chave.");
+      const { error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) throw error;
     }
     if (msgEl) msgEl.textContent = "Usuário criado! Ele já pode fazer login.";
     if (emailEl) emailEl.value = "";
