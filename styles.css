@@ -1145,14 +1145,18 @@ body {
   .courses-filter-layout .modality-filter-card strong {
     font-size: 13px;
     line-height: 1.2;
-    -webkit-line-clamp: 2;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
   }
 
   .courses-filter-layout .modality-card span,
   .courses-filter-layout .modality-filter-card span {
     font-size: 11px;
     line-height: 1.25;
-    -webkit-line-clamp: 2;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
   }
 
   .courses-filter-layout .modality-card-count,
@@ -1160,12 +1164,6 @@ body {
     min-width: 34px;
     height: 34px;
     font-size: 16px;
-  }
-}
-
-@media (min-width: 1500px) {
-  .courses-filter-layout .filter-modality-column #modalityCards {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
