@@ -732,15 +732,14 @@ async function renderAdminUserList() {
         if (btn.disabled) return;
         const userId = btn.dataset.adminRemoveUser;
         const email = btn.dataset.adminRemoveEmail;
-        if (!confirm(`Remover usuário ${email}?\n\nIsso apaga os dados dele(a) do sistema e revoga o acesso.`)) return;
+        if (!confirm(`Remover usuário ${email}?\n\nIsso apaga COMPLETAMENTE o usuário do sistema (auth + dados).`)) return;
         btn.disabled = true;
         btn.textContent = "Removendo...";
-        const { error: profileError } = await supabaseClient
-          .from("user_profiles")
-          .delete()
-          .eq("id", userId);
-        if (profileError) {
-          alert("Erro ao remover: " + profileError.message);
+        const { data: fnData, error: fnError } = await supabaseClient.functions.invoke("delete-user", {
+          body: { userId }
+        });
+        if (fnError || fnData?.error) {
+          alert("Erro ao remover usuário: " + (fnError?.message || fnData?.error));
           await renderAdminUserList();
           return;
         }
