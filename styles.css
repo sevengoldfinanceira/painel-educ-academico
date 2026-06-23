@@ -1230,6 +1230,345 @@ body {
   }
 }
 
+/* ============================================
+   PARCEIROS - DESKTOP (min-width: 1024px)
+   ============================================ */
+@media (min-width: 1024px) {
+  #partnersView {
+    display: block;
+  }
+
+  .partners-desktop-wrap {
+    background: #fff;
+    border-radius: 24px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 20px rgba(15, 27, 51, 0.06);
+  }
+
+  /* HEADER ROW */
+  .partners-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .partners-header-left h2 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f1b33;
+  }
+
+  .partners-header-left p {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+  }
+
+  .partners-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  /* BOTOES */
+  .btn-outline-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 16px;
+    border: 1px solid #e5d6c6;
+    border-radius: 12px;
+    background: #fff;
+    color: #0f1b33;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn-outline-icon:hover {
+    border-color: #c89000;
+    background: #fffdf5;
+    color: #c89000;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #c89000 0%, #e6a800 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(200, 144, 0, 0.25);
+  }
+
+  .btn-gold:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(200, 144, 0, 0.35);
+  }
+
+  /* SEARCH BAR */
+  .partners-search-bar {
+    margin-bottom: 24px;
+  }
+
+  .partners-search-bar .search-input-wrapper {
+    height: 56px;
+    padding: 0 20px;
+    background: #faf7f1;
+    border: 1.5px solid #eadfce;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .partners-search-bar .search-input-wrapper:focus-within {
+    border-color: #c89000;
+    box-shadow: 0 0 0 3px rgba(200, 144, 0, 0.12);
+  }
+
+  .partners-search-bar .search-input-wrapper svg {
+    color: #a0937d;
+    flex-shrink: 0;
+  }
+
+  .partners-search-bar .search-input-wrapper input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: #0f1b33;
+    outline: none;
+  }
+
+  .partners-search-bar .search-input-wrapper input::placeholder {
+    color: #a0937d;
+  }
+
+  /* SUMMARY CARDS */
+  .partners-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .partner-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #eee4d4;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(15, 27, 51, 0.04);
+    transition: all 0.2s ease;
+  }
+
+  .partner-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15, 27, 51, 0.08);
+  }
+
+  .partner-summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .partner-summary-icon.purple {
+    background: #f3eeff;
+    color: #7c3aed;
+  }
+
+  .partner-summary-icon.green {
+    background: #e8faf0;
+    color: #059669;
+  }
+
+  .partner-summary-icon.orange {
+    background: #fff4e0;
+    color: #e67e22;
+  }
+
+  .partner-summary-icon.blue {
+    background: #e8f2ff;
+    color: #3b82f6;
+  }
+
+  .partner-summary-info small {
+    display: block;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .partner-summary-info strong {
+    display: block;
+    color: #0f1b33;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  /* TABLE PREMIUM */
+  .partners-desktop-wrap .table-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #eee4d4;
+  }
+
+  .partners-desktop-wrap .data-table {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .partners-desktop-wrap .data-table th {
+    padding: 14px 18px;
+    background: #faf7f1;
+    color: #667085;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid #eee4d4;
+  }
+
+  .partners-desktop-wrap .data-table td {
+    padding: 20px 18px;
+    border-bottom: 1px solid #f5efe6;
+    vertical-align: middle;
+  }
+
+  .partners-desktop-wrap .data-table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  .partners-desktop-wrap .data-table tbody tr:hover {
+    background: #fffef8;
+  }
+
+  .partners-desktop-wrap .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .partners-desktop-wrap td strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f1b33;
+  }
+
+  /* TYPE BADGE */
+  .partner-type-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    background: #faf4eb;
+    border: 1px solid #e8dcc8;
+    border-radius: 999px;
+    color: #8b6f47;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* CITY WITH ICON */
+  .partner-city {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #667085;
+    font-size: 13px;
+  }
+
+  .partner-city svg {
+    color: #a0937d;
+    flex-shrink: 0;
+  }
+
+  /* CONTACT WITH ICON */
+  .partner-contact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #667085;
+    font-size: 13px;
+  }
+
+  .partner-contact svg {
+    color: #a0937d;
+    flex-shrink: 0;
+  }
+
+  /* COURSES BADGE */
+  .partner-courses-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    background: linear-gradient(135deg, #fffdf5 0%, #fff8e8 100%);
+    border: 1px solid #e8d490;
+    border-radius: 999px;
+    color: #8b6f00;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  /* ACTION BUTTONS */
+  .partner-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .partner-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #e5d6c6;
+    background: #fff;
+    color: #667085;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .partner-action-btn:hover {
+    border-color: #c89000;
+    color: #c89000;
+    background: #fffdf5;
+  }
+
+  /* MOBILE CARDS - HIDDEN ON DESKTOP */
+  .partners-mobile-cards {
+    display: none !important;
+  }
+}
+
 /* TOOLBAR */
 .toolbar {
   display: flex; align-items: end; gap: 10px;
@@ -1655,43 +1994,12 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
 }
 
 @media (max-width: 767px) {
-  #partnersView .courses-card {
-    background: #fffaf0;
-    border-color: transparent;
-    box-shadow: none;
-    padding: 16px !important;
+  #partnersView .partners-desktop-wrap {
+    display: none;
   }
 
-  #partnersView .courses-card-header {
-    margin-bottom: 18px;
-  }
-
-  #partnersView .courses-card-header h2 {
-    color: #0f1b33;
-    font-size: 28px;
-    line-height: 1.1;
-  }
-
-  #partnersView .courses-card-header p {
-    color: #667085;
-    font-size: 15px;
-  }
-
-  #partnersView .courses-search-bar {
-    margin-bottom: 18px;
-  }
-
-  #partnersView .search-input-wrapper {
-    min-height: 52px;
-    border-radius: 16px;
-    border-color: #eee4d4;
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(15, 27, 51, 0.05);
-  }
-
-  #partnersView .search-input-wrapper input {
-    min-height: 52px;
-    font-size: 16px;
+  .partners-mobile-cards {
+    display: grid !important;
   }
 
   #partnersView .table-wrap {
