@@ -53,3 +53,61 @@ drop policy if exists "Usuario exclui suas vendas" on public.crm_sales;
 create policy "Usuario exclui suas vendas"
 on public.crm_sales for delete to authenticated
 using (auth.uid() = user_id);
+
+-- Tabela de perfis de usuario para controle de acesso (RBAC)
+create table if not exists public.user_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  role text not null default 'user' check (role in ('admin', 'user')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.user_profiles enable row level security;
+
+-- Usuario ve seu proprio perfil; admin ve todos
+drop policy if exists "user_profiles_select" on public.user_profiles;
+create policy "user_profiles_select"
+  on public.user_profiles for select to authenticated
+  using (
+    auth.uid() = id
+    or exists (
+      select 1 from public.user_profiles
+      where id = auth.uid() and role = 'admin'
+    )
+  );
+
+-- Usuario cria apenas seu proprio perfil (primeiro login)
+drop policy if exists "user_profiles_insert" on public.user_profiles;
+create policy "user_profiles_insert"
+  on public.user_profiles for insert to authenticated
+  with check (auth.uid() = id);
+
+-- Usuario altera seu proprio; admin altera qualquer um
+drop policy if exists "user_profiles_update" on public.user_profiles;
+create policy "user_profiles_update"
+  on public.user_profiles for update to authenticated
+  using (
+    auth.uid() = id
+    or exists (
+      select 1 from public.user_profiles
+      where id = auth.uid() and role = 'admin'
+    )
+  )
+  with check (
+    auth.uid() = id
+    or exists (
+      select 1 from public.user_profiles
+      where id = auth.uid() and role = 'admin'
+    )
+  );
+
+-- Admin tambem pode deletar usuarios
+drop policy if exists "user_profiles_delete" on public.user_profiles;
+create policy "user_profiles_delete"
+  on public.user_profiles for delete to authenticated
+  using (
+    exists (
+      select 1 from public.user_profiles
+      where id = auth.uid() and role = 'admin'
+    )
+  );

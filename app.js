@@ -28,6 +28,56 @@ const supabaseClient = window.supabase?.createClient(
 );
 let cloudUser = null;
 let cloudReady = false;
+let cloudUserRole = null;
+const ADMIN_EMAILS = [];
+const USER_ALLOWED_VIEWS = ["courses", "clients", "partners", "admin"];
+const VIEW_LABELS = {
+  overview: "Visão geral",
+  courses: "Cursos",
+  sales: "Vendas",
+  clients: "Clientes",
+  partners: "Parceiros",
+  costs: "Financeiro",
+  marketing: "Marketing",
+  admin: "Administração",
+};
+
+function isAdmin() {
+  return cloudUserRole === "admin";
+}
+
+async function loadUserRole() {
+  if (!cloudUser || !supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from("user_profiles")
+      .select("role")
+      .eq("id", cloudUser.id)
+      .maybeSingle();
+    if (data) {
+      cloudUserRole = data.role;
+    } else {
+      const isAdminEmail = ADMIN_EMAILS.includes(cloudUser.email);
+      const { count } = await supabaseClient
+        .from("user_profiles")
+        .select("*", { count: "exact", head: true });
+      const firstUser = count === null || count === 0;
+      const role = isAdminEmail || firstUser ? "admin" : "user";
+      const { error: insertError } = await supabaseClient
+        .from("user_profiles")
+        .insert({ id: cloudUser.id, email: cloudUser.email, role });
+      if (insertError) {
+        console.error("Erro ao criar perfil de usuario:", insertError);
+        cloudUserRole = "user";
+      } else {
+        cloudUserRole = role;
+      }
+    }
+  } catch (err) {
+    console.error("Erro ao carregar permissao:", err);
+    cloudUserRole = "user";
+  }
+}
 let cloudSaveTimer = null;
 let cloudSavePromise = null;
 let cloudSaveRequested = false;
@@ -536,14 +586,23 @@ function renderAvatar(target, profile) {
   target.textContent = getInitials(profile.displayName);
 }
 
+function getRoleLabel() {
+  return isAdmin() ? "Administrador" : "Usuário";
+}
+
 function renderProfile() {
   const profile = getEffectiveProfile();
   els.sidebarUserName.textContent = profile.displayName;
   renderAvatar(els.sidebarUserAvatar, profile);
 
+  const sidebarRoleLabel = document.querySelector(".sidebar-user span:not(.sidebar-user-avatar)");
+  if (sidebarRoleLabel) sidebarRoleLabel.textContent = getRoleLabel();
+
   if (els.profileDialog.open) {
     els.profilePreviewName.textContent = profile.displayName;
     renderAvatar(els.profilePreviewAvatar, profile);
+    const dialogRoleLabel = document.querySelector("#profileDialog .profile-preview div span");
+    if (dialogRoleLabel) dialogRoleLabel.textContent = getRoleLabel();
   }
 }
 
@@ -554,8 +613,107 @@ function openProfileDialog() {
   els.profilePhotoFile.value = "";
   els.profilePreviewName.textContent = profile.displayName;
   renderAvatar(els.profilePreviewAvatar, profile);
+  const dialogRoleLabel = document.querySelector("#profileDialog .profile-preview div span");
+  if (dialogRoleLabel) dialogRoleLabel.textContent = getRoleLabel();
+  const adminBtn = document.querySelector("#profileAdminPanelBtn");
+  if (adminBtn) adminBtn.style.display = isAdmin() ? "" : "none";
   els.profileDialog.showModal();
 }
+
+async function openAdminPanel() {
+  const listEl = document.querySelector("#adminUserList");
+  const dialog = document.querySelector("#adminPanelDialog");
+  if (!listEl || !dialog) return;
+  listEl.innerHTML = '<div class="empty-state">Carregando usuários...</div>';
+  const msgEl = document.querySelector("#adminNewUserMessage");
+  if (msgEl) msgEl.textContent = "";
+  const emailEl = document.querySelector("#adminNewUserEmail");
+  if (emailEl) emailEl.value = "";
+  const passEl = document.querySelector("#adminNewUserPassword");
+  if (passEl) passEl.value = "";
+  dialog.showModal();
+  await renderAdminUserList();
+}
+
+async function renderAdminUserList() {
+  const listEl = document.querySelector("#adminUserList");
+  if (!listEl) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from("user_profiles")
+      .select("id, email, role, created_at")
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    if (!data || !data.length) {
+      listEl.innerHTML = '<div class="empty-state">Nenhum usuário encontrado.</div>';
+      return;
+    }
+    const currentUserId = cloudUser?.id;
+    listEl.innerHTML = `<div style="display:grid;gap:8px;">
+      ${data.map((u) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border-color,#ddd);border-radius:8px;background:var(--card-bg,#fff);">
+          <div>
+            <strong>${escapeHtml(u.email)}</strong>
+            <br/>
+            <span style="font-size:0.85em;opacity:0.7;text-transform:capitalize;">${u.role}</span>
+          </div>
+          ${u.id !== currentUserId ? `
+            <button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-toggle-role="${u.id}" data-admin-toggle-email="${escapeHtml(u.email)}" data-admin-toggle-current="${u.role}">
+              ${u.role === "admin" ? "Revogar admin" : "Tornar admin"}
+            </button>
+          ` : '<span style="font-size:0.85em;opacity:0.5;">Você</span>'}
+        </div>
+      `).join("")}
+    </div>`;
+    listEl.querySelectorAll("[data-admin-toggle-role]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const userId = btn.dataset.adminToggleRole;
+        const email = btn.dataset.adminToggleEmail;
+        const currentRole = btn.dataset.adminToggleCurrent;
+        const newRole = currentRole === "admin" ? "user" : "admin";
+        btn.disabled = true;
+        btn.textContent = "Alterando...";
+        const { error: updateError } = await supabaseClient
+          .from("user_profiles")
+          .update({ role: newRole })
+          .eq("id", userId);
+        if (updateError) {
+          alert("Erro ao alterar permissão: " + updateError.message);
+        }
+        await renderAdminUserList();
+      });
+    });
+  } catch (err) {
+    listEl.innerHTML = `<div class="empty-state">Erro ao carregar: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async () => {
+  const emailEl = document.querySelector("#adminNewUserEmail");
+  const passEl = document.querySelector("#adminNewUserPassword");
+  const msgEl = document.querySelector("#adminNewUserMessage");
+  const email = emailEl?.value?.trim();
+  const password = passEl?.value;
+  if (!email || !password) {
+    if (msgEl) msgEl.textContent = "Preencha e-mail e senha do novo usuário.";
+    return;
+  }
+  if (password.length < 6) {
+    if (msgEl) msgEl.textContent = "A senha deve ter no mínimo 6 caracteres.";
+    return;
+  }
+  try {
+    if (msgEl) msgEl.textContent = "Criando usuário...";
+    const { error } = await supabaseClient.auth.signUp({ email, password });
+    if (error) throw error;
+    if (msgEl) msgEl.textContent = "Usuário criado! Ele precisa fazer o primeiro login para aparecer na lista.";
+    if (emailEl) emailEl.value = "";
+    if (passEl) passEl.value = "";
+    setTimeout(() => renderAdminUserList(), 1000);
+  } catch (err) {
+    if (msgEl) msgEl.textContent = "Erro: " + err.message;
+  }
+});
 
 function loadData() {
   try {
@@ -956,6 +1114,12 @@ async function initializeCloud() {
   try {
     const { data } = await supabaseClient.auth.getSession();
     cloudUser = data.session?.user || null;
+    if (cloudUser) {
+      await loadUserRole();
+      if (!isAdmin() && state.mainView === "overview") {
+        state.mainView = "courses";
+      }
+    }
     renderProfile();
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
     if (cloudUser) await loadDataFromCloud();
@@ -971,11 +1135,18 @@ async function initializeCloud() {
     const userChanged = nextUser?.id !== cloudUser?.id;
     cloudUser = nextUser;
     renderProfile();
-    if (userChanged) cloudReady = false;
+    if (userChanged) {
+      cloudReady = false;
+      cloudUserRole = null;
+    }
     els.loginScreen.classList.toggle("hidden", Boolean(cloudUser));
     if (cloudUser && !cloudReady) {
       setAppLoading(true);
       setTimeout(async () => {
+        await loadUserRole();
+        if (!isAdmin() && state.mainView === "overview") {
+          state.mainView = "courses";
+        }
         await loadDataFromCloud();
         setAppLoading(false);
       }, 0);
@@ -1314,7 +1485,23 @@ function renderSummary() {
   els.totalProfit.textContent = formatMoney(totals.netProfit);
 }
 
+function renderSidebarByRole() {
+  document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => {
+    const view = item.dataset.sidebarView;
+    const isAllowed = isAdmin() || USER_ALLOWED_VIEWS.includes(view);
+    item.style.display = isAllowed ? "" : "none";
+  });
+  const adminItems = document.querySelectorAll('[data-role="admin"]');
+  adminItems.forEach((el) => {
+    el.style.display = isAdmin() ? "" : "none";
+  });
+}
+
 function renderMainView() {
+  if (!isAdmin() && !USER_ALLOWED_VIEWS.includes(state.mainView)) {
+    state.mainView = "courses";
+  }
+
   const showingOverview = state.mainView === "overview";
   const showingCourses = state.mainView === "courses";
   const showingPartners = state.mainView === "partners";
@@ -1332,6 +1519,11 @@ function renderMainView() {
 
   els.mainTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.mainView === state.mainView);
+    if (!isAdmin()) {
+      tab.style.display = tab.dataset.mainView === "courses" ? "" : "none";
+    } else {
+      tab.style.display = "";
+    }
   });
 
   document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => {
@@ -1391,6 +1583,13 @@ function renderCourses() {
   els.courseRows.innerHTML = "";
   els.emptyState.classList.toggle("visible", courses.length === 0);
 
+  const admin = isAdmin();
+
+  const valorHeader = document.querySelector("#coursesView th.sortable-header#headerSortValor");
+  if (valorHeader) {
+    valorHeader.style.display = admin ? "" : "none";
+  }
+
   courses.forEach((course) => {
     const partner = getPartner(course.partnerId);
     const row = document.createElement("tr");
@@ -1410,14 +1609,14 @@ function renderCourses() {
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
       </td>
       <td>${escapeHtml(course.deadline || "Nao informado")}</td>
-      <td>${formatMoney(course.sale)}</td>
+      ${admin ? `<td>${formatMoney(course.sale)}</td>` : ""}
       <td class="action-cell">
         <button class="row-action" type="button" data-course-id="${escapeHtml(course.id)}" title="Ver detalhes">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
-        <button class="row-action" type="button" data-sale-course-id="${escapeHtml(course.id)}" title="Adicionar venda">
+        ${admin ? `<button class="row-action" type="button" data-sale-course-id="${escapeHtml(course.id)}" title="Adicionar venda">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        </button>
+        </button>` : ""}
       </td>
     `;
     els.courseRows.appendChild(row);
@@ -1898,6 +2097,15 @@ function render() {
   renderClients();
   renderMarketing();
   renderProfile();
+  renderSidebarByRole();
+  const quickSaleBtn = document.querySelector("#addSaleBtnQuick");
+  if (quickSaleBtn) quickSaleBtn.style.display = isAdmin() ? "" : "none";
+  const quickPartnerBtn = document.querySelector("#addPartnerBtnQuick");
+  if (quickPartnerBtn) quickPartnerBtn.style.display = isAdmin() ? "" : "none";
+  const admin = isAdmin();
+  document.querySelectorAll("#courseSort option[value^='cost-'], #courseSort option[value^='sale-']").forEach((opt) => {
+    opt.style.display = admin ? "" : "none";
+  });
 }
 
 function openPartnerDialog(partner = null) {
@@ -1982,6 +2190,10 @@ function openCourseDialog(course = null) {
   els.courseType.value = course?.type || getCourseTypeFromModality(course?.modality || "Graduacao");
   updateCourseModalityOptions();
   els.courseModality.value = course?.modality || "Graduacao";
+  const pricingFields = document.querySelector("#coursePricingFields");
+  if (pricingFields) pricingFields.style.display = isAdmin() ? "" : "none";
+  els.courseCost.required = isAdmin();
+  els.courseSale.required = isAdmin();
   els.courseCost.value = course?.cost ?? "";
   els.courseSale.value = course?.sale ?? "";
   els.courseTransfer.value = course?.transfer || "";
@@ -2455,7 +2667,10 @@ els.profileForm.addEventListener("submit", async (event) => {
   }
 });
 
-
+document.querySelector("#profileAdminPanelBtn")?.addEventListener("click", () => {
+  els.profileDialog.close();
+  openAdminPanel();
+});
 
 const partnerSearchFull = document.querySelector("#partnerSearchFull");
 if (partnerSearchFull) {
@@ -2662,6 +2877,10 @@ document.querySelectorAll(".sidebar-item[data-sidebar-view]").forEach((item) => 
   item.addEventListener("click", (e) => {
     e.preventDefault();
     const view = item.dataset.sidebarView;
+    if (view === "admin") {
+      if (isAdmin()) openAdminPanel();
+      return;
+    }
     if (view && view !== "settings") {
       state.mainView = view;
       render();

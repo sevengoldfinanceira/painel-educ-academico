@@ -1101,6 +1101,7 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
   .hamburger-btn {
     display: flex !important;
+    transform: translateY(-6px);
   }
   
   .mobile-sidebar, .app-sidebar {
