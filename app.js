@@ -1641,6 +1641,7 @@ function renderMainView() {
 
 function renderPartnersFull() {
   const search = document.querySelector("#partnerSearchFull")?.value?.toLowerCase() || "";
+  const admin = isAdmin();
   const partners = state.data.partners.filter((p) =>
     !search || [p.name, p.type, p.city, p.contact].some((f) => (f || "").toLowerCase().includes(search))
   );
@@ -1664,9 +1665,9 @@ function renderPartnersFull() {
       <td>${escapeHtml(p.contact || "-")}</td>
       <td>${courseTotal}</td>
       <td class="action-cell">
-        <button class="row-action" type="button" data-partner-id="${escapeHtml(p.id)}" title="Ver detalhes/Editar">
+        ${admin ? `<button class="row-action" type="button" data-partner-id="${escapeHtml(p.id)}" title="Ver detalhes/Editar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
+        </button>` : ""}
       </td>
     `;
     tr.addEventListener("click", () => {
@@ -1679,6 +1680,7 @@ function renderPartnersFull() {
     if (btn) {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (!isAdmin()) return;
         openPartnerDialog(p);
       });
     }
@@ -1954,6 +1956,7 @@ function renderExpenses() {
 function renderClients() {
   const clients = state.data.clients || [];
   const search = state.clientSearch?.toLowerCase() || "";
+  const admin = isAdmin();
   const filtered = clients.filter((client) => {
     if (!search) return true;
     const course = state.data.courses.find((c) => c.id === client.courseId);
@@ -2004,13 +2007,14 @@ function renderClients() {
           ? `<button class="doc-status status-ok" type="button" data-open-doc="diploma" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir diploma">●</button>` 
           : `<span class="doc-status status-empty" title="Sem diploma">●</span>`}
       </td>
-      <td><button class="row-action" type="button" data-client-id="${escapeHtml(client.id)}">Editar</button></td>
+      <td>${admin ? `<button class="row-action" type="button" data-client-id="${escapeHtml(client.id)}">Editar</button>` : ""}</td>
     `;
     els.clientRows.appendChild(row);
   });
 
   document.querySelectorAll("[data-client-id]").forEach((button) => {
     button.addEventListener("click", () => {
+      if (!isAdmin()) return;
       const client = state.data.clients?.find((c) => c.id === button.dataset.clientId);
       openClientDialog(client);
     });
@@ -2311,12 +2315,14 @@ function render() {
   const quickPartnerBtn = document.querySelector("#addPartnerBtnQuick");
   if (quickPartnerBtn) quickPartnerBtn.style.display = isAdmin() ? "" : "none";
   const admin = isAdmin();
+  if (els.addClientBtn) els.addClientBtn.style.display = admin ? "" : "none";
   document.querySelectorAll("#courseSort option[value^='cost-'], #courseSort option[value^='sale-']").forEach((opt) => {
     opt.style.display = admin ? "" : "none";
   });
 }
 
 function openPartnerDialog(partner = null) {
+  if (!isAdmin()) return;
   els.partnerDialogTitle.textContent = partner ? "Editar parceria" : "Nova parceria";
   els.partnerId.value = partner?.id || "";
   els.partnerName.value = partner?.name || "";
@@ -2353,6 +2359,7 @@ function openPartnerDialog(partner = null) {
 }
 
 function openClientDialog(client = null) {
+  if (!isAdmin()) return;
   els.clientDialogTitle.textContent = client ? "Editar cliente" : "Novo cliente";
   els.clientId.value = client?.id || "";
   els.clientName.value = client?.name || "";
