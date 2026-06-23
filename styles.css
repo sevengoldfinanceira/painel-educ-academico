@@ -2094,6 +2094,31 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   display: none;
 }
 
+.partners-search-bar .search-input-wrapper,
+.clients-search-bar .search-input-wrapper {
+  min-height: 56px;
+  padding: 0 20px;
+  background: #fff;
+  border: 1px solid #eadfce;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: none;
+}
+
+.partners-search-bar .search-input-wrapper svg,
+.clients-search-bar .search-input-wrapper svg {
+  color: #a58d68;
+}
+
+.partners-search-bar .search-input-wrapper input,
+.clients-search-bar .search-input-wrapper input {
+  min-height: 54px;
+  font-size: 15px;
+  color: #0f1b33;
+}
+
 @media (max-width: 767px) {
   #clientsView {
     background: #fffaf0;
@@ -5334,4 +5359,19 @@ body.dark-theme .remove-file-action {
   #coursesView .filter-section #modalityCards {
     grid-template-columns: 1fr !important;
   }
+}
+
+.partners-search-bar .search-input-wrapper,
+.clients-search-bar .search-input-wrapper {
+  min-height: 56px !important;
+  padding: 0 20px !important;
+  background: #fff !important;
+  border: 1px solid #eadfce !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+}
+
+.partners-search-bar .search-input-wrapper svg,
+.clients-search-bar .search-input-wrapper svg {
+  color: #a58d68 !important;
 }
