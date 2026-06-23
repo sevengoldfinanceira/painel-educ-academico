@@ -1002,6 +1002,11 @@ body {
   transition: all 0.2s;
   overflow: hidden;
 }
+.modality-card > div:not(.modality-card-icon),
+.modality-filter-card > div:not(.modality-card-icon) {
+  min-width: 0;
+  flex: 1;
+}
 .modality-card:hover, .modality-filter-card:hover {
   border-color: var(--brand);
   background: var(--brand-bg-light);
@@ -1030,6 +1035,26 @@ body {
 .modality-card span, .modality-filter-card span {
   display: block; font-size: 10px; color: var(--muted); margin-top: 1px;
   overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.modality-card .modality-card-count,
+.modality-filter-card .modality-card-count {
+  display: inline-flex;
+  min-width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgba(15, 27, 51, 0.06);
+  flex: 0 0 auto;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+  overflow: visible;
 }
 
 /* TOOLBAR */
@@ -1550,7 +1575,6 @@ dialog label {
 .profile-secure-icon,
 .profile-photo-note::before,
 .profile-name-field::after,
-.profile-photo-field::after,
 .profile-role-label::before,
 .profile-remove-photo::before,
 #profileAdminPanelBtn::before,
@@ -1690,6 +1714,7 @@ dialog label {
   width: fit-content;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   border-radius: 10px;
   padding: 0 14px;
   background: #f6efe4;
@@ -1699,12 +1724,14 @@ dialog label {
   cursor: pointer;
 }
 
-.profile-photo-field::after {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  color: #c89000;
-  pointer-events: none;
+.profile-file-picker-text::before {
+  width: 16px;
+  height: 16px;
+  content: "";
+  display: inline-block;
+  background: #c89000;
+  -webkit-mask: var(--profile-icon) center / contain no-repeat;
+  mask: var(--profile-icon) center / contain no-repeat;
   --profile-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5' width='16' height='14' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.5'/%3E%3Cpath d='m7 17 4-4 3 3 2-2 2 3'/%3E%3C/g%3E%3C/svg%3E");
 }
 
@@ -1991,7 +2018,6 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   .profile-secure-icon,
   .profile-photo-note::before,
   .profile-name-field::after,
-  .profile-photo-field::after,
   .profile-role-label::before,
   .profile-remove-photo::before,
   #profileAdminPanelBtn::before,
@@ -2124,15 +2150,6 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
     position: relative;
     gap: 8px;
     min-width: 0;
-  }
-
-  .profile-photo-field::after {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
-    color: #c89000;
-    pointer-events: none;
-    --profile-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5' width='16' height='14' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.5'/%3E%3Cpath d='m7 17 4-4 3 3 2-2 2 3'/%3E%3C/g%3E%3C/svg%3E");
   }
 
   #profilePhotoFile {

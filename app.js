@@ -206,6 +206,10 @@ function getCourseTypeGroup(type) {
   return COURSE_TYPE_GROUPS.find((group) => normalize(group.type) === normalize(type));
 }
 
+function getCourseTypeValue(course) {
+  return course?.type || getCourseTypeFromModality(course?.modality);
+}
+
 function isSameCourseModality(left, right) {
   const normalizedLeft = canonicalCourseText(left);
   const normalizedRight = canonicalCourseText(right);
@@ -2148,21 +2152,44 @@ function renderPartnerEditAttachments(partner) {
 }
 
 function renderCourseTypeFilters() {
+  const baseCourses = state.data.courses.filter((course) =>
+    state.selectedPartnerId === "all" || course.partnerId === state.selectedPartnerId
+  );
+
   document.querySelectorAll("[data-course-type]").forEach((card) => {
     const isType = card.dataset.courseType;
     card.classList.toggle("active", isType && normalize(card.dataset.courseType) === normalize(state.courseType));
+    const count = isType
+      ? baseCourses.filter((course) => normalize(getCourseTypeValue(course)) === normalize(isType)).length
+      : baseCourses.length;
+    updateCourseFilterCount(card, count);
   });
+}
+
+function updateCourseFilterCount(card, count) {
+  let badge = card.querySelector(".modality-card-count");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.className = "modality-card-count";
+    card.appendChild(badge);
+  }
+  badge.textContent = String(count);
 }
 
 function renderModalityFilterCards() {
   const typeGroup = getCourseTypeGroup(state.courseType);
   const allowedModalities = typeGroup ? typeGroup.modalities : null;
+  const baseCourses = state.data.courses.filter((course) =>
+    state.selectedPartnerId === "all" || course.partnerId === state.selectedPartnerId
+  );
 
   document.querySelectorAll(".modality-filter-card").forEach((card) => {
     const modality = card.dataset.modality;
     const matchesType = !allowedModalities || allowedModalities.some((m) => isSameCourseModality(m, modality));
     card.classList.toggle("active", isSameCourseModality(modality || "", state.modality || ""));
     card.style.display = matchesType ? "" : "none";
+    const count = baseCourses.filter((course) => isSameCourseModality(course.modality, modality)).length;
+    updateCourseFilterCount(card, count);
   });
 
   document.querySelectorAll("[data-modality-all]").forEach((card) => {
