@@ -2160,65 +2160,84 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   }
 
   #clientsView .clients-desktop-wrap {
-    display: none;
-  }
-
-  #clientsView .sales-head {
     display: grid;
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid #eee4d4;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(15, 27, 51, 0.06);
   }
 
-  #clientsView .sales-head h2 {
+  #clientsView .clients-header-row {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+  }
+
+  #clientsView .clients-header-left h2 {
     color: #0f1b33;
-    font-size: 28px;
+    font-size: 18px;
     line-height: 1.1;
-    margin: 0 0 6px;
+    margin: 0 0 5px;
   }
 
-  #clientsView .sales-head p {
+  #clientsView .clients-header-left p {
+    margin: 0;
     color: #667085;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.35;
+    font-weight: 600;
+  }
+
+  #clientsView .clients-header-actions {
+    order: 3;
+    width: 100%;
   }
 
   #clientsView #addClientBtn {
     width: 100%;
-    min-height: 54px;
-    border-radius: 999px;
-    font-size: 16px;
+    min-height: 42px;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 900;
     background: linear-gradient(135deg, #c89000, #e2ad00);
     color: #fff;
-    box-shadow: 0 10px 22px rgba(200, 144, 0, 0.24);
+    box-shadow: 0 8px 18px rgba(200, 144, 0, 0.20);
   }
 
-  #clientsView .toolbar {
-    display: block;
-    margin-bottom: 18px;
+  #clientsView .clients-search-bar {
+    order: 2;
+    margin: 6px 0 0;
   }
 
-  #clientsView .search-field {
-    gap: 8px;
+  #clientsView .clients-search-bar .search-input-wrapper {
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #eadfce;
+    box-shadow: none;
   }
 
-  #clientsView .search-field span {
-    color: #667085;
-    font-size: 14px;
-    font-weight: 800;
+  #clientsView .clients-search-bar .search-input-wrapper svg {
+    width: 18px;
+    height: 18px;
+    color: #a58d68;
   }
 
   #clientsView #clientSearch {
-    min-height: 52px;
-    border-radius: 16px;
-    border-color: #eee4d4;
-    background: #fff;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
     color: #0f1b33;
     font-size: 16px;
-    box-shadow: 0 6px 18px rgba(15, 27, 51, 0.05);
+    box-shadow: none;
   }
 
-  #clientsView .table-wrap {
+  #clientsView .table-wrap,
+  #clientsView .clients-pagination {
     display: none;
   }
 
