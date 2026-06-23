@@ -931,20 +931,25 @@ body {
 }
 .search-input-wrapper {
   flex: 1;
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 18px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px;
   height: 56px;
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  background: #faf7f1;
+  border: 1.5px solid #eadfcf;
+  border-radius: 18px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.search-input-wrapper svg { color: var(--muted); flex-shrink: 0; }
+.search-input-wrapper:focus-within {
+  border-color: #c89000;
+  box-shadow: 0 0 0 3px rgba(200, 144, 0, 0.12);
+}
+.search-input-wrapper svg { color: #98a2b3; flex-shrink: 0; }
 .search-input-wrapper input {
   flex: 1; border: none; background: transparent;
-  font-size: 15px; color: var(--ink);
+  font-size: 15px; color: #0f172a;
   outline: none;
 }
-.search-input-wrapper input::placeholder { color: #9CA3AF; }
+.search-input-wrapper input::placeholder { color: #98a2b3; }
 .courses-search-bar select {
   height: 56px;
   min-width: 180px;
