@@ -5040,6 +5040,190 @@ body.dark-theme .remove-file-action {
   color: #ff8080;
 }
 
+html.dark-theme .partners-desktop-wrap,
+body.dark-theme .partners-desktop-wrap,
+html.dark-theme .clients-desktop-wrap,
+body.dark-theme .clients-desktop-wrap,
+html.dark-theme .summary-card,
+body.dark-theme .summary-card,
+html.dark-theme .cost-summary article,
+body.dark-theme .cost-summary article {
+  background: #0f1b33;
+  border-color: #26364f;
+  color: #f8fafc;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+}
+
+html.dark-theme .partners-header-left h2,
+body.dark-theme .partners-header-left h2,
+html.dark-theme .clients-header-left h2,
+body.dark-theme .clients-header-left h2,
+html.dark-theme .partner-summary-info strong,
+body.dark-theme .partner-summary-info strong,
+html.dark-theme .summary-card strong,
+body.dark-theme .summary-card strong,
+html.dark-theme .partners-desktop-wrap td strong,
+body.dark-theme .partners-desktop-wrap td strong,
+html.dark-theme .clients-desktop-wrap td strong,
+body.dark-theme .clients-desktop-wrap td strong {
+  color: #f8fafc;
+}
+
+html.dark-theme .partners-header-left p,
+body.dark-theme .partners-header-left p,
+html.dark-theme .clients-header-left p,
+body.dark-theme .clients-header-left p,
+html.dark-theme .partner-summary-info small,
+body.dark-theme .partner-summary-info small,
+html.dark-theme .summary-card span,
+body.dark-theme .summary-card span,
+html.dark-theme .summary-card small,
+body.dark-theme .summary-card small,
+html.dark-theme .partner-city,
+body.dark-theme .partner-city,
+html.dark-theme .partner-contact,
+body.dark-theme .partner-contact,
+html.dark-theme td small,
+body.dark-theme td small {
+  color: #cbd5e1;
+}
+
+html.dark-theme .partners-search-bar .search-input-wrapper,
+body.dark-theme .partners-search-bar .search-input-wrapper,
+html.dark-theme .clients-search-bar .search-input-wrapper,
+body.dark-theme .clients-search-bar .search-input-wrapper,
+html.dark-theme .courses-search-bar .search-input-wrapper,
+body.dark-theme .courses-search-bar .search-input-wrapper,
+html.dark-theme #partnersView .search-input-wrapper,
+body.dark-theme #partnersView .search-input-wrapper,
+html.dark-theme #clientsView .search-input-wrapper,
+body.dark-theme #clientsView .search-input-wrapper,
+html.dark-theme #coursesView .search-input-wrapper,
+body.dark-theme #coursesView .search-input-wrapper {
+  background: #13223d !important;
+  border-color: #26364f !important;
+  color: #f8fafc;
+  box-shadow: none !important;
+}
+
+html.dark-theme .search-input-wrapper input,
+body.dark-theme .search-input-wrapper input,
+html.dark-theme input[type="search"],
+body.dark-theme input[type="search"] {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+html.dark-theme .search-input-wrapper input::placeholder,
+body.dark-theme .search-input-wrapper input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark-theme .search-input-wrapper svg,
+body.dark-theme .search-input-wrapper svg,
+html.dark-theme .partner-city svg,
+body.dark-theme .partner-city svg,
+html.dark-theme .partner-contact svg,
+body.dark-theme .partner-contact svg {
+  color: #cbd5e1 !important;
+}
+
+html.dark-theme .partner-summary-card,
+body.dark-theme .partner-summary-card {
+  background: #13223d;
+  border-color: #26364f;
+  color: #f8fafc;
+  box-shadow: none;
+}
+
+html.dark-theme .partner-summary-card:hover,
+body.dark-theme .partner-summary-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+}
+
+html.dark-theme .partners-desktop-wrap .table-wrap,
+body.dark-theme .partners-desktop-wrap .table-wrap,
+html.dark-theme .clients-desktop-wrap .table-wrap,
+body.dark-theme .clients-desktop-wrap .table-wrap,
+html.dark-theme .course-table-wrap,
+body.dark-theme .course-table-wrap,
+html.dark-theme .table-wrap,
+body.dark-theme .table-wrap {
+  background: #0f1b33;
+  border-color: #26364f;
+}
+
+html.dark-theme .partners-desktop-wrap .data-table,
+body.dark-theme .partners-desktop-wrap .data-table,
+html.dark-theme .clients-desktop-wrap .data-table,
+body.dark-theme .clients-desktop-wrap .data-table,
+html.dark-theme .data-table,
+body.dark-theme .data-table {
+  background: #0f1b33;
+  color: #f8fafc;
+}
+
+html.dark-theme .partners-desktop-wrap .data-table th,
+body.dark-theme .partners-desktop-wrap .data-table th,
+html.dark-theme .clients-desktop-wrap .data-table th,
+body.dark-theme .clients-desktop-wrap .data-table th,
+html.dark-theme .data-table th,
+body.dark-theme .data-table th {
+  background: #13223d;
+  border-bottom-color: #26364f;
+  color: #cbd5e1;
+}
+
+html.dark-theme .partners-desktop-wrap .data-table td,
+body.dark-theme .partners-desktop-wrap .data-table td,
+html.dark-theme .clients-desktop-wrap .data-table td,
+body.dark-theme .clients-desktop-wrap .data-table td,
+html.dark-theme .data-table td,
+body.dark-theme .data-table td {
+  border-bottom-color: #26364f;
+  color: #e2e8f0;
+}
+
+html.dark-theme .partners-desktop-wrap .data-table tbody tr:hover,
+body.dark-theme .partners-desktop-wrap .data-table tbody tr:hover,
+html.dark-theme .clients-desktop-wrap .data-table tbody tr:hover,
+body.dark-theme .clients-desktop-wrap .data-table tbody tr:hover,
+html.dark-theme .data-table tbody tr:hover,
+body.dark-theme .data-table tbody tr:hover {
+  background: #13223d;
+}
+
+html.dark-theme .partner-type-badge,
+body.dark-theme .partner-type-badge,
+html.dark-theme .partner-courses-badge,
+body.dark-theme .partner-courses-badge {
+  background: #1b2d4a;
+  border-color: #334765;
+  color: #f6d88a;
+}
+
+html.dark-theme .partner-action-btn,
+body.dark-theme .partner-action-btn,
+html.dark-theme .row-action,
+body.dark-theme .row-action,
+html.dark-theme .btn-outline-icon,
+body.dark-theme .btn-outline-icon {
+  background: #13223d;
+  border-color: #26364f;
+  color: #f8fafc;
+}
+
+html.dark-theme .partner-action-btn:hover,
+body.dark-theme .partner-action-btn:hover,
+html.dark-theme .row-action:hover,
+body.dark-theme .row-action:hover,
+html.dark-theme .btn-outline-icon:hover,
+body.dark-theme .btn-outline-icon:hover {
+  background: #1b2d4a;
+  border-color: #c89000;
+  color: #f6d88a;
+}
+
 .sortable-header {
   cursor: pointer;
   user-select: none;
