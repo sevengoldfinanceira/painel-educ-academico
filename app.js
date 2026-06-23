@@ -398,6 +398,8 @@ const state = {
   marketingSearch: "",
   marketingCategory: "",
   summaryMonth: today().slice(0, 7),
+  coursePage: 1,
+  coursePerPage: 10,
 };
 
 const els = {
@@ -1685,9 +1687,9 @@ function renderPartnersFull() {
 }
 
 function renderCourses() {
-  const courses = filteredCourses();
+  const allCourses = filteredCourses();
   els.courseRows.innerHTML = "";
-  els.emptyState.classList.toggle("visible", courses.length === 0);
+  els.emptyState.classList.toggle("visible", allCourses.length === 0);
 
   const admin = isAdmin();
 
@@ -1695,6 +1697,11 @@ function renderCourses() {
   if (valorHeader) {
     valorHeader.style.display = admin ? "" : "none";
   }
+
+  const totalPages = Math.max(1, Math.ceil(allCourses.length / state.coursePerPage));
+  if (state.coursePage > totalPages) state.coursePage = totalPages;
+  const start = (state.coursePage - 1) * state.coursePerPage;
+  const courses = allCourses.slice(start, start + state.coursePerPage);
 
   courses.forEach((course) => {
     const partner = getPartner(course.partnerId);
@@ -1790,6 +1797,75 @@ function renderCourses() {
       }
     });
   });
+
+  renderCoursePagination(allCourses.length);
+}
+
+function renderCoursePagination(total) {
+  const container = document.querySelector("#coursePagination");
+  if (!container) return;
+
+  const perPage = state.coursePerPage;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const page = state.coursePage;
+  const from = total === 0 ? 0 : (page - 1) * perPage + 1;
+  const to = Math.min(page * perPage, total);
+
+  let pagesHtml = "";
+  const maxVisible = 5;
+  let startPage = Math.max(1, page - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage < maxVisible - 1) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+
+  if (startPage > 1) {
+    pagesHtml += `<button class="pagination-page" data-page="1">1</button>`;
+    if (startPage > 2) pagesHtml += `<span class="pagination-ellipsis">...</span>`;
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    pagesHtml += `<button class="pagination-page${i === page ? " active" : ""}" data-page="${i}">${i}</button>`;
+  }
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pagesHtml += `<span class="pagination-ellipsis">...</span>`;
+    pagesHtml += `<button class="pagination-page" data-page="${totalPages}">${totalPages}</button>`;
+  }
+
+  container.innerHTML = `
+    <span class="pagination-info">Mostrando ${from} a ${to} de ${total} cursos</span>
+    <div class="pagination-controls">
+      <button class="pagination-nav" data-page="${page - 1}" ${page <= 1 ? "disabled" : ""}>&lt;</button>
+      ${pagesHtml}
+      <button class="pagination-nav" data-page="${page + 1}" ${page >= totalPages ? "disabled" : ""}>&gt;</button>
+    </div>
+    <label class="pagination-per-page">
+      <select id="coursePerPageSelect">
+        <option value="5" ${perPage === 5 ? "selected" : ""}>5 por página</option>
+        <option value="10" ${perPage === 10 ? "selected" : ""}>10 por página</option>
+        <option value="25" ${perPage === 25 ? "selected" : ""}>25 por página</option>
+        <option value="50" ${perPage === 50 ? "selected" : ""}>50 por página</option>
+      </select>
+    </label>
+  `;
+
+  container.querySelectorAll("[data-page]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const p = Number(btn.dataset.page);
+      if (p >= 1 && p <= totalPages) {
+        state.coursePage = p;
+        renderCourses();
+      }
+    });
+  });
+
+  const select = container.querySelector("#coursePerPageSelect");
+  if (select) {
+    select.addEventListener("change", () => {
+      state.coursePerPage = Number(select.value);
+      state.coursePage = 1;
+      renderCourses();
+    });
+  }
 }
 
 function renderSales() {
@@ -2833,6 +2909,7 @@ if (partnerSearchFull) {
 
 els.courseSearch.addEventListener("input", (event) => {
   state.courseSearch = event.target.value;
+  state.coursePage = 1;
   renderCourses();
 });
 
@@ -2840,6 +2917,7 @@ document.querySelectorAll(".modality-card").forEach((card) => {
   card.addEventListener("click", () => {
     state.courseType = card.dataset.courseType || "";
     state.modality = "";
+    state.coursePage = 1;
     render();
   });
 });
@@ -2847,6 +2925,7 @@ document.querySelectorAll(".modality-card").forEach((card) => {
 document.querySelectorAll(".modality-filter-card").forEach((card) => {
   card.addEventListener("click", () => {
     state.modality = card.dataset.modality || "";
+    state.coursePage = 1;
     render();
   });
 });
@@ -2855,6 +2934,7 @@ document.querySelectorAll("[data-modality-all]").forEach((card) => {
   card.addEventListener("click", () => {
     state.courseType = "";
     state.modality = "";
+    state.coursePage = 1;
     render();
   });
 });
@@ -2872,6 +2952,7 @@ els.courseModality.addEventListener("change", () => {
 
 els.courseSort.addEventListener("change", (event) => {
   state.courseSort = event.target.value;
+  state.coursePage = 1;
   renderCourses();
 });
 
