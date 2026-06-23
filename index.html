@@ -2,7 +2,7 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
     <link rel="apple-touch-icon" href="assets/brand/perfil-e-logo.png" />
@@ -15,6 +15,25 @@
         if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.documentElement.classList.add("dark-theme");
         }
+      })();
+    </script>
+    <script>
+      (function() {
+        let lastTouchEnd = 0;
+        document.addEventListener("gesturestart", (event) => event.preventDefault(), { passive: false });
+        document.addEventListener("gesturechange", (event) => event.preventDefault(), { passive: false });
+        document.addEventListener("gestureend", (event) => event.preventDefault(), { passive: false });
+        document.addEventListener("touchmove", (event) => {
+          if (event.touches && event.touches.length > 1) event.preventDefault();
+        }, { passive: false });
+        document.addEventListener("touchend", (event) => {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 300) event.preventDefault();
+          lastTouchEnd = now;
+        }, { passive: false });
+        document.addEventListener("wheel", (event) => {
+          if (event.ctrlKey) event.preventDefault();
+        }, { passive: false });
       })();
     </script>
   </head>
@@ -1016,25 +1035,52 @@
     <dialog id="adminPanelDialog">
       <form method="dialog" id="adminPanelForm">
         <header>
-          <h2>Gerenciar usuários</h2>
+          <span class="admin-panel-icon admin-mobile-only" aria-hidden="true">👥</span>
+          <div>
+            <h2>Gerenciar usuários</h2>
+            <p class="admin-panel-subtitle admin-mobile-only">Gerencie as permissões dos usuários do sistema.</p>
+          </div>
           <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
         </header>
         <p class="file-note">Gerencie as permissões dos usuários do sistema.</p>
         <div class="admin-user-list" id="adminUserList">
           <div class="empty-state">Carregando usuários...</div>
         </div>
-        <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color, #ddd);" />
-        <h3 style="margin: 0 0 8px; font-size: 1rem;">Convidar novo usuário</h3>
-        <div class="form-grid">
-          <label>E-mail<input id="adminNewUserEmail" type="email" /></label>
-          <label>Senha<input id="adminNewUserPassword" type="password" minlength="6" /></label>
+        <hr class="admin-panel-divider" style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color, #ddd);" />
+        <section class="admin-invite-section">
+          <div class="admin-invite-heading">
+            <span class="admin-panel-icon admin-mobile-only" aria-hidden="true">👤</span>
+            <div>
+              <h3 style="margin: 0 0 8px; font-size: 1rem;">Convidar novo usuário</h3>
+              <p class="admin-panel-subtitle admin-mobile-only">Envie um convite para um novo usuário acessar o sistema.</p>
+            </div>
+          </div>
+          <div class="form-grid admin-invite-grid">
+            <label class="admin-input-field admin-email-field">
+              <span>E-mail</span>
+              <input id="adminNewUserEmail" type="email" placeholder="Digite o e-mail do usuário" />
+            </label>
+            <label class="admin-input-field admin-password-field">
+              <span>Senha</span>
+              <input id="adminNewUserPassword" type="password" minlength="6" placeholder="Digite a senha" />
+            </label>
+          </div>
+          <div class="admin-secure-note admin-mobile-only">
+            <span class="admin-secure-icon" aria-hidden="true">✓</span>
+            <div>
+              <strong>Convite seguro</strong>
+              <p>O usuário receberá as instruções de acesso ao sistema.</p>
+            </div>
+          </div>
+        </section>
+        <div class="admin-mobile-actions">
+          <p class="form-message" id="adminNewUserMessage"></p>
+          <menu>
+            <span></span>
+            <button class="secondary-action" value="cancel" type="submit" formnovalidate>Fechar</button>
+            <button class="primary-action" id="adminCreateUserBtn" type="button">Convidar usuário</button>
+          </menu>
         </div>
-        <p class="form-message" id="adminNewUserMessage"></p>
-        <menu>
-          <span></span>
-          <button class="secondary-action" value="cancel" type="submit" formnovalidate>Fechar</button>
-          <button class="primary-action" id="adminCreateUserBtn" type="button">Convidar usuário</button>
-        </menu>
       </form>
     </dialog>
 

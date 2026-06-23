@@ -680,27 +680,33 @@ async function renderAdminUserList() {
     }
     const currentUserId = cloudUser?.id;
     const adminCount = data.filter((u) => u.role === "admin").length;
-    listEl.innerHTML = `<div style="display:grid;gap:8px;">
+    listEl.innerHTML = `
+      <div class="admin-user-section-head admin-mobile-only">
+        <strong>Usuários atuais</strong>
+        <span>${data.length}</span>
+      </div>
+      <div class="admin-user-card-stack" style="display:grid;gap:8px;">
       ${data.map((u) => {
         const isSelf = u.id === currentUserId;
         const isLastAdmin = u.role === "admin" && adminCount <= 1;
-        let actionHtml = `<span style="font-size:0.85em;opacity:0.5;">${isSelf ? "Você" : ""}</span>`;
+        let actionHtml = `<span class="admin-self-badge" style="font-size:0.85em;opacity:0.5;">${isSelf ? "Você" : ""}</span>`;
         if (!isSelf) {
           const toggleLabel = u.role === "admin" ? "Revogar admin" : "Tornar admin";
           const toggleDisabled = isLastAdmin ? "disabled" : "";
           const removeDisabled = isLastAdmin ? "disabled" : "";
-          actionHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${toggleDisabled} data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
+          actionHtml = `<div class="admin-user-actions" style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="secondary-action admin-promote-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${toggleDisabled} data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
               ${toggleLabel}
             </button>
-            <button class="danger-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${removeDisabled} data-admin-remove-user="${u.id}" data-admin-remove-email="${escapeHtml(u.email)}">
+            <button class="danger-action admin-remove-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${removeDisabled} data-admin-remove-user="${u.id}" data-admin-remove-email="${escapeHtml(u.email)}">
               Remover
             </button>
           </div>`;
         }
         return `
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border-color,#ddd);border-radius:8px;background:var(--card-bg,#fff);">
-          <div>
+        <div class="admin-user-card" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border-color,#ddd);border-radius:8px;background:var(--card-bg,#fff);">
+          <span class="admin-user-avatar admin-mobile-only" aria-hidden="true">${escapeHtml((u.email || "US").slice(0, 2).toUpperCase())}</span>
+          <div class="admin-user-info">
             <strong>${escapeHtml(u.email)}</strong>
             <br/>
             <span style="font-size:0.85em;opacity:0.7;text-transform:capitalize;">${u.role}</span>
