@@ -766,8 +766,11 @@ document.querySelector("#adminCreateUserBtn")?.addEventListener("click", async (
   }
   try {
     if (msgEl) msgEl.textContent = "Criando usuário...";
-    const { error } = await supabaseClient.auth.signUp({ email, password });
-    if (error) throw error;
+    const { data: newUserId, error: rpcError } = await supabaseClient.rpc("admin_create_user", {
+      user_email: email,
+      user_password: password
+    });
+    if (rpcError) throw rpcError;
     if (msgEl) msgEl.textContent = "Usuário criado! Ele precisa fazer o primeiro login para aparecer na lista.";
     if (emailEl) emailEl.value = "";
     if (passEl) passEl.value = "";

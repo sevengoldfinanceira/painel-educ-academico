@@ -120,6 +120,39 @@ create policy "user_profiles_update"
     or public.is_admin()
   );
 
+-- Funcao para admin criar usuario direto no auth (sem email, sem rate limit)
+create or replace function public.admin_create_user(user_email text, user_password text)
+returns uuid
+language plpgsql
+security definer
+as $$
+declare
+  new_id uuid;
+begin
+  if not public.is_admin() then
+    raise exception 'Permission denied';
+  end if;
+  new_id := gen_random_uuid();
+  insert into auth.users (
+    id, email, encrypted_password, email_confirmed_at,
+    confirmation_sent_at, confirmation_token, recovery_token,
+    raw_app_meta_data, raw_user_meta_data,
+    created_at, updated_at, instance_id, aud, role
+  ) values (
+    new_id, user_email,
+    crypt(user_password, gen_salt('bf')),
+    now(), now(), '', '',
+    '{"provider":"email","providers":["email"]}',
+    '{}',
+    now(), now(), '00000000-0000-0000-0000-000000000000',
+    'authenticated', 'authenticated'
+  );
+  return new_id;
+end;
+$$;
+
+grant execute on function public.admin_create_user to authenticated;
+
 -- Funcao para admin deletar usuario COMPLETAMENTE (auth + dados)
 create or replace function public.admin_delete_user(target_id uuid)
 returns void
