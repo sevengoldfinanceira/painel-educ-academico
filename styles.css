@@ -1043,8 +1043,8 @@ body {
 .modality-card .modality-card-count,
 .modality-filter-card .modality-card-count {
   display: inline-flex;
-  min-width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   text-align: center;
   align-items: center;
@@ -1053,9 +1053,9 @@ body {
   border-radius: 999px;
   background: #fff;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
-  line-height: 24px;
+  line-height: 28px;
   box-sizing: border-box;
   box-shadow: 0 4px 12px rgba(15, 27, 51, 0.06);
   flex: 0 0 auto;
@@ -1164,13 +1164,13 @@ body {
 
   .courses-filter-layout .modality-card-count,
   .courses-filter-layout .modality-filter-card .modality-card-count {
-    min-width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     padding: 0;
     text-align: center;
-    line-height: 34px;
+    line-height: 28px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
