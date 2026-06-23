@@ -2731,6 +2731,14 @@ els.loginForm.addEventListener("submit", async (event) => {
   els.loginMessage.textContent = error ? "E-mail ou senha incorretos." : "";
 });
 
+document.querySelector("#googleLoginBtn")?.addEventListener("click", async () => {
+  els.loginMessage.textContent = "Redirecionando para Google...";
+  await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: window.location.origin }
+  });
+});
+
 els.rememberLogin.checked = localStorage.getItem(REMEMBER_LOGIN_KEY) !== "false";
 
 els.logoutBtn.addEventListener("click", async () => {
