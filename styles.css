@@ -1045,6 +1045,8 @@ body {
   display: inline-flex;
   min-width: 24px;
   height: 24px;
+  padding: 0;
+  text-align: center;
   align-items: center;
   justify-content: center;
   margin-left: auto;
@@ -1053,12 +1055,13 @@ body {
   color: var(--ink);
   font-size: 12px;
   font-weight: 900;
-  line-height: 1;
+  line-height: 24px;
+  box-sizing: border-box;
   box-shadow: 0 4px 12px rgba(15, 27, 51, 0.06);
   flex: 0 0 auto;
   -webkit-line-clamp: unset;
   -webkit-box-orient: initial;
-  overflow: visible;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -1163,6 +1166,10 @@ body {
   .courses-filter-layout .modality-filter-card .modality-card-count {
     min-width: 34px;
     height: 34px;
+    padding: 0;
+    text-align: center;
+    line-height: 34px;
+    box-sizing: border-box;
     font-size: 16px;
   }
 }
