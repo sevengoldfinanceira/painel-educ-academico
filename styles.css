@@ -1057,6 +1057,9 @@ dialog label {
 }
 .sidebar-overlay.visible { display: block; }
 
+/* iOS zoom fix: inputs with font-size < 16px trigger zoom on focus */
+input, select, textarea { font-size: 16px; }
+
 /* EYEBROW */
 .eyebrow {
   margin: 0 0 4px;
