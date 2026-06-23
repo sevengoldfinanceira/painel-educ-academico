@@ -184,7 +184,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
             <span>Nova parceria</span>
           </button>
-          <span class="sync-status" id="syncStatus">Dados online carregados</span>
+          <span class="sync-status" id="syncStatus">Dados online</span>
           <button class="icon-btn-circle" id="notifBtn" type="button" aria-label="Notificações">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </button>
@@ -1026,7 +1026,7 @@
         <label class="profile-name-field">Nome exibido<input id="profileName" required /></label>
         <input id="profilePhotoUrl" type="hidden" />
         <div class="profile-photo-row" style="display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; width: 100%;">
-          <label class="profile-photo-field" style="flex: 1; margin: 0;">Trocar foto<input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,.png,.jpg,.jpeg,.webp,.gif" /></label>
+          <label class="profile-photo-field" style="flex: 1; margin: 0;">Trocar foto<span class="profile-file-picker-text">Escolher foto</span><input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,.png,.jpg,.jpeg,.webp,.gif" /></label>
           <button class="danger-action profile-remove-photo" id="removeProfilePhotoBtn" type="button" style="min-height: 42px; padding: 0 16px; border-radius: 999px; font-weight: 700; border: 1px solid #f0c8c8; cursor: pointer; transition: all 0.2s;">Remover foto</button>
         </div>
         <p class="file-note profile-photo-note">Se deixar a foto em branco, o sistema usa automaticamente a imagem do Google quando ela estiver disponível.</p>

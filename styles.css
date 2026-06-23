@@ -641,6 +641,7 @@ body {
 .sidebar-copyright {
   color: var(--muted); font-size: 10px; line-height: 1.4;
   margin: 0;
+  text-align: center;
 }
 
 /* MAIN AREA */
@@ -684,15 +685,28 @@ body {
   display: flex; gap: 10px; align-items: center;
 }
 .sync-status {
-  color: var(--muted);
-  font-size: 12px; font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #667085;
+  font-size: 12px; font-weight: 800;
   padding: 8px 14px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: #fffdf8;
+  border: 1px solid #eadfce;
   border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(15, 27, 51, 0.05);
 }
-.sync-status[data-status="saved"] { color: var(--accent); border-color: rgba(23, 107, 93, 0.2); }
+.sync-status::before {
+  width: 9px;
+  height: 9px;
+  content: "";
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+}
+.sync-status[data-status="saved"] { color: #536339; border-color: #eadfce; }
 .sync-status[data-status="error"] { color: var(--danger); border-color: rgba(166, 56, 56, 0.2); }
+.sync-status[data-status="error"]::before { background: var(--danger); box-shadow: 0 0 0 3px rgba(166, 56, 56, 0.12); }
 
 .icon-btn-circle {
   width: 42px; height: 42px;
@@ -1670,6 +1684,21 @@ dialog label {
   min-width: 0;
 }
 
+.profile-file-picker-text {
+  display: inline-flex;
+  min-height: 36px;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 14px;
+  background: #f6efe4;
+  color: #0f1b33;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
 .profile-photo-field::after {
   position: absolute;
   left: 16px;
@@ -1680,25 +1709,12 @@ dialog label {
 }
 
 #profilePhotoFile {
-  min-height: 56px;
-  border: 1px solid #eadfce;
-  border-radius: 16px;
-  padding: 9px 10px 9px 48px;
-  background: #fff;
-  color: #0f1b33;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-#profilePhotoFile::file-selector-button {
-  min-height: 36px;
-  margin-right: 8px;
-  border: 0;
-  border-radius: 10px;
-  padding: 0 14px;
-  background: #f6efe4;
-  color: #0f1b33;
-  font-weight: 900;
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .profile-remove-photo {
@@ -2120,25 +2136,12 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
 
   #profilePhotoFile {
-    min-height: 56px;
-    border: 1px solid #eadfce;
-    border-radius: 16px;
-    padding: 9px 10px 9px 48px;
-    background: #fff;
-    color: #0f1b33;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  #profilePhotoFile::file-selector-button {
-    min-height: 36px;
-    margin-right: 8px;
-    border: 0;
-    border-radius: 10px;
-    padding: 0 14px;
-    background: #f6efe4;
-    color: #0f1b33;
-    font-weight: 900;
+    position: absolute;
+    inset: auto auto 0 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .profile-remove-photo {

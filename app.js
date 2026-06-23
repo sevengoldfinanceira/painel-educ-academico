@@ -983,7 +983,7 @@ function saveData({ sync = true } = {}) {
 }
 
 function setSyncStatus(message, status = "") {
-  els.syncStatus.textContent = message;
+  els.syncStatus.textContent = message === "Dados online carregados" ? "Dados online" : message;
   els.syncStatus.dataset.status = status;
 }
 
