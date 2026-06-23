@@ -63,12 +63,17 @@ async function loadUserRole() {
         .select("*", { count: "exact", head: true });
       const firstUser = count === null || count === 0;
       const role = isAdminEmail || firstUser ? "admin" : "user";
-      const { error: insertError } = await supabaseClient
+      const { error: upsertError } = await supabaseClient
         .from("user_profiles")
-        .insert({ id: cloudUser.id, email: cloudUser.email, role });
-      if (insertError) {
-        console.error("Erro ao criar perfil de usuario:", insertError);
-        cloudUserRole = "user";
+        .upsert({ id: cloudUser.id, email: cloudUser.email, role }, { onConflict: "id" });
+      if (upsertError) {
+        console.error("Erro ao criar perfil de usuario:", upsertError);
+        const { data: retry } = await supabaseClient
+          .from("user_profiles")
+          .select("role")
+          .eq("id", cloudUser.id)
+          .maybeSingle();
+        cloudUserRole = retry?.role || "user";
       } else {
         cloudUserRole = role;
       }

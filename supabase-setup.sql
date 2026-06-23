@@ -64,16 +64,29 @@ create table if not exists public.user_profiles (
 
 alter table public.user_profiles enable row level security;
 
+-- Funcao security definer para verificar admin sem recursao RLS
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select exists (
+    select 1 from public.user_profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
+
+-- Conceder acesso para authenticated users usarem a funcao
+grant execute on function public.is_admin to authenticated;
+
 -- Usuario ve seu proprio perfil; admin ve todos
 drop policy if exists "user_profiles_select" on public.user_profiles;
 create policy "user_profiles_select"
   on public.user_profiles for select to authenticated
   using (
     auth.uid() = id
-    or exists (
-      select 1 from public.user_profiles
-      where id = auth.uid() and role = 'admin'
-    )
+    or public.is_admin()
   );
 
 -- Usuario cria apenas seu proprio perfil (primeiro login)
@@ -88,26 +101,15 @@ create policy "user_profiles_update"
   on public.user_profiles for update to authenticated
   using (
     auth.uid() = id
-    or exists (
-      select 1 from public.user_profiles
-      where id = auth.uid() and role = 'admin'
-    )
+    or public.is_admin()
   )
   with check (
     auth.uid() = id
-    or exists (
-      select 1 from public.user_profiles
-      where id = auth.uid() and role = 'admin'
-    )
+    or public.is_admin()
   );
 
 -- Admin tambem pode deletar usuarios
 drop policy if exists "user_profiles_delete" on public.user_profiles;
 create policy "user_profiles_delete"
   on public.user_profiles for delete to authenticated
-  using (
-    exists (
-      select 1 from public.user_profiles
-      where id = auth.uid() and role = 'admin'
-    )
-  );
+  using (public.is_admin());
