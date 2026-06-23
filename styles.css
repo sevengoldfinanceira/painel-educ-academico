@@ -991,8 +991,8 @@ body {
   margin-bottom: 24px;
 }
 .modality-card, .modality-filter-card {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 14px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 10px;
   min-width: 140px;
   flex: 1 1 140px;
   border: 1.5px solid var(--line);
@@ -1029,12 +1029,12 @@ body {
 .modality-card-icon.blue { background: #E8F0FE; color: #3B82F6; }
 .modality-card-icon.red { background: #FEE2E2; color: #DC2626; }
 .modality-card strong, .modality-filter-card strong {
-  display: block; font-size: 10px; font-weight: 700; color: var(--ink);
-  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  display: -webkit-box; font-size: 9px; font-weight: 700; color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 .modality-card span, .modality-filter-card span {
-  display: block; font-size: 9px; color: var(--muted); margin-top: 1px;
-  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  display: -webkit-box; font-size: 8px; color: var(--muted); margin-top: 1px;
+  overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 .modality-card .modality-card-count,
 .modality-filter-card .modality-card-count {
@@ -3280,6 +3280,13 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   .modality-card,
   .modality-filter-card {
     min-width: auto;
+  }
+
+  .modality-card:last-child:nth-child(odd),
+  .modality-filter-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 50%;
   }
 
   .selected-partner.visible {
