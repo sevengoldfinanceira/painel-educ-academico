@@ -684,12 +684,17 @@ async function renderAdminUserList() {
         const isSelf = u.id === currentUserId;
         const isLastAdmin = u.role === "admin" && adminCount <= 1;
         let actionHtml = `<span style="font-size:0.85em;opacity:0.5;">${isSelf ? "Você" : ""}</span>`;
-        if (!isSelf && !isLastAdmin) {
-          actionHtml = `<button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
-            ${u.role === "admin" ? "Revogar admin" : "Tornar admin"}
-          </button>`;
-        } else if (!isSelf && isLastAdmin) {
-          actionHtml = `<span style="font-size:0.85em;opacity:0.5;">Único admin</span>`;
+        if (!isSelf) {
+          const toggleLabel = u.role === "admin" ? "Revogar admin" : "Tornar admin";
+          const toggleDisabled = isLastAdmin ? "disabled" : "";
+          actionHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${toggleDisabled} data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
+              ${toggleLabel}
+            </button>
+            <button class="danger-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-remove-user="${u.id}" data-admin-remove-email="${escapeHtml(u.email)}">
+              Remover
+            </button>
+          </div>`;
         }
         return `
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border-color,#ddd);border-radius:8px;background:var(--card-bg,#fff);">
@@ -716,6 +721,27 @@ async function renderAdminUserList() {
         if (updateError) {
           alert("Erro ao alterar permissão: " + updateError.message);
         }
+        await renderAdminUserList();
+      });
+    });
+
+    listEl.querySelectorAll("[data-admin-remove-user]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const userId = btn.dataset.adminRemoveUser;
+        const email = btn.dataset.adminRemoveEmail;
+        if (!confirm(`Remover usuário ${email}?\n\nIsso apaga os dados dele(a) do sistema e revoga o acesso.`)) return;
+        btn.disabled = true;
+        btn.textContent = "Removendo...";
+        const { error: profileError } = await supabaseClient
+          .from("user_profiles")
+          .delete()
+          .eq("id", userId);
+        if (profileError) {
+          alert("Erro ao remover: " + profileError.message);
+          await renderAdminUserList();
+          return;
+        }
+        try { await supabaseClient.from("crm_state").delete().eq("user_id", userId); } catch (_) {}
         await renderAdminUserList();
       });
     });
