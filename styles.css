@@ -4828,7 +4828,10 @@ h1 { margin-bottom: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.05; }
   }
   #addSaleBtnQuick,
   #addCourseBtn,
-  #addPartnerBtnQuick {
+  #addPartnerBtnQuick,
+  #notifBtn,
+  #themeToggleBtn,
+  #logoutBtn {
     display: none !important;
   }
   /* Esconder a parte escrita do botão */
