@@ -909,9 +909,31 @@ function mergeCatedralCatalog(data) {
   data.imports.catedralCatalogV1 = true;
 }
 
+function sanitizeForCache(data) {
+  const copy = structuredClone(data);
+  copy.courses?.forEach((c) => { c.examDataUrl = ""; });
+  copy.partners?.forEach((p) => {
+    p.contractDataUrl = "";
+    p.catalogDataUrl = "";
+    p.catalogs?.forEach((c) => { c.dataUrl = ""; });
+    p.documents?.forEach((d) => { d.dataUrl = ""; });
+  });
+  copy.clients?.forEach((c) => {
+    c.contractDataUrl = "";
+    c.historyDataUrl = "";
+    c.declarationDataUrl = "";
+    c.diplomaDataUrl = "";
+  });
+  copy.marketing?.forEach((m) => { m.dataUrl = ""; });
+  copy.profile ||= {};
+  copy.profile.avatarUrl = "";
+  return copy;
+}
+
 function saveData({ sync = true } = {}) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+    const cached = sanitizeForCache(state.data);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cached));
   } catch (error) {
     console.warn("Nao foi possivel atualizar a copia local.", error);
     setSyncStatus("Salvando somente online", "saving");
@@ -1101,7 +1123,7 @@ async function loadDataFromCloud() {
     if (data?.data) {
       state.data = normalizeData(data.data);
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizeForCache(state.data)));
       } catch (localError) {
         console.warn("A copia local esta cheia. Os dados continuarao online.", localError);
       }
