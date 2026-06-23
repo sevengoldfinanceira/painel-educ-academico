@@ -1328,13 +1328,14 @@ body {
   .partners-search-bar .search-input-wrapper {
     height: 56px;
     padding: 0 20px;
-    background: #faf7f1;
+    background: #fff;
     border: 1.5px solid #eadfce;
     border-radius: 16px;
     display: flex;
     align-items: center;
     gap: 12px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 16px rgba(15, 27, 51, 0.06);
   }
 
   .partners-search-bar .search-input-wrapper:focus-within {
