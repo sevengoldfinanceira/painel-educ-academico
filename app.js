@@ -80,12 +80,13 @@ async function loadUserRole() {
       cloudUserRole = data.role;
     } else {
       const isAdminEmail = ADMIN_EMAILS.includes(cloudUser.email);
-      let firstUser = false;
+      let hasNoAdmin = false;
       try {
-        const { data: userCount, error: countError } = await supabaseClient.rpc("get_user_count");
-        if (!countError) firstUser = userCount === 0 || userCount === null;
-      } catch (_) { firstUser = false; }
-      const role = isAdminEmail || firstUser ? "admin" : "user";
+        const { data: adminCount, error: countError } = await supabaseClient.rpc("get_admin_count");
+        if (!countError) hasNoAdmin = adminCount === 0 || adminCount === null;
+        else hasNoAdmin = false; // se a funcao nao existe, safe default: assume que ja existe admin
+      } catch (_) { hasNoAdmin = false; }
+      const role = isAdminEmail || hasNoAdmin ? "admin" : "user";
       const { error: upsertError } = await supabaseClient
         .from("user_profiles")
         .upsert({ id: cloudUser.id, email: cloudUser.email, role }, { onConflict: "id" });
@@ -687,11 +688,12 @@ async function renderAdminUserList() {
         if (!isSelf) {
           const toggleLabel = u.role === "admin" ? "Revogar admin" : "Tornar admin";
           const toggleDisabled = isLastAdmin ? "disabled" : "";
+          const removeDisabled = isLastAdmin ? "disabled" : "";
           actionHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;">
             <button class="secondary-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${toggleDisabled} data-admin-toggle-role="${u.id}" data-admin-toggle-current="${u.role}">
               ${toggleLabel}
             </button>
-            <button class="danger-action" type="button" style="padding:4px 12px;font-size:0.85rem;" data-admin-remove-user="${u.id}" data-admin-remove-email="${escapeHtml(u.email)}">
+            <button class="danger-action" type="button" style="padding:4px 12px;font-size:0.85rem;" ${removeDisabled} data-admin-remove-user="${u.id}" data-admin-remove-email="${escapeHtml(u.email)}">
               Remover
             </button>
           </div>`;
@@ -727,6 +729,7 @@ async function renderAdminUserList() {
 
     listEl.querySelectorAll("[data-admin-remove-user]").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        if (btn.disabled) return;
         const userId = btn.dataset.adminRemoveUser;
         const email = btn.dataset.adminRemoveEmail;
         if (!confirm(`Remover usuário ${email}?\n\nIsso apaga os dados dele(a) do sistema e revoga o acesso.`)) return;
