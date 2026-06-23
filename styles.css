@@ -1099,7 +1099,7 @@ body {
     flex-direction: column;
     align-items: stretch;
     align-self: stretch;
-    padding-top: 0;
+    padding-top: 16px;
   }
 
   .courses-filter-layout .filter-overview-column > h3.filter-section-title {
