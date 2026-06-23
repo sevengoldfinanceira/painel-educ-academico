@@ -6,9 +6,9 @@
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
     <link rel="apple-touch-icon" href="assets/brand/perfil-e-logo.png" />
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json?v=2026.06.23.2" />
     <meta name="theme-color" content="#0a1628" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=2026.06.23.2" />
     <script>
       (function() {
         const savedTheme = localStorage.getItem("educamais_theme");
@@ -1173,13 +1173,81 @@
     </dialog>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="educamais-catalog-data.js"></script>
-    <script src="catedral-catalog-data.js"></script>
-    <script src="app.js"></script>
+    <div class="app-update-banner" id="appUpdateBanner" role="status" aria-live="polite">
+      <span>Nova versão disponível.</span>
+      <button type="button" id="appUpdateButton">Atualizar agora</button>
+    </div>
+
+    <script src="supabase-config.js?v=2026.06.23.2"></script>
+    <script src="educamais-catalog-data.js?v=2026.06.23.2"></script>
+    <script src="catedral-catalog-data.js?v=2026.06.23.2"></script>
+    <script src="app.js?v=2026.06.23.2"></script>
     <script>
+      window.EDUC_APP_VERSION = "2026.06.23.2";
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js").catch(() => {});
+        const updateBanner = document.querySelector("#appUpdateBanner");
+        const updateButton = document.querySelector("#appUpdateButton");
+        let waitingWorker = null;
+        let refreshingForUpdate = false;
+
+        const showUpdateBanner = (worker) => {
+          if (worker) waitingWorker = worker;
+          updateBanner?.classList.add("visible");
+        };
+
+        const applyUpdate = async () => {
+          refreshingForUpdate = true;
+          updateButton.disabled = true;
+          updateButton.textContent = "Atualizando...";
+          try {
+            if (window.caches) {
+              const keys = await caches.keys();
+              await Promise.all(keys.filter((key) => key.startsWith("educ-academico-")).map((key) => caches.delete(key)));
+            }
+            waitingWorker?.postMessage({ type: "CLEAR_OLD_CACHES" });
+            waitingWorker?.postMessage({ type: "SKIP_WAITING" });
+            navigator.serviceWorker.controller?.postMessage({ type: "CLEAR_OLD_CACHES" });
+            setTimeout(() => window.location.reload(), 900);
+          } catch (_) {
+            window.location.reload();
+          }
+        };
+
+        updateButton?.addEventListener("click", applyUpdate);
+
+        navigator.serviceWorker.addEventListener("message", (event) => {
+          if (event.data?.type === "APP_VERSION_READY") {
+            showUpdateBanner(null);
+          }
+        });
+
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (refreshingForUpdate) {
+            window.location.reload();
+            return;
+          }
+          showUpdateBanner(null);
+        });
+
+        navigator.serviceWorker.register(`/sw.js?v=${window.EDUC_APP_VERSION}`, { updateViaCache: "none" })
+          .then((registration) => {
+            if (registration.waiting && navigator.serviceWorker.controller) {
+              showUpdateBanner(registration.waiting);
+            }
+
+            registration.addEventListener("updatefound", () => {
+              const newWorker = registration.installing;
+              if (!newWorker) return;
+              newWorker.addEventListener("statechange", () => {
+                if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  showUpdateBanner(newWorker);
+                }
+              });
+            });
+
+            setInterval(() => registration.update().catch(() => {}), 5 * 60 * 1000);
+          })
+          .catch(() => {});
       }
     </script>
   </body>
