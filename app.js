@@ -423,6 +423,7 @@ const els = {
   courseSearch: document.querySelector("#courseSearch"),
   courseSort: document.querySelector("#courseSort"),
   courseRows: document.querySelector("#courseRows"),
+  courseCards: document.querySelector("#courseCards"),
   emptyState: document.querySelector("#emptyState"),
   selectedPartner: document.querySelector("#selectedPartner"),
   mainTabs: document.querySelectorAll("[data-main-view]"),
@@ -1691,7 +1692,11 @@ function renderPartnersFull() {
 function renderCourses() {
   const allCourses = filteredCourses();
   els.courseRows.innerHTML = "";
+  if (els.courseCards) els.courseCards.innerHTML = "";
   els.emptyState.classList.toggle("visible", allCourses.length === 0);
+  if (els.courseCards && allCourses.length === 0) {
+    els.courseCards.innerHTML = `<div class="empty-state visible">Nenhum curso encontrado.</div>`;
+  }
 
   const admin = isAdmin();
 
@@ -1706,19 +1711,22 @@ function renderCourses() {
 
   courses.forEach((course) => {
     const partner = getPartner(course.partnerId);
+    const courseType = course.type || getCourseTypeFromModality(course.modality);
+    const modality = getModalityLabel(course.modality);
+    const deadline = course.deadline || "Não informado";
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="course-detail-cell">
         <strong>${escapeHtml(course.name)}</strong>
-        <small>${escapeHtml(getModalityLabel(course.modality || ""))}</small>
+        <small>${escapeHtml(modality || "")}</small>
       </td>
       <td>
         ${course.examDataUrl 
           ? `<button class="margin-pill" type="button" data-open-exam="${escapeHtml(course.id)}" title="Abrir prova: ${escapeHtml(course.examFileName)}">Sim</button>` 
           : `<span class="margin-pill">—</span>`}
       </td>
-      <td><span class="margin-pill">${escapeHtml(course.type || getCourseTypeFromModality(course.modality))}</span></td>
-      <td><span class="margin-pill">${escapeHtml(getModalityLabel(course.modality))}</span></td>
+      <td><span class="margin-pill">${escapeHtml(courseType)}</span></td>
+      <td><span class="margin-pill">${escapeHtml(modality)}</span></td>
       <td>
         <strong>${escapeHtml(partner?.name || "Parceria removida")}</strong>
       </td>
@@ -1738,6 +1746,54 @@ function renderCourses() {
       </td>
     `;
     els.courseRows.appendChild(row);
+
+    if (els.courseCards) {
+      const card = document.createElement("article");
+      card.className = "course-mobile-card";
+      card.innerHTML = `
+        <div class="course-card-main">
+          <div class="course-card-icon" aria-hidden="true">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>
+          </div>
+          <div class="course-card-content">
+            <div class="course-card-topline">
+              <h3>${escapeHtml(course.name)}</h3>
+              <span class="course-card-status">${course.examDataUrl ? "Prova" : "Ativo"}</span>
+            </div>
+            <small>${escapeHtml(modality || "-")}</small>
+            <div class="course-card-tags">
+              <span>${escapeHtml(courseType || "-")}</span>
+              <span>${escapeHtml(modality || "-")}</span>
+            </div>
+          </div>
+        </div>
+        <div class="course-card-info">
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+            ${escapeHtml(partner?.name || "Parceria removida")}
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            ${escapeHtml(deadline)}
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+            ${formatMoney(course.sale)}
+          </span>
+        </div>
+        <div class="course-card-actions">
+          ${admin ? `<button class="course-card-secondary" type="button" data-course-id="${escapeHtml(course.id)}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver detalhes
+          </button>` : ""}
+          ${admin ? `<button class="course-card-primary" type="button" data-sale-course-id="${escapeHtml(course.id)}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Adicionar
+          </button>` : `<span class="course-card-secondary course-card-secondary-full">Informações do curso</span>`}
+        </div>
+      `;
+      els.courseCards.appendChild(card);
+    }
   });
 
   document.querySelectorAll("[data-course-id]").forEach((button) => {
