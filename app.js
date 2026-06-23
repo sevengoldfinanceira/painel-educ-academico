@@ -1737,11 +1737,10 @@ function renderPartnersFull() {
 
   document.querySelectorAll("[data-partner-card-id]").forEach((button) => {
     button.addEventListener("click", () => {
+      if (!isAdmin()) return;
       const partner = state.data.partners.find((p) => p.id === button.dataset.partnerCardId);
       if (!partner) return;
-      state.mainView = "overview";
-      state.selectedPartnerId = partner.id;
-      render();
+      openPartnerDialog(partner);
     });
   });
 }
