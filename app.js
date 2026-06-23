@@ -1330,7 +1330,7 @@ function readFileAsDataUrl(file) {
       reject(new Error(`Falha ao ler arquivo: ${file.name}`));
     };
     reader.onabort = () => reject(new Error("Leitura cancelada"));
-    reader.readAsDataUrl(file);
+    reader.readAsDataURL(file);
   });
 }
 
@@ -2781,7 +2781,9 @@ els.profilePhotoUrl.addEventListener("input", () => {
 });
 
 function isProfilePhotoImage(file) {
-  return !!file && file.type.startsWith("image/");
+  if (!file) return false;
+  if (file.type?.startsWith("image/")) return true;
+  return /\.(png|jpe?g|webp|gif|heic|heif)$/i.test(file.name || "");
 }
 
 els.profilePhotoFile.addEventListener("change", async () => {
