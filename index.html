@@ -1007,28 +1007,39 @@
     <dialog id="profileDialog">
       <form method="dialog" id="profileForm">
         <header>
-          <h2>Editar perfil</h2>
+          <span class="profile-modal-icon profile-user-icon" aria-hidden="true"></span>
+          <div>
+            <h2>Editar perfil</h2>
+            <p class="profile-modal-subtitle">Atualize suas informações e preferências.</p>
+          </div>
           <button class="icon-button" value="cancel" type="submit" formnovalidate aria-label="Fechar">x</button>
         </header>
         <div class="profile-preview">
           <div class="sidebar-user-avatar profile-preview-avatar" id="profilePreviewAvatar">--</div>
           <div>
             <strong id="profilePreviewName">Seu nome</strong>
-            <span>Administrador</span>
+            <span class="profile-role-label">Administrador</span>
           </div>
         </div>
-        <label>Nome exibido<input id="profileName" required /></label>
+        <label class="profile-name-field">Nome exibido<input id="profileName" required /></label>
         <input id="profilePhotoUrl" type="hidden" />
-        <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; width: 100%;">
-          <label style="flex: 1; margin: 0;">Trocar foto<input id="profilePhotoFile" type="file" accept="image/*" /></label>
-          <button class="danger-action" id="removeProfilePhotoBtn" type="button" style="min-height: 42px; padding: 0 16px; border-radius: 999px; font-weight: 700; border: 1px solid #f0c8c8; cursor: pointer; transition: all 0.2s;">Remover foto</button>
+        <div class="profile-photo-row" style="display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; width: 100%;">
+          <label class="profile-photo-field" style="flex: 1; margin: 0;">Trocar foto<input id="profilePhotoFile" type="file" accept="image/*" /></label>
+          <button class="danger-action profile-remove-photo" id="removeProfilePhotoBtn" type="button" style="min-height: 42px; padding: 0 16px; border-radius: 999px; font-weight: 700; border: 1px solid #f0c8c8; cursor: pointer; transition: all 0.2s;">Remover foto</button>
         </div>
-        <p class="file-note">Se deixar a foto em branco, o sistema usa automaticamente a imagem do Google quando ela estiver disponível.</p>
+        <p class="file-note profile-photo-note">Se deixar a foto em branco, o sistema usa automaticamente a imagem do Google quando ela estiver disponível.</p>
         <menu>
           <button class="secondary-action" value="cancel" type="submit" formnovalidate>Cancelar</button>
           <button class="secondary-action" id="profileAdminPanelBtn" type="button" data-role="admin" style="display:none;">Gerenciar usuários</button>
           <button class="primary-action" id="saveProfile" value="default" type="submit">Salvar perfil</button>
         </menu>
+        <div class="profile-secure-note">
+          <span class="profile-secure-icon" aria-hidden="true"></span>
+          <div>
+            <strong>Seus dados estão seguros</strong>
+            <p>Todas as alterações são protegidas e criptografadas.</p>
+          </div>
+        </div>
       </form>
     </dialog>
 
