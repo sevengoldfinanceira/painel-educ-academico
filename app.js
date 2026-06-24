@@ -577,6 +577,28 @@ const FAIND_INDIARA_SEQUENCIAL_COURSES = [
   "Gestão de Vendas",
 ];
 
+const FAIND_DOM_BOSCO_GRADUACAO_COURSES = [
+  "Administração",
+  "Administração Pública",
+  "Ciências Contábeis",
+  "Pedagogia",
+  "Agronegócio",
+  "Enfermagem",
+  "Farmácia",
+  "Fisioterapia",
+  "Psicologia",
+  "Direito",
+  "Segurança Pública",
+  "Biomedicina",
+  "Produção Sucroalcooleira",
+  "Serviço Social",
+  "Educação Física",
+  "Engenharia Florestal",
+  "Engenharia Civil",
+  "Engenharia Agronômica",
+  "Engenharia de Produção",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -1026,6 +1048,7 @@ function normalizeData(data) {
   mergeFaculdadeCapacitaCourses(data);
   mergeCentrotecLealCourses(data);
   mergeFaindIndiaraCourses(data);
+  mergeFaindDomBoscoCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1411,6 +1434,68 @@ function mergeFaindIndiaraCourses(data) {
   });
 
   data.imports.faindIndiaraSequencialV1 = true;
+}
+
+function mergeFaindDomBoscoCourses(data) {
+  if (data.imports.faindDomBoscoGraduacaoV1) return;
+
+  const partnerInfo = {
+    id: "partner-faind-dom-bosco",
+    name: "Faind e Dom Bosco",
+    type: "Faculdade",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  FAIND_DOM_BOSCO_GRADUACAO_COURSES.forEach((name, index) => {
+    const modality = ["Pedagogia", "Educação Física"].includes(name) ? "Licenciatura" : "Bacharel";
+    const key = `${normalize(name)}|${normalize(modality)}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `faind-dom-bosco-graduacao-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Graduações",
+      modality,
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Faind e Dom Bosco.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.faindDomBoscoGraduacaoV1 = true;
 }
 
 function sanitizeForCache(data) {
