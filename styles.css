@@ -5714,8 +5714,8 @@ body.dark-theme .btn-outline-icon:hover {
     -webkit-box-align: unset !important;
   }
 
-  #coursesView .modality-card span,
-  #coursesView .modality-filter-card span {
+  #coursesView .modality-card span:not(.modality-card-count),
+  #coursesView .modality-filter-card span:not(.modality-card-count) {
     display: block !important;
     margin-top: 2px !important;
     color: #667085 !important;
@@ -5735,26 +5735,32 @@ body.dark-theme .btn-outline-icon:hover {
     -webkit-box-align: unset !important;
   }
 
+  #coursesView .modality-card .modality-card-count,
   #coursesView .modality-card-count,
-  #coursesView .modality-filter-card .modality-card-count {
+  #coursesView .modality-filter-card .modality-card-count,
+  #coursesView span.modality-card-count {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    position: static;
-    min-width: 30px;
-    width: 30px;
-    height: 30px;
-    margin: 4px auto 0;
+    position: static !important;
+    min-width: 30px !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 4px auto 0 !important;
     padding: 0 !important;
-    border-radius: 50%;
-    background: #f0f0f0;
+    border-radius: 50% !important;
+    background: #f0f0f0 !important;
     color: #0f1b33 !important;
-    font-size: 12px;
-    font-weight: 900;
-    line-height: 1 !important;
-    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
-    text-align: center;
-    box-sizing: border-box;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    line-height: 30px !important;
+    letter-spacing: 0 !important;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06) !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 }
 
