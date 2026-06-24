@@ -466,6 +466,65 @@ const FACULDADE_CAPACITA_SEQUENCIAL_COURSES = [
   "Ótica e Optometria",
 ];
 
+const CENTROTEC_LEAL_TECNICO_COURSES = [
+  "Técnico em Agente Comunitário de Saúde",
+  "Técnico em Análises Clínicas",
+  "Técnico em Cuidados de Idosos",
+  "Técnico em Enfermagem",
+  "Técnico em Equipamentos Biomédicos",
+  "Técnico em Estética",
+  "Técnico em Farmácia",
+  "Técnico em Gerência em Saúde",
+  "Técnico em Nutrição e Dietética",
+  "Técnico em Saúde Bucal",
+  "Técnico em Veterinária",
+  "Técnico em Automação Industrial",
+  "Técnico em Eletromecânica",
+  "Técnico em Eletrônica",
+  "Técnico em Eletrotécnica",
+  "Técnico em Manutenção de Máquinas Industriais",
+  "Técnico em Manutenção de Máquinas Navais",
+  "Técnico em Máquinas Pesadas",
+  "Técnico em Metalurgia",
+  "Técnico em Química",
+  "Técnico em Refrigeração e Climatização",
+  "Técnico em Soldagem",
+  "Técnico em Administração",
+  "Técnico em Contabilidade",
+  "Técnico em Logística",
+  "Técnico em Marketing",
+  "Técnico em Qualidade",
+  "Técnico em Recursos Humanos",
+  "Técnico em Secretaria Escolar",
+  "Técnico em Segurança do Trabalho",
+  "Técnico em Serviços Jurídicos",
+  "Técnico em Transações Imobiliárias",
+  "Técnico em Vendas",
+  "Técnico em Eventos",
+  "Técnico em Agrimensura",
+  "Técnico em Edificações",
+  "Técnico em Mineração",
+  "Técnico em Prevenção e Combate ao Incêndio",
+  "Técnico em Defesa Civil",
+  "Técnico em Trânsito",
+  "Técnico em Biotecnologia",
+  "Técnico em Design Gráfico",
+  "Técnico em Desenvolvimento de Sistemas",
+  "Técnico em Informática para Internet",
+  "Técnico em Redes de Computadores",
+  "Técnico em Sistemas de Energia Renovável",
+  "Técnico em Telecomunicações",
+  "Técnico em Agricultura",
+  "Técnico em Agroindústria",
+  "Técnico em Agropecuária",
+  "Técnico em Aquicultura",
+  "Técnico em Meio Ambiente",
+  "Técnico em Gastronomia",
+  "Técnico em Óptica",
+  "Técnico em Designer de Interiores",
+  "Técnico em Guia de Turismo",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -913,6 +972,7 @@ function normalizeData(data) {
   mergeCatedralCatalog(data);
   mergeUniFaeBacharelCourses(data);
   mergeFaculdadeCapacitaCourses(data);
+  mergeCentrotecLealCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1176,6 +1236,67 @@ function mergeFaculdadeCapacitaCourses(data) {
   });
 
   data.imports.faculdadeCapacitaSequencialV1 = true;
+}
+
+function mergeCentrotecLealCourses(data) {
+  if (data.imports.centrotecLealTecnicoV1) return;
+
+  const partnerInfo = {
+    id: "partner-escola-centrotec-leal",
+    name: "Escola CentroTec Leal",
+    type: "Escola parceira",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  CENTROTEC_LEAL_TECNICO_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Tecnico")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `centrotec-leal-tecnico-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Cursos Técnicos",
+      modality: "Tecnico",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Escola CentroTec Leal.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.centrotecLealTecnicoV1 = true;
 }
 
 function sanitizeForCache(data) {
