@@ -689,6 +689,33 @@ const GLOBAL_TECNICO_COURSES = [
   "Técnico em Petróleo e Gás",
 ];
 
+const BORTOLI_LICENCIATURA_COURSES = [
+  "Artes Visuais",
+  "Ciências Biológicas",
+  "Ciências Naturais",
+  "Ciências Sociais",
+  "Computação",
+  "Dança",
+  "Educação Escolar Indígena",
+  "Educação do Campo",
+  "Educação Especial",
+  "Educação Física",
+  "Filosofia",
+  "Física",
+  "Geografia",
+  "História",
+  "Letras Libras",
+  "Letras Português",
+  "Letras Português/Espanhol",
+  "Letras Português/Inglês",
+  "Matemática",
+  "Música",
+  "Pedagogia",
+  "Química",
+  "Sociologia",
+  "Teatro",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -1140,6 +1167,7 @@ function normalizeData(data) {
   mergeFaindIndiaraCourses(data);
   mergeFaindDomBoscoCourses(data);
   mergeGlobalTecnicoCourses(data);
+  mergeBortoliLicenciaturaCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1677,6 +1705,73 @@ function mergeGlobalTecnicoCourses(data) {
   });
 
   data.imports.globalTecnicoV1 = true;
+}
+
+function mergeBortoliLicenciaturaCourses(data) {
+  if (data.imports.bortoliLicenciaturaV1) return;
+
+  const partnerInfo = {
+    id: "partner-bortoli-parceiro-bortoli",
+    name: "Bortoli - Parceiro Bortoli",
+    type: "Faculdade",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find((item) => {
+    const partnerName = normalize(item.name);
+    return (
+      item.id === partnerInfo.id ||
+      partnerName === normalize(partnerInfo.name) ||
+      partnerName === normalize("Parceiro Bortoli") ||
+      partnerName.includes("bortoli")
+    );
+  });
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  BORTOLI_LICENCIATURA_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Licenciatura")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `bortoli-licenciatura-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Graduações",
+      modality: "Licenciatura",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Bortoli - Parceiro Bortoli. Segunda licenciatura por notório saber.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.bortoliLicenciaturaV1 = true;
 }
 
 function sanitizeForCache(data) {
