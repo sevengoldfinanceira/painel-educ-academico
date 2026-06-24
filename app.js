@@ -1100,6 +1100,9 @@ const state = {
   salesPayment: "",
   salesPartnerId: "",
   clientSearch: "",
+  clientFilterCourse: "",
+  clientFilterInstitution: "",
+  clientFilterStatus: "",
   salesCourseId: "",
   expenseSearch: "",
   expenseType: "",
@@ -1244,6 +1247,11 @@ const els = {
   clientCards: document.querySelector("#clientCards"),
   clientSearch: document.querySelector("#clientSearch"),
   emptyClientState: document.querySelector("#emptyClientState"),
+  clientSummaryCards: document.querySelector("#clientSummaryCards"),
+  clientFilterCourse: document.querySelector("#clientFilterCourse"),
+  clientFilterInstitution: document.querySelector("#clientFilterInstitution"),
+  clientFilterStatus: document.querySelector("#clientFilterStatus"),
+  clientClearFilters: document.querySelector("#clientClearFilters"),
   clientDialog: document.querySelector("#clientDialog"),
   clientForm: document.querySelector("#clientForm"),
   clientDialogTitle: document.querySelector("#clientDialogTitle"),
@@ -3419,28 +3427,98 @@ function renderExpenses() {
   });
 }
 
+function getClientDocCount(client) {
+  return [client.contractDataUrl, client.historyDataUrl, client.declarationDataUrl, client.diplomaDataUrl].filter(Boolean).length;
+}
+
+function getClientStatus(client) {
+  const count = getClientDocCount(client);
+  if (count === 4) return "Completo";
+  if (count > 0) return "Com pendências";
+  return "Aguardando docs";
+}
+
+function getClientStatusClass(client) {
+  const count = getClientDocCount(client);
+  if (count === 4) return "st-complete";
+  if (count > 0) return "st-pending";
+  return "st-waiting";
+}
+
+function renderClientSummaryCards(clients) {
+  if (!els.clientSummaryCards) return;
+  const total = clients.length;
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const pendentes = clients.filter((c) => getClientDocCount(c) < 4).length;
+  const completos = clients.filter((c) => getClientDocCount(c) === 4).length;
+  const novos = clients.filter((c) => {
+    if (!c.createdAt) return false;
+    const d = new Date(c.createdAt);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  }).length;
+
+  const cards = [
+    { icon: "users", label: "Total", value: total, desc: "Clientes cadastrados", css: "cs-icon-total" },
+    { icon: "alert", label: "Com pendências", value: pendentes, desc: "Documentos incompletos", css: "cs-icon-pending" },
+    { icon: "check", label: "Documentação completa", value: completos, desc: "4/4 documentos", css: "cs-icon-complete" },
+    { icon: "trend", label: "Novos este mês", value: novos, desc: "Matrículas recentes", css: "cs-icon-new" },
+  ];
+
+  const iconSvgs = {
+    users: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    alert: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    check: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    trend: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+  };
+
+  els.clientSummaryCards.innerHTML = cards.map((card) => `
+    <div class="cs-card">
+      <div class="cs-card-icon ${card.css}">${iconSvgs[card.icon]}</div>
+      <div class="cs-card-data">
+        <span class="cs-card-number">${card.value}</span>
+        <span class="cs-card-label">${card.label}</span>
+        <span class="cs-card-desc">${card.desc}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
 function renderClients() {
   const clients = state.data.clients || [];
   const search = state.clientSearch?.toLowerCase() || "";
+  const filterCourse = state.clientFilterCourse || "";
+  const filterInstitution = state.clientFilterInstitution || "";
+  const filterStatus = state.clientFilterStatus || "";
   const admin = isAdmin();
-  const filtered = clients.filter((client) => {
-    if (!search) return true;
+
+  let filtered = clients.filter((client) => {
     const course = state.data.courses.find((c) => c.id === client.courseId);
     const partner = state.data.partners.find((p) => p.id === client.partnerId || course?.partnerId);
-    const text = [
-      client.name,
-      client.cpf,
-      client.email,
-      client.phone,
-      course?.name,
-      partner?.name,
-    ].filter(Boolean).join(" ");
-    return text.toLowerCase().includes(search);
+
+    if (search) {
+      const text = [client.name, client.cpf, client.email, client.phone, course?.name, partner?.name].filter(Boolean).join(" ");
+      if (!text.toLowerCase().includes(search)) return false;
+    }
+    if (filterCourse && client.courseId !== filterCourse) return false;
+    if (filterInstitution) {
+      const instId = client.partnerId || course?.partnerId || "";
+      if (instId !== filterInstitution) return false;
+    }
+    if (filterStatus) {
+      const status = getClientStatus(client);
+      if (status !== filterStatus) return false;
+    }
+    return true;
   });
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / state.clientPerPage));
   if (state.clientPage > totalPages) state.clientPage = totalPages;
   const start = (state.clientPage - 1) * state.clientPerPage;
   const visibleClients = filtered.slice(start, start + state.clientPerPage);
+
+  renderClientSummaryCards(clients);
 
   els.clientRows.innerHTML = "";
   if (els.clientCards) els.clientCards.innerHTML = "";
@@ -3452,36 +3530,34 @@ function renderClients() {
   visibleClients.forEach((client) => {
     const course = state.data.courses.find((c) => c.id === client.courseId);
     const partner = state.data.partners.find((p) => p.id === client.partnerId || course?.partnerId);
-    const statusClassOk = "status-ok";
-    const statusClassEmpty = "status-empty";
-    const getStatus = (file) => (file ? statusClassOk : statusClassEmpty);
+    const statusText = getClientStatus(client);
+    const statusClass = getClientStatusClass(client);
+
+    const docBadge = (label, key, dataUrl) => dataUrl
+      ? `<button class="doc-badge doc-badge-ok" type="button" data-open-doc="${key}" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir ${label}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado</button>`
+      : `<span class="doc-badge doc-badge-empty"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Pendente</span>`;
 
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td><strong>${escapeHtml(client.name)}</strong></td>
-      <td>${escapeHtml(partner?.name || "—")}</td>
-      <td>${escapeHtml(course?.name || "—")}</td>
       <td>
-        ${client.contractDataUrl 
-          ? `<button class="doc-status status-ok" type="button" data-open-doc="contract" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir contrato">●</button>` 
-          : `<span class="doc-status status-empty" title="Sem contrato">●</span>`}
+        <div class="client-info">
+          <span class="client-avatar">${escapeHtml(getInitials(client.name))}</span>
+          <div>
+            <div class="client-name">${escapeHtml(client.name)}</div>
+            <div class="client-sub">${escapeHtml(client.cpf || client.email || "")}</div>
+          </div>
+        </div>
       </td>
       <td>
-        ${client.historyDataUrl 
-          ? `<button class="doc-status status-ok" type="button" data-open-doc="history" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir histórico">●</button>` 
-          : `<span class="doc-status status-empty" title="Sem histórico">●</span>`}
+        <div class="client-institution">${escapeHtml(partner?.name || "—")}</div>
+        <div class="client-course-text">${escapeHtml(course?.name || "")}</div>
       </td>
-      <td>
-        ${client.declarationDataUrl 
-          ? `<button class="doc-status status-ok" type="button" data-open-doc="declaration" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir declaração">●</button>` 
-          : `<span class="doc-status status-empty" title="Sem declaração">●</span>`}
-      </td>
-      <td>
-        ${client.diplomaDataUrl 
-          ? `<button class="doc-status status-ok" type="button" data-open-doc="diploma" data-client-id-doc="${escapeHtml(client.id)}" title="Abrir diploma">●</button>` 
-          : `<span class="doc-status status-empty" title="Sem diploma">●</span>`}
-      </td>
-      <td>${admin ? `<button class="row-action" type="button" data-client-id="${escapeHtml(client.id)}">Editar</button>` : ""}</td>
+      <td>${docBadge("Contrato", "contract", client.contractDataUrl)}</td>
+      <td>${docBadge("Histórico", "history", client.historyDataUrl)}</td>
+      <td>${docBadge("Declaração", "declaration", client.declarationDataUrl)}</td>
+      <td>${docBadge("Diploma", "diploma", client.diplomaDataUrl)}</td>
+      <td><span class="client-status-badge ${statusClass}">${statusText}</span></td>
+      <td>${admin ? `<button class="client-edit-btn" type="button" data-client-id="${escapeHtml(client.id)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg> Editar</button>` : ""}</td>
     `;
     els.clientRows.appendChild(row);
 
@@ -3509,6 +3585,7 @@ function renderClients() {
             </p>
           </div>
         </div>
+        <div class="client-mobile-status"><span class="client-status-badge ${statusClass}">${statusText}</span></div>
         <div class="client-doc-grid">
           ${docItems.map(([label, key, dataUrl]) => `
             <button class="client-doc-item ${dataUrl ? "is-ok" : ""}" type="button" ${dataUrl ? `data-open-doc="${key}" data-client-id-doc="${escapeHtml(client.id)}"` : "disabled"}>
@@ -3835,6 +3912,7 @@ function render() {
   renderSaleCourseOptions();
   renderSalesFilterOptions();
   renderPartnersFull();
+  populateClientFilterOptions();
   renderClients();
   renderMarketing();
   renderProfile();
@@ -4869,6 +4947,63 @@ els.clientSearch.addEventListener("input", (event) => {
   state.clientPage = 1;
   renderClients();
 });
+
+function populateClientFilterOptions() {
+  if (els.clientFilterCourse) {
+    const currentVal = els.clientFilterCourse.value;
+    els.clientFilterCourse.innerHTML = `<option value="">Curso</option>` +
+      state.data.courses.map((c) => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join("");
+    els.clientFilterCourse.value = currentVal;
+  }
+  if (els.clientFilterInstitution) {
+    const currentVal = els.clientFilterInstitution.value;
+    els.clientFilterInstitution.innerHTML = `<option value="">Instituição</option>` +
+      state.data.partners.map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}</option>`).join("");
+    els.clientFilterInstitution.value = currentVal;
+  }
+  if (els.clientFilterStatus) {
+    els.clientFilterStatus.innerHTML = `<option value="">Status</option><option value="Completo">Completo</option><option value="Com pendências">Com pendências</option><option value="Aguardando docs">Aguardando docs</option>`;
+  }
+}
+
+if (els.clientFilterCourse) {
+  els.clientFilterCourse.addEventListener("change", () => {
+    state.clientFilterCourse = els.clientFilterCourse.value;
+    state.clientPage = 1;
+    renderClients();
+  });
+}
+
+if (els.clientFilterInstitution) {
+  els.clientFilterInstitution.addEventListener("change", () => {
+    state.clientFilterInstitution = els.clientFilterInstitution.value;
+    state.clientPage = 1;
+    renderClients();
+  });
+}
+
+if (els.clientFilterStatus) {
+  els.clientFilterStatus.addEventListener("change", () => {
+    state.clientFilterStatus = els.clientFilterStatus.value;
+    state.clientPage = 1;
+    renderClients();
+  });
+}
+
+if (els.clientClearFilters) {
+  els.clientClearFilters.addEventListener("click", () => {
+    state.clientFilterCourse = "";
+    state.clientFilterInstitution = "";
+    state.clientFilterStatus = "";
+    state.clientSearch = "";
+    if (els.clientSearch) els.clientSearch.value = "";
+    if (els.clientFilterCourse) els.clientFilterCourse.value = "";
+    if (els.clientFilterInstitution) els.clientFilterInstitution.value = "";
+    if (els.clientFilterStatus) els.clientFilterStatus.value = "";
+    state.clientPage = 1;
+    renderClients();
+  });
+}
 
 els.clientPartner.addEventListener("change", () => {
   const partnerId = els.clientPartner.value;

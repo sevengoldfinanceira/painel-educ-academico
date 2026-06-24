@@ -6,9 +6,9 @@
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
     <link rel="apple-touch-icon" href="assets/brand/perfil-e-logo.png" />
-    <link rel="manifest" href="manifest.json?v=2026.06.24.04" />
+    <link rel="manifest" href="manifest.json?v=2026.06.24.19" />
     <meta name="theme-color" content="#0a1628" />
-    <link rel="stylesheet" href="styles.css?v=2026.06.24.04" />
+    <link rel="stylesheet" href="styles.css?v=2026.06.24.19" />
     <script>
       (function() {
         const savedTheme = localStorage.getItem("educamais_theme");
@@ -794,8 +794,15 @@
             <div class="clients-desktop-wrap">
               <div class="clients-header-row">
                 <div class="clients-header-left">
-                  <h2>Clientes</h2>
-                  <p>Gerencie clientes e acompanhe os documentos necessários.</p>
+                  <div class="clients-title-row">
+                    <div class="clients-title-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/><line x1="22" y1="10" x2="22" y2="16"/></svg>
+                    </div>
+                    <div>
+                      <h2>Clientes</h2>
+                      <p>Acompanhe matrículas, documentos pendentes e histórico de cada aluno.</p>
+                    </div>
+                  </div>
                 </div>
                 <div class="clients-header-actions">
                   <button class="btn-gold" id="addClientBtn" type="button">
@@ -805,10 +812,23 @@
                 </div>
               </div>
 
-              <div class="clients-search-bar">
-                <div class="search-input-wrapper">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <input id="clientSearch" type="search" placeholder="Buscar cliente por nome, curso ou instituição..." />
+              <div class="clients-summary-cards" id="clientSummaryCards"></div>
+
+              <div class="clients-filters-row">
+                <div class="clients-search-bar">
+                  <div class="search-input-wrapper">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input id="clientSearch" type="search" placeholder="Buscar cliente por nome, curso ou instituição..." />
+                  </div>
+                </div>
+                <div class="clients-filter-selects">
+                  <select id="clientFilterCourse"><option value="">Curso</option></select>
+                  <select id="clientFilterInstitution"><option value="">Instituição</option></select>
+                  <select id="clientFilterStatus"><option value="">Status</option></select>
+                  <button class="clients-clear-filters" id="clientClearFilters" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Limpar filtros
+                  </button>
                 </div>
               </div>
 
@@ -817,12 +837,12 @@
                   <thead>
                     <tr>
                       <th>Cliente</th>
-                      <th>Instituição</th>
-                      <th>Curso</th>
+                      <th>Instituição / Curso</th>
                       <th>Contrato</th>
                       <th>Histórico</th>
                       <th>Declaração</th>
                       <th>Diploma</th>
+                      <th>Status</th>
                       <th>Ações</th>
                     </tr>
                   </thead>
@@ -835,10 +855,6 @@
             </div>
             <div class="clients-mobile-cards" id="clientCards" aria-label="Clientes em cards"></div>
           </section>
-        </section>
-      </section>
-    </div>
-
     <dialog id="partnerDialog">
       <form method="dialog" id="partnerForm">
         <header>
@@ -1174,12 +1190,12 @@
       <button type="button" id="appUpdateButton">Atualizar agora</button>
     </div>
 
-    <script src="supabase-config.js?v=2026.06.24.04"></script>
-    <script src="educamais-catalog-data.js?v=2026.06.24.04"></script>
-    <script src="catedral-catalog-data.js?v=2026.06.24.04"></script>
-    <script src="app.js?v=2026.06.24.04"></script>
+    <script src="supabase-config.js?v=2026.06.24.19"></script>
+    <script src="educamais-catalog-data.js?v=2026.06.24.19"></script>
+    <script src="catedral-catalog-data.js?v=2026.06.24.19"></script>
+    <script src="app.js?v=2026.06.24.19"></script>
     <script>
-      window.EDUC_APP_VERSION = "2026.06.24.04";
+      window.EDUC_APP_VERSION = "2026.06.24.19";
       if ("serviceWorker" in navigator) {
         const updateBanner = document.querySelector("#appUpdateBanner");
         const updateButton = document.querySelector("#appUpdateButton");
