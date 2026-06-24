@@ -5644,12 +5644,14 @@ body.dark-theme .btn-outline-icon:hover {
     display: grid;
     grid-template-columns: 34px minmax(0, 1fr) 30px;
     align-items: center;
+    justify-items: center;
     gap: 6px;
     padding: 10px;
     border: 1px solid #eee4d4;
     border-radius: 18px;
     background: #fff;
     box-shadow: 0 8px 18px rgba(15, 27, 51, 0.06);
+    color: #0f1b33 !important;
   }
 
   #coursesView .modality-card.active,
@@ -5669,6 +5671,7 @@ body.dark-theme .btn-outline-icon:hover {
   #coursesView .modality-filter-card > div:not(.modality-card-icon) {
     min-width: 0;
     overflow: visible;
+    text-align: center;
   }
 
   #coursesView .modality-card strong,
@@ -5702,17 +5705,21 @@ body.dark-theme .btn-outline-icon:hover {
 
   #coursesView .modality-card-count,
   #coursesView .modality-filter-card .modality-card-count {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     min-width: 30px;
     width: 30px;
     height: 30px;
     margin-left: 0;
-    justify-self: end;
+    justify-self: center;
     border-radius: 50%;
-    background: #fff;
-    color: #0f1b33;
+    background: #f0f0f0;
+    color: #0f1b33 !important;
     font-size: 12px;
     font-weight: 900;
-    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+    text-align: center;
   }
 }
 
