@@ -599,6 +599,17 @@ const FAIND_DOM_BOSCO_GRADUACAO_COURSES = [
   "Engenharia de Produção",
 ];
 
+const FAIND_DOM_BOSCO_TECNOLOGO_COURSES = [
+  "Tecnólogo em Recursos Humanos",
+  "Tecnólogo em Gestão Financeira",
+  "Tecnólogo em Redes de Computadores",
+  "Tecnólogo em Sistemas de Informação",
+  "Tecnólogo em Gestão da Tecnologia da Informação",
+  "Tecnólogo em Gestão Ambiental",
+  "Tecnólogo em Bioenergia",
+  "Tecnólogo em Celulose e Papel",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -1437,7 +1448,7 @@ function mergeFaindIndiaraCourses(data) {
 }
 
 function mergeFaindDomBoscoCourses(data) {
-  if (data.imports.faindDomBoscoGraduacaoV1) return;
+  if (data.imports.faindDomBoscoGraduacaoV1 && data.imports.faindDomBoscoTecnologoV1) return;
 
   const partnerInfo = {
     id: "partner-faind-dom-bosco",
@@ -1471,31 +1482,60 @@ function mergeFaindDomBoscoCourses(data) {
       .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
   );
 
-  FAIND_DOM_BOSCO_GRADUACAO_COURSES.forEach((name, index) => {
-    const modality = ["Pedagogia", "Educação Física"].includes(name) ? "Licenciatura" : "Bacharel";
-    const key = `${normalize(name)}|${normalize(modality)}`;
-    if (existingCourseNames.has(key)) return;
-    data.courses.push({
-      id: `faind-dom-bosco-graduacao-${index + 1}`,
-      partnerId: partner.id,
-      name,
-      type: "Graduações",
-      modality,
-      area: "",
-      cost: 0,
-      sale: 0,
-      transfer: "",
-      deadline: "",
-      responsible: "",
-      diplomas: "",
-      examFileName: "",
-      examDataUrl: "",
-      notes: "Faind e Dom Bosco.",
+  if (!data.imports.faindDomBoscoGraduacaoV1) {
+    FAIND_DOM_BOSCO_GRADUACAO_COURSES.forEach((name, index) => {
+      const modality = ["Pedagogia", "Educação Física"].includes(name) ? "Licenciatura" : "Bacharel";
+      const key = `${normalize(name)}|${normalize(modality)}`;
+      if (existingCourseNames.has(key)) return;
+      data.courses.push({
+        id: `faind-dom-bosco-graduacao-${index + 1}`,
+        partnerId: partner.id,
+        name,
+        type: "Graduações",
+        modality,
+        area: "",
+        cost: 0,
+        sale: 0,
+        transfer: "",
+        deadline: "",
+        responsible: "",
+        diplomas: "",
+        examFileName: "",
+        examDataUrl: "",
+        notes: "Faind e Dom Bosco.",
+      });
+      existingCourseNames.add(key);
     });
-    existingCourseNames.add(key);
-  });
 
-  data.imports.faindDomBoscoGraduacaoV1 = true;
+    data.imports.faindDomBoscoGraduacaoV1 = true;
+  }
+
+  if (!data.imports.faindDomBoscoTecnologoV1) {
+    FAIND_DOM_BOSCO_TECNOLOGO_COURSES.forEach((name, index) => {
+      const key = `${normalize(name)}|${normalize("Tecnólogo")}`;
+      if (existingCourseNames.has(key)) return;
+      data.courses.push({
+        id: `faind-dom-bosco-tecnologo-${index + 1}`,
+        partnerId: partner.id,
+        name,
+        type: "Especializações",
+        modality: "Tecnólogo",
+        area: "",
+        cost: 0,
+        sale: 0,
+        transfer: "",
+        deadline: "",
+        responsible: "",
+        diplomas: "",
+        examFileName: "",
+        examDataUrl: "",
+        notes: "Faind e Dom Bosco.",
+      });
+      existingCourseNames.add(key);
+    });
+
+    data.imports.faindDomBoscoTecnologoV1 = true;
+  }
 }
 
 function sanitizeForCache(data) {
