@@ -408,6 +408,64 @@ const UNI_FAE_BACHAREL_COURSES = [
   "Turismo",
 ];
 
+const FACULDADE_CAPACITA_SEQUENCIAL_COURSES = [
+  "Gestão Ambiental",
+  "Gestão Contábil",
+  "Gestão da Qualidade",
+  "Gestão de Projetos",
+  "Gestão de Recursos Humanos",
+  "Gestão e Administração de Empresas",
+  "Gestão e Logística",
+  "Gestão Empresarial",
+  "Gestão Financeira",
+  "Gestão Hoteleira",
+  "Gestão Hospitalar",
+  "Gestão Pública",
+  "Gestão de Pequenas e Médias Empresas",
+  "Empreendedorismo",
+  "Liderança e Gestão de Equipes",
+  "Logística e Cadeia de Suprimentos",
+  "Processos Gerenciais",
+  "Gestão em Cosmetologia e Estética",
+  "Gestão em Saúde",
+  "Gestão em Segurança da Informação",
+  "Gestão em Segurança Pública e Privada",
+  "Gestão em Tecnologia da Informação",
+  "Gestão em Trânsito Urbano",
+  "Gestão e Criação de Prompts para IA",
+  "Gestão e Designer de Interiores",
+  "Gestão e Designer de Móveis",
+  "Gestão Ambiental Aplicada",
+  "Gestão Industrial",
+  "Agronegócio",
+  "Ciência de Dados",
+  "Desenvolvimento de Aplicativos",
+  "Desenvolvimento de Inteligência Artificial (IA)",
+  "Desenvolvimento Web",
+  "Análise de Sistemas (noções)",
+  "Gestão de Tecnologia da Informação",
+  "Coaching",
+  "Jornalismo Web",
+  "Marketing",
+  "Marketing Digital",
+  "Técnicas de Vendas",
+  "Comunicação Empresarial",
+  "Gestão de Mídias Sociais",
+  "Magistério",
+  "Mediação de Conflitos",
+  "Psicanálise",
+  "Serviços Jurídicos",
+  "Gestão Escolar",
+  "Educação Infantil",
+  "Coordenação Pedagógica",
+  "Educação Especial",
+  "Terapias Integrativas",
+  "Saúde Coletiva",
+  "Gestão de Segurança do Trabalho",
+  "Guia de Turismo e Hotelaria",
+  "Ótica e Optometria",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -854,6 +912,7 @@ function normalizeData(data) {
   mergeEduMaisCatalog(data);
   mergeCatedralCatalog(data);
   mergeUniFaeBacharelCourses(data);
+  mergeFaculdadeCapacitaCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1056,6 +1115,67 @@ function mergeUniFaeBacharelCourses(data) {
   });
 
   data.imports.uniFaeBacharelV1 = true;
+}
+
+function mergeFaculdadeCapacitaCourses(data) {
+  if (data.imports.faculdadeCapacitaSequencialV1) return;
+
+  const partnerInfo = {
+    id: "partner-faculdade-capacita",
+    name: "Faculdade Capacita",
+    type: "Faculdade",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  FACULDADE_CAPACITA_SEQUENCIAL_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Sequencial superior")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `faculdade-capacita-sequencial-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Especializações",
+      modality: "Sequencial superior",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Faculdade Capacita.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.faculdadeCapacitaSequencialV1 = true;
 }
 
 function sanitizeForCache(data) {
