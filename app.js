@@ -525,6 +525,58 @@ const CENTROTEC_LEAL_TECNICO_COURSES = [
   "Técnico em Guia de Turismo",
 ];
 
+const FAIND_INDIARA_SEQUENCIAL_COURSES = [
+  "Gestão da Administração",
+  "Gestão do Açúcar e Álcool com Ênfase na Agroindústria",
+  "Gestão em Acupuntura Chinesa",
+  "Gestão de Arbitragem",
+  "Gestão de Ciências Animal",
+  "Gestão de Ciências da Saúde",
+  "Gestão em Coaching",
+  "Gestão de Comércio Exterior",
+  "Gestão da Construção Civil",
+  "Gestão da Contabilidade",
+  "Gestão em Direito",
+  "Gestão em Design Gráfico",
+  "Gestão em Eletrotécnica",
+  "Gestão Educacional e Pedagógica",
+  "Gestão em Empresas",
+  "Gestão em Enfermagem Geral (Integrada)",
+  "Gestão em Estética e Cosmetologia",
+  "Gestão em Farmácia e Injetáveis",
+  "Gestão Financeira",
+  "Gestão de Futebol",
+  "Gestão Hospitalar",
+  "Gestão Hospitalar Integrada à Gestão em Enfermagem Geral",
+  "Gestão da Indústria de Cal e Calcário",
+  "Gestão em Imobilização Ortopédica",
+  "Gestão Logística",
+  "Gestão de Marketing",
+  "Gestão em Mediação de Conflitos Escolares",
+  "Gestão em Mecânica Geral",
+  "Gestão em Mecatrônica",
+  "Gestão em Meio Ambiente",
+  "Gestão de Minerados",
+  "Gestão de Negócios",
+  "Gestão de Oficinas Mecânicas",
+  "Gestão em Pequenas Empresas",
+  "Gestão em Podologia Estética",
+  "Gestão da Produção de Conteúdo para Mídias Digitais",
+  "Gestão de Produção",
+  "Gestão em Psicanálise Clínica",
+  "Gestão em Psicologia",
+  "Gestão em Psicoterapia",
+  "Gestão Pública",
+  "Gestão em Recursos Humanos",
+  "Gestão em Rotinas Administrativas",
+  "Gestão em Secretaria Escolar",
+  "Gestão em Segurança do Trabalho",
+  "Gestão da Segurança Pública e Privada",
+  "Gestão em Serviço Social",
+  "Gestão Esportiva",
+  "Gestão de Vendas",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -973,6 +1025,7 @@ function normalizeData(data) {
   mergeUniFaeBacharelCourses(data);
   mergeFaculdadeCapacitaCourses(data);
   mergeCentrotecLealCourses(data);
+  mergeFaindIndiaraCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1297,6 +1350,67 @@ function mergeCentrotecLealCourses(data) {
   });
 
   data.imports.centrotecLealTecnicoV1 = true;
+}
+
+function mergeFaindIndiaraCourses(data) {
+  if (data.imports.faindIndiaraSequencialV1) return;
+
+  const partnerInfo = {
+    id: "partner-faculdade-faind-indiara",
+    name: "Faculdade Faind Faculdade de Indiara",
+    type: "Faculdade",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  FAIND_INDIARA_SEQUENCIAL_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Sequencial superior")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `faind-indiara-sequencial-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Especializações",
+      modality: "Sequencial superior",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Faculdade Faind Faculdade de Indiara.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.faindIndiaraSequencialV1 = true;
 }
 
 function sanitizeForCache(data) {
