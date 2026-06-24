@@ -2990,7 +2990,6 @@ function renderPartnersFull() {
   visiblePartners.forEach((p) => {
     const courseTotal = state.data.courses.filter((c) => c.partnerId === p.id).length;
     const tr = document.createElement("tr");
-    tr.style.cursor = "pointer";
     tr.innerHTML = `
       <td><strong>${escapeHtml(p.name)}</strong></td>
       <td>${escapeHtml(p.type || "-")}</td>
@@ -3007,12 +3006,6 @@ function renderPartnersFull() {
         </button>` : ""}
       </td>
     `;
-    tr.addEventListener("click", () => {
-      state.mainView = "overview";
-      state.selectedPartnerId = p.id;
-      render();
-      document.querySelectorAll(".sidebar-item").forEach((s) => s.classList.toggle("active", s.dataset.sidebarView === "overview"));
-    });
     const btn = tr.querySelector(`[data-partner-id="${p.id}"]`);
     if (btn) {
       btn.addEventListener("click", (e) => {
