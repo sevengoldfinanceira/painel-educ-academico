@@ -375,6 +375,39 @@ const seedData = {
   ],
 };
 
+const UNI_FAE_BACHAREL_COURSES = [
+  "Análise e Desenvolvimento de Sistemas",
+  "Ciência da Computação",
+  "Ciências Contábeis",
+  "Comércio Exterior e Negócios Internacionais",
+  "Comunicação Social",
+  "Comunicação Social - Publicidade e Propaganda",
+  "Design Digital",
+  "Estética e Cosmética",
+  "Eventos",
+  "Geografia",
+  "Gestão Comercial",
+  "Gestão de Recursos Humanos",
+  "Gestão Financeira",
+  "Gestão Pública",
+  "História",
+  "Hotelaria",
+  "Jornalismo",
+  "Letras",
+  "Letras - Português e Inglês e Respectivas Literaturas",
+  "Logística",
+  "Marketing",
+  "Matemática",
+  "Pedagogia",
+  "Processos Gerenciais",
+  "Psicopedagogia",
+  "Relações Internacionais",
+  "Secretariado",
+  "Secretariado Executivo",
+  "Sistemas de Informação",
+  "Turismo",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -820,6 +853,7 @@ function normalizeData(data) {
   data.profile.avatarUrl ||= "";
   mergeEduMaisCatalog(data);
   mergeCatedralCatalog(data);
+  mergeUniFaeBacharelCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -961,6 +995,67 @@ function mergeCatedralCatalog(data) {
   });
 
   data.imports.catedralCatalogV1 = true;
+}
+
+function mergeUniFaeBacharelCourses(data) {
+  if (data.imports.uniFaeBacharelV1) return;
+
+  const partnerInfo = {
+    id: "partner-centro-universitario-uni-fae",
+    name: "Centro Universitário UNI (FAE)",
+    type: "Centro Universitário",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  UNI_FAE_BACHAREL_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Bacharel")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `uni-fae-bacharel-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Graduações",
+      modality: "Bacharel",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Centro Universitário UNI (FAE).",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.uniFaeBacharelV1 = true;
 }
 
 function sanitizeForCache(data) {
