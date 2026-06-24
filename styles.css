@@ -5654,11 +5654,12 @@ body.dark-theme .btn-outline-icon:hover {
     width: 100%;
     min-height: 88px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    gap: 6px;
-    padding: 10px 36px;
+    gap: 4px;
+    padding: 12px 10px;
     border: 1px solid #eee4d4;
     border-radius: 18px;
     background: #fff;
@@ -5674,11 +5675,11 @@ body.dark-theme .btn-outline-icon:hover {
   }
 
   #coursesView .modality-card-icon {
-    position: absolute;
-    left: 10px;
+    position: static;
     width: 34px;
     height: 34px;
     border-radius: 12px;
+    margin-bottom: 4px;
   }
 
   #coursesView .modality-card > div:not(.modality-card-icon),
@@ -5686,6 +5687,9 @@ body.dark-theme .btn-outline-icon:hover {
     min-width: 0;
     overflow: visible;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   #coursesView .modality-card strong,
@@ -5711,7 +5715,7 @@ body.dark-theme .btn-outline-icon:hover {
   #coursesView .modality-card span,
   #coursesView .modality-filter-card span {
     display: block !important;
-    margin-top: 3px !important;
+    margin-top: 2px !important;
     color: #667085 !important;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif !important;
     font-size: 9px !important;
@@ -5734,12 +5738,11 @@ body.dark-theme .btn-outline-icon:hover {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    position: absolute;
-    right: 10px;
+    position: static;
     min-width: 30px;
     width: 30px;
     height: 30px;
-    margin-left: 0;
+    margin: 4px auto 0;
     border-radius: 50%;
     background: #f0f0f0;
     color: #0f1b33 !important;
