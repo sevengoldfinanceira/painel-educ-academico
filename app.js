@@ -716,6 +716,15 @@ const BORTOLI_LICENCIATURA_COURSES = [
   "Teatro",
 ];
 
+const CTEC_TECNOLOGO_COURSES = [
+  "Gestão de Recursos Humanos",
+  "Logística",
+  "Gestão Pública",
+  "Gestão Financeira",
+  "Processos Gerenciais",
+  "Análise e Desenvolvimento de Sistema",
+];
+
 const FAIND_INDIARA_POS_GRADUACAO_COURSES = [
   "ACONSELHAMENTO PASTORAL",
   "ACUPUNTURA CHINESA",
@@ -1527,6 +1536,7 @@ function normalizeData(data) {
   mergeFaindDomBoscoCourses(data);
   mergeGlobalTecnicoCourses(data);
   mergeBortoliLicenciaturaCourses(data);
+  mergeCtecTecnologoCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -2192,6 +2202,73 @@ function mergeBortoliLicenciaturaCourses(data) {
   });
 
   data.imports.bortoliLicenciaturaV1 = true;
+}
+
+function mergeCtecTecnologoCourses(data) {
+  if (data.imports.ctecTecnologoV1) return;
+
+  const partnerInfo = {
+    id: "partner-ctec-centro-tecnico-capacitacao",
+    name: "CTEC - Centro Técnico de Capacitação",
+    type: "Centro Técnico",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find((item) => {
+    const partnerName = normalize(item.name);
+    return (
+      item.id === partnerInfo.id ||
+      partnerName === normalize(partnerInfo.name) ||
+      partnerName.includes("ctec") ||
+      partnerName.includes("centro tecnico de capacitacao")
+    );
+  });
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  CTEC_TECNOLOGO_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Tecnólogo")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `ctec-tecnologo-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Especializações",
+      modality: "Tecnólogo",
+      area: "",
+      cost: 0,
+      sale: 1800,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "CTEC - Centro Técnico de Capacitação.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.ctecTecnologoV1 = true;
 }
 
 function sanitizeForCache(data) {
