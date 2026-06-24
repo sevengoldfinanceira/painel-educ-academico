@@ -5605,15 +5605,27 @@ body.dark-theme .btn-outline-icon:hover {
     width: 100% !important;
     max-width: none;
     min-height: 76px;
-    display: grid;
-    grid-template-columns: 46px minmax(0, 1fr) auto;
+    display: grid !important;
+    grid-template-columns: 46px minmax(0, 1fr) auto !important;
     align-items: center;
+    justify-items: center;
     gap: 10px;
-    padding: 14px;
+    padding: 14px !important;
     border: 1.5px solid #c89000;
     border-radius: 18px;
     background: #fff7e6;
     box-shadow: 0 10px 24px rgba(200, 144, 0, 0.10);
+    position: static !important;
+  }
+
+  #coursesView .filter-todos-row .modality-card-icon {
+    position: static !important;
+  }
+
+  #coursesView .filter-todos-row .modality-card-count,
+  #coursesView .filter-todos-row .modality-card .modality-card-count {
+    position: static !important;
+    margin-left: auto !important;
   }
 
   #coursesView .filter-todos-row .modality-card > div:not(.modality-card-icon)::after {
