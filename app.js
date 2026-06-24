@@ -2994,7 +2994,11 @@ function renderPartnersFull() {
     tr.innerHTML = `
       <td><strong>${escapeHtml(p.name)}</strong></td>
       <td>${escapeHtml(p.type || "-")}</td>
-      <td>${escapeHtml(p.city || "-")}</td>
+      <td>${
+        p.mecUrl
+          ? `<a class="table-link" href="${escapeHtml(normalizeUrl(p.mecUrl))}" target="_blank" rel="noopener noreferrer" data-partner-link>Link do MEC</a>`
+          : "-"
+      }</td>
       <td>${escapeHtml(p.contact || "-")}</td>
       <td>${courseTotal}</td>
       <td class="action-cell">
