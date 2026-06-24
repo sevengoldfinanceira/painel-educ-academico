@@ -5641,12 +5641,12 @@ body.dark-theme .btn-outline-icon:hover {
     min-width: 0;
     width: 100%;
     min-height: 88px;
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) 30px;
+    display: flex;
     align-items: center;
-    justify-items: center;
+    justify-content: center;
+    position: relative;
     gap: 6px;
-    padding: 10px;
+    padding: 10px 36px;
     border: 1px solid #eee4d4;
     border-radius: 18px;
     background: #fff;
@@ -5662,6 +5662,8 @@ body.dark-theme .btn-outline-icon:hover {
   }
 
   #coursesView .modality-card-icon {
+    position: absolute;
+    left: 10px;
     width: 34px;
     height: 34px;
     border-radius: 12px;
@@ -5720,11 +5722,12 @@ body.dark-theme .btn-outline-icon:hover {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    position: absolute;
+    right: 10px;
     min-width: 30px;
     width: 30px;
     height: 30px;
     margin-left: 0;
-    justify-self: center;
     border-radius: 50%;
     background: #f0f0f0;
     color: #0f1b33 !important;
