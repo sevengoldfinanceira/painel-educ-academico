@@ -610,6 +610,85 @@ const FAIND_DOM_BOSCO_TECNOLOGO_COURSES = [
   "Tecnólogo em Celulose e Papel",
 ];
 
+const GLOBAL_TECNICO_COURSES = [
+  "Técnico em Agente Comunitário de Saúde",
+  "Técnico em Análises Clínicas",
+  "Cuidados de Idosos",
+  "Técnico em Enfermagem",
+  "Técnico em Equipamentos Biomédicos",
+  "Técnico em Estética",
+  "Técnico em Farmácia",
+  "Técnico em Gerência em Saúde",
+  "Técnico em Nutrição e Dietética",
+  "Técnico em Radiologia",
+  "Técnico em Saúde Bucal",
+  "Técnico em Veterinária",
+  "Técnico em Optometria",
+  "Técnico em Podologia",
+  "Técnico em Prótese Dentária",
+  "Técnico em Administração",
+  "Técnico em Contabilidade",
+  "Técnico em Logística",
+  "Técnico em Marketing",
+  "Técnico em Qualidade",
+  "Técnico em Recursos Humanos",
+  "Técnico em Secretaria Escolar",
+  "Técnico em Segurança do Trabalho",
+  "Técnico em Serviços Jurídicos",
+  "Técnico em Transações Imobiliárias",
+  "Técnico em Vendas",
+  "Técnico em Eventos",
+  "Técnico em Finanças",
+  "Técnico em Publicidade",
+  "Técnico em Biotecnologia",
+  "Técnico em Design Gráfico",
+  "Técnico em Desenvolvimento de Sistemas",
+  "Técnico em Informática para Internet",
+  "Técnico em Redes de Computadores",
+  "Técnico em Sistemas de Energia Renovável",
+  "Técnico em Telecomunicações",
+  "Técnico em Tradução e Interpretação de Libras",
+  "Técnico em Computação Gráfica",
+  "Técnico em Jogos Digitais",
+  "Técnico em Inteligência Artificial",
+  "Técnico em Automação Industrial",
+  "Técnico em Eletromecânica",
+  "Técnico em Eletrotécnica",
+  "Técnico em Eletrônica",
+  "Técnico em Manutenção de Máquinas Industriais",
+  "Técnico em Máquinas Pesadas",
+  "Técnico em Metalurgia",
+  "Técnico em Refrigeração e Climatização",
+  "Técnico em Soldagem",
+  "Técnico em Manutenção de Máquinas Navais",
+  "Técnico em Mecânica",
+  "Técnico em Eletroeletrônica",
+  "Técnico em Mecatrônica",
+  "Técnico em Manutenção Automotiva",
+  "Técnico em Agrimensura",
+  "Técnico em Edificações",
+  "Técnico em Mineração",
+  "Técnico em Prevenção e Combate ao Incêndio",
+  "Técnico em Defesa Civil",
+  "Técnico em Trânsito",
+  "Técnico em Desenho e Construção Civil",
+  "Técnico em Saneamento",
+  "Técnico em Agricultura",
+  "Técnico em Agropecuária",
+  "Técnico em Agroindústria",
+  "Técnico em Aquicultura",
+  "Técnico em Meio Ambiente",
+  "Técnico em Agronegócio",
+  "Técnico em Geoprocessamento",
+  "Técnico em Gastronomia",
+  "Técnico em Óptica",
+  "Técnico em Designer de Interiores",
+  "Técnico Guia de Turismo",
+  "Técnico em Confeitaria",
+  "Técnico em Seguros",
+  "Técnico em Petróleo e Gás",
+];
+
 const state = {
   data: loadData(),
   mainView: "overview",
@@ -1060,6 +1139,7 @@ function normalizeData(data) {
   mergeCentrotecLealCourses(data);
   mergeFaindIndiaraCourses(data);
   mergeFaindDomBoscoCourses(data);
+  mergeGlobalTecnicoCourses(data);
   data.partners.forEach((partner) => {
     partner.siteUrl ||= "";
     partner.mecUrl ||= "";
@@ -1536,6 +1616,67 @@ function mergeFaindDomBoscoCourses(data) {
 
     data.imports.faindDomBoscoTecnologoV1 = true;
   }
+}
+
+function mergeGlobalTecnicoCourses(data) {
+  if (data.imports.globalTecnicoV1) return;
+
+  const partnerInfo = {
+    id: "partner-global",
+    name: "Global",
+    type: "Faculdade",
+    city: "",
+    contact: "",
+    siteUrl: "",
+    mecUrl: "",
+    contractFileName: "",
+    contractDataUrl: "",
+    catalogFileName: "",
+    catalogDataUrl: "",
+    catalogs: [],
+    documents: [],
+    contractText: DEFAULT_CONTRACT_TEXT,
+  };
+
+  let partner = data.partners.find(
+    (item) => item.id === partnerInfo.id || normalize(item.name) === normalize(partnerInfo.name)
+  );
+
+  if (!partner) {
+    partner = structuredClone(partnerInfo);
+    data.partners.push(partner);
+  }
+
+  const existingCourseNames = new Set(
+    data.courses
+      .filter((course) => course.partnerId === partner.id)
+      .map((course) => `${normalize(course.name)}|${normalize(course.modality)}`)
+  );
+
+  GLOBAL_TECNICO_COURSES.forEach((name, index) => {
+    const key = `${normalize(name)}|${normalize("Tecnico")}`;
+    if (existingCourseNames.has(key)) return;
+    data.courses.push({
+      id: `global-tecnico-${index + 1}`,
+      partnerId: partner.id,
+      name,
+      type: "Cursos Técnicos",
+      modality: "Tecnico",
+      area: "",
+      cost: 0,
+      sale: 0,
+      transfer: "",
+      deadline: "",
+      responsible: "",
+      diplomas: "",
+      examFileName: "",
+      examDataUrl: "",
+      notes: "Global.",
+    });
+    existingCourseNames.add(key);
+  });
+
+  data.imports.globalTecnicoV1 = true;
 }
 
 function sanitizeForCache(data) {
