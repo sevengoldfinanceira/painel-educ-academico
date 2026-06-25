@@ -6,9 +6,9 @@
     <title>Educ Acadêmico</title>
     <link rel="icon" type="image/png" href="assets/brand/perfil-e-logo.png" />
     <link rel="apple-touch-icon" href="assets/brand/perfil-e-logo.png" />
-    <link rel="manifest" href="manifest.json?v=2026.06.24.19" />
+    <link rel="manifest" href="manifest.json?v=2026.06.24.21" />
     <meta name="theme-color" content="#0a1628" />
-    <link rel="stylesheet" href="styles.css?v=2026.06.24.19" />
+    <link rel="stylesheet" href="styles.css?v=2026.06.24.21" />
     <script>
       (function() {
         const savedTheme = localStorage.getItem("educamais_theme");
@@ -525,8 +525,15 @@
             <div class="partners-desktop-wrap">
               <div class="partners-header-row">
                 <div class="partners-header-left">
-                  <h2>Parceiros</h2>
-                  <p>Gerencie todas as parcerias cadastradas.</p>
+                  <div class="partners-title-row">
+                    <div class="partners-title-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17a1 1 0 0 1 1 1h0a1 1 0 0 0 1 1h0a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h0a1 1 0 0 0-1 1v10a1 1 0 0 1 1 1z"/><path d="M17 14l2 2 4-4"/><path d="M3 7h18"/><path d="M3 17h4"/></svg>
+                    </div>
+                    <div>
+                      <h2>Parceiros</h2>
+                      <p>Gerencie todas as parcerias cadastradas.</p>
+                    </div>
+                  </div>
                 </div>
                 <div class="partners-header-actions">
                   <button class="btn-outline-icon" type="button">
@@ -1190,12 +1197,12 @@
       <button type="button" id="appUpdateButton">Atualizar agora</button>
     </div>
 
-    <script src="supabase-config.js?v=2026.06.24.19"></script>
-    <script src="educamais-catalog-data.js?v=2026.06.24.19"></script>
-    <script src="catedral-catalog-data.js?v=2026.06.24.19"></script>
-    <script src="app.js?v=2026.06.24.19"></script>
+    <script src="supabase-config.js?v=2026.06.24.21"></script>
+    <script src="educamais-catalog-data.js?v=2026.06.24.21"></script>
+    <script src="catedral-catalog-data.js?v=2026.06.24.21"></script>
+    <script src="app.js?v=2026.06.24.21"></script>
     <script>
-      window.EDUC_APP_VERSION = "2026.06.24.19";
+      window.EDUC_APP_VERSION = "2026.06.24.21";
       if ("serviceWorker" in navigator) {
         const updateBanner = document.querySelector("#appUpdateBanner");
         const updateButton = document.querySelector("#appUpdateButton");

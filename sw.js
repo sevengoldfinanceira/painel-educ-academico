@@ -1,4 +1,4 @@
-const APP_VERSION = "2026.06.24.19";
+const APP_VERSION = "2026.06.24.21";
 const CACHE_NAME = `educ-academico-${APP_VERSION}`;
 const APP_CACHE_PREFIX = "educ-academico-";
 

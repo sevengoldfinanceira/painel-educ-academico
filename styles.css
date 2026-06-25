@@ -1300,15 +1300,37 @@ body {
 
   .partners-header-left h2 {
     margin: 0 0 6px;
-    font-size: 26px;
-    font-weight: 900;
-    color: #0f1b33;
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
   }
 
   .partners-header-left p {
     margin: 0;
+    font-size: 15px;
+    font-weight: 500;
     color: #667085;
-    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .partners-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .partners-title-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f0f0ff 0%, #e8e8ff 100%);
+    border: 1.5px solid #d4d4f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7c3aed;
+    flex-shrink: 0;
   }
 
   .partners-header-actions {
@@ -2723,7 +2745,7 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   #partnersView .partners-header-left h2 {
     margin: 0 0 6px;
     color: #0f1b33;
-    font-size: 26px;
+    font-size: 18px;
     line-height: 1.1;
     font-weight: 900;
     letter-spacing: -0.3px;
@@ -2732,9 +2754,33 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   #partnersView .partners-header-left p {
     margin: 0;
     color: #667085;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.35;
     font-weight: 600;
+  }
+
+  #partnersView .partners-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #partnersView .partners-title-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f0f0ff 0%, #e8e8ff 100%);
+    border: 1.5px solid #d4d4f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7c3aed;
+    flex-shrink: 0;
+  }
+
+  #partnersView .partners-title-icon svg {
+    width: 24px;
+    height: 24px;
   }
 
   #partnersView .partners-header-actions {
@@ -5474,6 +5520,13 @@ body.dark-theme .partners-desktop-wrap td strong,
 html.dark-theme .clients-desktop-wrap td strong,
 body.dark-theme .clients-desktop-wrap td strong {
   color: #f8fafc;
+}
+
+html.dark-theme .partners-title-icon,
+body.dark-theme .partners-title-icon {
+  background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 100%);
+  border-color: #4c1d95;
+  color: #a78bfa;
 }
 
 html.dark-theme .partners-header-left p,
